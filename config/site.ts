@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Next.js + NextUI",
+  name: "Sri lanka's No.1 Car sale website",
   description: "Make beautiful websites regardless of your design experience.",
   navItems: [
     {
@@ -9,12 +9,12 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Buy",
+      href: "/buy",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Sell",
+      href: "/sell",
     },
     {
       label: "Blog",
@@ -30,29 +30,26 @@ export const siteConfig = {
       label: "Profile",
       href: "/profile",
     },
+
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "Home",
+      href: "/",
     },
     {
-      label: "Projects",
-      href: "/projects",
+      label: "Buy",
+      href: "/buy",
     },
     {
-      label: "Team",
-      href: "/team",
+      label: "Sell",
+      href: "/sell",
     },
     {
-      label: "Calendar",
-      href: "/calendar",
+      label: "Blog",
+      href: "/blog",
     },
     {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
+      label: "About",
+      href: "/about",
     },
     {
       label: "Logout",
