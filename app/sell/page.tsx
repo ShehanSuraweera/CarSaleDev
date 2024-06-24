@@ -45,7 +45,7 @@ export default function Page() {
     setDisplayPrice(value);
   };
   return (
-    <div className="flex flex-col items-center justify-center w-full gap-8 p-4 px-5">
+    <div className="flex flex-col items-center justify-center w-full gap-3 sm:px-5 sm:gap-8 sm:p-4">
       <div className=" sm:w-[90%] shadow-md w-full p-8   ">
         <h2></h2>
         <div className="flex flex-col gap-3 ">
