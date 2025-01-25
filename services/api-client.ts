@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "http://localhost:4001",
+  baseURL: "https://sugar-heliotrope-mole.glitch.me",
   withCredentials: true,
 });
