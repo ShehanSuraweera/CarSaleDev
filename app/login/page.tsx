@@ -8,7 +8,7 @@ import { UserContext } from "../UserContext";
 import { useRouter } from "next/navigation";
 import apiClient from "@/services/api-client";
 
-const page: React.FC = () => {
+const Page: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [redirect, setRedirect] = useState(false);
@@ -80,4 +80,4 @@ const page: React.FC = () => {
   );
 };
 
-export default page;
+export default Page;

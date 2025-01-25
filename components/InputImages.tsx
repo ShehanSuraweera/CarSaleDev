@@ -1,4 +1,5 @@
 import { Input } from "@heroui/react";
+import Image from "next/image";
 import React, { useState, ChangeEvent, useRef } from "react";
 
 // Define types for the images state
@@ -69,7 +70,7 @@ const InputImages: React.FC<InputImagesProps> = ({ onImagesChange }) => {
                 key={index}
                 className="relative w-full h-48 overflow-hidden border rounded-md"
               >
-                <img
+                <Image
                   src={image}
                   alt={`Preview ${index + 1}`}
                   className="object-contain w-full h-full "
