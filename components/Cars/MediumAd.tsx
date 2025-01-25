@@ -1,11 +1,11 @@
 import React from "react";
 import Image, { StaticImageData } from "next/image";
-import allion240 from "../../images/Allion240.jpg";
 import enginepic from "../../icons/engine.svg";
 import mileagepic from "../../icons/mileage.svg";
 import bodytypepic from "../../icons/bodytypepic.svg";
 import transmissionpic from "../../icons/transmissionpic.svg";
 import fuelpic from "../../icons/fuelpic.svg";
+import { useRouter } from "next/navigation";
 
 interface MediumAdProps {
   id: string;
@@ -19,6 +19,7 @@ interface MediumAdProps {
   price: string;
   image: string | StaticImageData;
   manufacture: string;
+  location: string;
 }
 const MediumAd = ({
   make,
@@ -32,13 +33,23 @@ const MediumAd = ({
   bodyType,
   image,
   id,
+  location,
 }: MediumAdProps) => {
+  const router = useRouter();
+
+  const handleAd = () => {
+    router.push(`/vehicle/${id}`);
+  };
+
   return (
     <div className=" mb-7  shadow-md w-[182px] sm:w-[270px] md:w-[360px] lg:w-[400px] h-auto rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  ">
       <Image
         className="w-[85%] rounded-md  mt-2 "
         src={image}
         alt={make + modle}
+        width={500}
+        height={500}
+        onClick={handleAd}
       ></Image>
       <div className=" mt-1 font-semibold sm:text-lg   text-xs text-[#130F40]">
         {make}
@@ -52,40 +63,40 @@ const MediumAd = ({
           {price}
         </div>
         <div className="  mt-2 md:mt-4  flex justify-between sm:justify-around   gap-y-1 sm:gap-y-2 md:gap-y-4  sm:gap-x-12 text-[#847E7E]   items-center  flex-wrap w-[95%]">
-          <div className="sm:text-sm text-xs  flex float-start items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-1 text-xs sm:text-sm float-start sm:gap-2">
             <Image
               src={mileagepic}
-              className=" w-3 sm:w-5"
+              className="w-3 sm:w-5"
               alt="mileage"
             ></Image>
             {mileage}
           </div>
-          <div className="sm:text-sm text-xs    flex justify-start items-center sm:gap-2 gap-1">
+          <div className="flex items-center justify-start gap-1 text-xs sm:text-sm sm:gap-2">
             <Image
               src={bodytypepic}
               alt="bodytype"
-              className="sm:w-5 w-3"
+              className="w-3 sm:w-5"
             ></Image>
             {bodyType}
           </div>
-          <div className="sm:text-sm text-xs   sm:gap-2 gap-1 flex items-center justify-start">
+          <div className="flex items-center justify-start gap-1 text-xs sm:text-sm sm:gap-2">
             <Image
               src={transmissionpic}
               alt="transmission"
-              className="sm:w-5 w-3 "
+              className="w-3 sm:w-5 "
             ></Image>
             {transmission}
           </div>
-          <div className="sm:text-sm text-xs   flex items-center justify-start sm:gap-2 gap-1">
-            <Image src={fuelpic} alt="fueltype" className="sm:w-5 w-3"></Image>
+          <div className="flex items-center justify-start gap-1 text-xs sm:text-sm sm:gap-2">
+            <Image src={fuelpic} alt="fueltype" className="w-3 sm:w-5"></Image>
             {fuel}
           </div>
-          <div className="sm:text-sm text-xs  hidden sm:flex  justify-start items-center gap-2">
+          <div className="items-center justify-start hidden gap-2 text-xs sm:text-sm sm:flex">
             <Image src={enginepic} alt="engine" className="w-5"></Image>
             {engine}
           </div>
           <div className="flex items-center  justify-between w-[100%] text-[#130F40] mt-2  sm:text-sm text-xs  ">
-            <div>Colombo</div>
+            <div>{location}</div>
             <div>1 hour</div>
           </div>
         </div>

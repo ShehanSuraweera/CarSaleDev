@@ -13,9 +13,9 @@ export default function Home() {
   return (
     <section className="">
       <Search />
-      <SmallAdsRow topic="Trending Toyota Cars" />
-      <SmallAdsRow topic="Trending Honda Cars" />
-      <SmallAdsRow topic="Trending Suzuki Cars" />
+      <SmallAdsRow topic="Trending Toyota Cars" make="Toyota" />
+      <SmallAdsRow topic="Trending Honda Cars" make="Honda" />
+      <SmallAdsRow topic="Trending Suzuki Cars" make="Suzuki" />
     </section>
   );
 }

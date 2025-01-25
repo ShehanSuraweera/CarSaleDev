@@ -1,14 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Select, SelectItem } from "@heroui/select";
 import { Input, Textarea } from "@heroui/input";
-import {
-  carMakes,
-  districts,
-  transmissionTypes,
-  toyotaModels,
-  bodyTypes,
-  yom,
-} from "@/data/search";
 
 import { UserContext } from "@/app/UserContext";
 

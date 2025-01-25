@@ -2,7 +2,6 @@
 import apiClient from "@/services/api-client";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
-import axios from "axios";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation"; // For navigation

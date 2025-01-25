@@ -1,9 +1,11 @@
-import CarAd from "@/components/Cars/CarAd";
+import CarList from "@/components/Cars/CarList";
+import Search from "@/components/Search";
 
 export default function page() {
   return (
     <div>
-      <CarAd />
+      <Search />
+      <CarList />
     </div>
   );
 }

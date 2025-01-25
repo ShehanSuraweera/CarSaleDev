@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
-import axios from "axios";
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import { UserContext } from "../UserContext";
