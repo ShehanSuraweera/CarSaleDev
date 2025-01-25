@@ -288,8 +288,21 @@ export const engines = [
 ];
 
 export const conditions = [
-  { key: "registered_used", label: "Registered (Used)" },
+  { key: "registered", label: "Registered (Used)" },
   { key: "unregistered", label: "Unregistered" },
   { key: "brand_new", label: "Brand new" },
   { key: "antique", label: "Antique" },
+];
+
+export const vehicleTypes = [
+  { value: "1", label: "Cars" },
+  { value: "2", label: "SUVs / Jeeps" },
+  { value: "3", label: "Motorbikes" },
+  { value: "4", label: "Three Wheelers" },
+  { value: "6", label: "Vans" },
+  { value: "7", label: "Buses" },
+  { value: "8", label: "Lorries & Trucks" },
+  { value: "9", label: "Heavy Duty" },
+  { value: "10", label: "Tractors" },
+  { value: "11", label: "Other" },
 ];

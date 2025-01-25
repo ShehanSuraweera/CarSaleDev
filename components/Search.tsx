@@ -3,7 +3,7 @@
 // import TextField from "@mui/material/TextField";
 import React from "react";
 // import DropDown from "./DropDown";
-import { Select, SelectItem } from "@nextui-org/select";
+import { Select, SelectItem } from "@heroui/select";
 import {
   carMakes,
   toyotaModels,
@@ -14,8 +14,8 @@ import {
   transmissionTypes,
   priceOptions,
 } from "@/data/search";
-import { Input } from "@nextui-org/input";
-import { Button } from "@nextui-org/button";
+import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
 
 const Search = () => {
   return (

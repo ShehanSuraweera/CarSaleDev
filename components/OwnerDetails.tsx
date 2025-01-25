@@ -1,6 +1,6 @@
-import React from "react";
-import { Select, SelectItem } from "@nextui-org/select";
-import { Input, Textarea } from "@nextui-org/input";
+import React, { useContext, useEffect, useState } from "react";
+import { Select, SelectItem } from "@heroui/select";
+import { Input, Textarea } from "@heroui/input";
 import {
   carMakes,
   districts,
@@ -10,7 +10,29 @@ import {
   yom,
 } from "@/data/search";
 
-const OwnerDetails = () => {
+import { UserContext } from "@/app/UserContext";
+
+interface OwnerDetailsProps {
+  setOwnerDetails: (details: {
+    name: string;
+    phone: string;
+    city: string;
+    email: string;
+  }) => void;
+}
+
+const OwnerDetails: React.FC<OwnerDetailsProps> = ({ setOwnerDetails }) => {
+  const { user } = useContext(UserContext) || {};
+
+  const [name, setName] = useState(user?.name || "");
+  const [phone, setPhone] = useState(user?.phone || "");
+  const [city, setCity] = useState(user?.city || "");
+  const [email, setEmail] = useState(user?.email || "");
+
+  useEffect(() => {
+    setOwnerDetails({ name, phone, city, email });
+  }, [name, phone, city, email, setOwnerDetails]);
+
   return (
     <div className=" sm:w-[90%] shadow-md w-full   p-8">
       <h2>Owner Details</h2>
@@ -20,21 +42,33 @@ const OwnerDetails = () => {
           label="Name"
           labelPlacement="outside"
           className="sm:max-w-96"
-          value="Shehan"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           description="This will display as owner name of the AD"
         />
         <Input
           type="string"
           label="Contact"
-          value="0769785809"
+          value={phone}
           labelPlacement="outside"
           className="sm:max-w-96"
+          onChange={(e) => setPhone(e.target.value)}
           description="This will display as contact number of the AD"
         />
-        <Select
+        <Input
+          type="string"
+          label="Location"
+          value={city}
+          labelPlacement="outside"
+          className="sm:max-w-96"
+          onChange={(e) => setCity(e.target.value)}
+          description="This will display as Location"
+        />
+        {/* <Select
           labelPlacement="outside"
           label="Location"
-          value="Hanwella"
+          value={user.city}
+          onChange={(e) => setCity(e.target.value)}
           description="This will display as Location"
           className="w-full text-black sm:max-w-96"
           placeholder="e.g  Toyota, Honda, Mazda"
@@ -44,7 +78,7 @@ const OwnerDetails = () => {
               {item.label}
             </SelectItem>
           ))}
-        </Select>
+        </Select> */}
       </div>
     </div>
   );

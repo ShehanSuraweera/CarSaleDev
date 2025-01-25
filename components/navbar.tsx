@@ -7,19 +7,22 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
-} from "@nextui-org/navbar";
-import { Button } from "@nextui-org/button";
-import { Link } from "@nextui-org/link";
+} from "@heroui/navbar";
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
 import NextLink from "next/link";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { Logo } from "@/components/icons";
+import { UserContext } from "@/app/UserContext";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathName = usePathname();
+
+  const { user } = useContext(UserContext) || {};
 
   const handleMenuItemClick = () => {
     setIsMenuOpen(false);
@@ -43,7 +46,11 @@ export const Navbar = () => {
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.label}>
               <NextLink
-                className={`dark:text-[#FDC221] ${item.href === pathName ? "  font-medium   text-[#FDC221] " : "text-white"}`}
+                className={`dark:text-[#FDC221] ${
+                  item.href === pathName
+                    ? "  font-medium   text-[#FDC221] "
+                    : "text-white"
+                }`}
                 color="foreground"
                 href={item.href}
               >
@@ -60,7 +67,18 @@ export const Navbar = () => {
       >
         <NavbarItem className="hidden gap-2 sm:flex">
           <ThemeSwitch />
-          <Button>Sign in</Button>
+
+          {user ? (
+            <Link href="/profile" className="text-white hover:cursor-pointer">
+              {user.name}{" "}
+            </Link>
+          ) : (
+            <Button>
+              <Link href="/login" className="dark:text-white">
+                Sign in
+              </Link>
+            </Button>
+          )}
         </NavbarItem>
       </NavbarContent>
 
@@ -78,7 +96,11 @@ export const Navbar = () => {
             <NavbarMenuItem key={item.label}>
               <Link
                 color={"foreground"}
-                className={` ${item.href === pathName ? "  font-medium  text-[#FDC221] " : "text-black dark:text-white"}`}
+                className={` ${
+                  item.href === pathName
+                    ? "  font-medium  text-[#FDC221] "
+                    : "text-black dark:text-white"
+                }`}
                 href={item.href}
                 size="lg"
                 onPress={handleMenuItemClick}
