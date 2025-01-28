@@ -60,7 +60,7 @@ const Page = () => {
     if (selected === "postAd") {
       reDirect();
     }
-  }, [user, selected, selectedPost]);
+  }, [selected]);
 
   const handleOnClose = async () => {
     console.log("Modal is closing...");
