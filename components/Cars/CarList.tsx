@@ -1,7 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import MediumAd from "./MediumAd";
-import { fetchAds } from "@/lib/api";
 
 import { Car } from "@/types"; // Assuming you have a Car type defined
 

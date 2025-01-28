@@ -98,7 +98,7 @@ export const UserContextProvider: FC<{ children: ReactNode }> = ({
   // Initialize the router
   useEffect(() => {
     initializeUser();
-  }, [user]);
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser, ready }}>
