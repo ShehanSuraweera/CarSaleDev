@@ -102,7 +102,7 @@ const Page = () => {
       // Redirect to login page if the user is not logged in
       router.push("/login");
     }
-  }, [user, ready, router]); // Run the effect when user or ready state changes
+  }, [user, ready]); // Run the effect when user or ready state changes
 
   // Your profile page content here
   if (!user) {

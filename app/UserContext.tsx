@@ -59,7 +59,7 @@ export const UserContextProvider: FC<{ children: ReactNode }> = ({
 
           if (error.response?.status === 401) {
             // If the token is invalid, remove the user and redirect to login
-
+            setReady(true);
             router.push("/login");
             //localStorage.removeItem("user");
             setUser(null);
