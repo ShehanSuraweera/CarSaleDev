@@ -27,12 +27,12 @@ const Page = () => {
   };
 
   const getCarsFromBackend = async () => {
+    if (!user?.user_name) return; // Ensure user is logged in
+
     try {
-      setLoading(true); // Start loading
-      const fetchedCars = user?.user_name
-        ? await fetchUserAds(user.user_name)
-        : []; // Fetch the data
-      setCars(fetchedCars); // Update state with the fetched cars
+      setLoading(true);
+      const fetchedCars = await fetchUserAds(user.user_name);
+      setCars(fetchedCars);
     } catch (error: any) {
       if (error.message === "AUTHENTICATION_ERROR") {
         setShowLoginModal(true); // Trigger login modal
@@ -45,48 +45,33 @@ const Page = () => {
     }
   };
 
-  useEffect(() => {
-    if (selected === "myAds") {
-      getCarsFromBackend();
-    }
-  }, [selected]);
-
-  const handleOnClose = async () => {
-    console.log("Modal is closing...");
-
-    try {
-      const authenticatedUser = await userAuthenticator();
-
-      if (authenticatedUser.username === user?.user_name) {
-        console.log("User is authenticated");
-      } else {
-        localStorage.removeItem("user");
-        router.push("/login");
-      }
-    } catch (error) {
-      console.error("Error authenticating user:", error);
-      localStorage.removeItem("user");
-      router.push("/login");
-    }
-
+  // Handle login modal close
+  const handleOnClose = () => {
+    console.log("Modal is closing... profile" + " " + ready + " " + user);
     setShowLoginModal(false);
+
+    if (!ready) {
+      return <Spinner color="warning" label="Loading..." />;
+    }
+
+    if (!user) {
+      router.push("/");
+    } else {
+      router.push("/profile");
+    }
   };
 
+  // Handle logout confirmation
   const handleConfirm = async () => {
-    console.log("Confirmed!");
-    setModalOpen(false);
-
     try {
-      await apiClient.post("/auth/logout"); // Log the user out
+      await apiClient.post("/auth/logout");
       localStorage.removeItem("user");
-      if (setUser) {
-        setUser(null);
-      }
-      // Remove user from localStorage
-      router.push("/"); // Redirect to the home page
+      setUser?.(null); // Clear user context
+      router.push("/");
     } catch (error) {
       console.error("Logout failed:", error);
-      // Optionally display an error message if logout fails
+    } finally {
+      setModalOpen(false);
     }
   };
 
@@ -95,19 +80,19 @@ const Page = () => {
     setModalOpen(true);
   }
 
+  // Trigger login modal if the user is not logged in
   useEffect(() => {
-    if (!ready) return; // Wait until user context is ready
-
-    if (!user) {
-      // Redirect to login page if the user is not logged in
-      router.push("/login");
+    if (ready && !user) {
+      setShowLoginModal(true);
     }
-  }, [user, ready]); // Run the effect when user or ready state changes
+  }, [ready, user]);
 
-  // Your profile page content here
-  if (!user) {
-    return <Spinner color="warning" label="Loading..." />; // Optionally show a loading message until the redirect happens
-  }
+  // Fetch data when a tab is selected
+  useEffect(() => {
+    if (selected === "myAds") {
+      getCarsFromBackend();
+    }
+  }, [selected]);
 
   return (
     <div className="flex flex-col items-center justify-between w-full h-full p-5 bg-slate-50">

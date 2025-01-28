@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -30,24 +30,38 @@ const LoginModal: React.FC<LoginModalProps> = ({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const userContext = useContext(UserContext);
+  const { user, ready, setUser } = useContext(UserContext) || {};
+  const router = useRouter();
 
   const handleLogin = async () => {
-    // if (onLogin) {
-    //   onLogin(username, password); // Trigger parent-provided login handler
-    // }
     try {
-      const user = await loginUser(username, password);
-      alert("Login Successfull");
+      const loggingUser = await loginUser(username, password);
 
-      userContext?.setUser(user);
-      // Optionally store user in localStorage to persist the session
-      localStorage.setItem("user", JSON.stringify(user));
+      if (setUser) {
+        localStorage.setItem("user", JSON.stringify(loggingUser));
+        setUser(loggingUser);
+        console.log("Setted User in login"); // Update the context with user data
+      }
 
-      onClose(); // Close the modal after login
+      // Persist user session
+      console.log("User after login:", loggingUser);
+
+      alert("Login Successful");
+      onClose(); // Close the modal
     } catch (error) {
       console.log(error);
     }
+  };
+
+  useEffect(() => {
+    if (ready) {
+      console.log("User from context:", user); // Log only when ready
+    }
+  }, [ready, user]);
+
+  const handleCloseButton = () => {
+    onClose();
+    router.push("/");
   };
 
   return (
@@ -91,7 +105,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" variant="flat" onPress={onClose}>
+            <Button color="danger" variant="flat" onPress={handleCloseButton}>
               Close
             </Button>
             <Button color="primary" onPress={handleLogin}>

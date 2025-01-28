@@ -47,21 +47,22 @@ export const UserContextProvider: FC<{ children: ReactNode }> = ({
         const authenticatedUser = await userAuthenticator();
 
         if (authenticatedUser.username === parsedUser.user_name) {
+          console.log("Authenticated user:", parsedUser);
           setUser(parsedUser);
-          setReady(true);
         } else {
           router.push("/login");
           localStorage.removeItem("user");
         }
+
+        setReady(true);
       } catch (error: any) {
         console.error("Token verification failed:", error);
 
         if (error.response?.status === 401) {
           // If the token is invalid, remove the user and redirect to login
-          setReady(true);
+
           router.push("/login");
           //localStorage.removeItem("user");
-          setUser(null);
         } else {
           // Handle other errors
           setError("Unable to verify the user. Please try again later.");
@@ -77,6 +78,7 @@ export const UserContextProvider: FC<{ children: ReactNode }> = ({
         console.log("User data fetched", JSON.stringify(response.data));
 
         // Save user data in context and localStorage
+        console.log("first time user:", response.data);
         setUser(response.data);
         localStorage.setItem("user", JSON.stringify(response.data));
         setReady(true);
@@ -97,8 +99,11 @@ export const UserContextProvider: FC<{ children: ReactNode }> = ({
   };
   // Initialize the router
   useEffect(() => {
-    initializeUser();
-  }, []);
+    const fetchData = async () => {
+      await initializeUser();
+    };
+    fetchData();
+  }, [setUser]);
 
   return (
     <UserContext.Provider value={{ user, setUser, ready }}>

@@ -24,6 +24,7 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
+  Spinner,
   useDisclosure,
   User,
 } from "@heroui/react";
@@ -40,35 +41,37 @@ export const Navbar = () => {
   const router = useRouter();
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  const { user, setUser } = useContext(UserContext) || {};
-  //let storedUser = localStorage.getItem("user");
-  //let parsedUser = null;
+  const { user, setUser, ready } = useContext(UserContext) || {};
 
-  // if (storedUser) {
-  //   parsedUser = JSON.parse(storedUser);
-  // }
+  const handleOnClose = () => {
+    //router.push("/");
+    console.log("Modal is closing... navbar" + " " + ready + " " + user);
 
-  const handleOnClose = async () => {
-    console.log("Modal is closing...");
+    if (!ready) {
+      return <Spinner color="warning" label="Loading..." />; // Optionally show a loading message until the redirect happens
+    }
 
+    if (!user) {
+      router.push("/");
+    } else {
+      router.push("/profile");
+    }
     setShowLoginModal(false);
   };
 
+  // Handle Logout
   const handleConfirm = async () => {
-    console.log("Confirmed!");
-    setModalOpen(false);
-
     try {
       await apiClient.post("/auth/logout"); // Log the user out
       localStorage.removeItem("user");
       if (setUser) {
-        setUser(null);
+        setUser(null); // Clear user context
       }
-      // Remove user from localStorage
-      router.push("/"); // Redirect to the home page
+      router.push("/"); // Redirect to home
     } catch (error) {
       console.error("Logout failed:", error);
-      // Optionally display an error message if logout fails
+    } finally {
+      setModalOpen(false); // Close the confirmation modal
     }
   };
 
@@ -79,10 +82,6 @@ export const Navbar = () => {
 
   const handleMenuItemClick = () => {
     setIsMenuOpen(false);
-  };
-
-  const handleOpen = () => {
-    onOpen();
   };
 
   return (
