@@ -4,7 +4,7 @@ import Search from "@/components/Search";
 import { fetchAds } from "@/lib/api";
 import { useEffect, useState } from "react";
 
-export default function page() {
+export default function Page() {
   const [cars, setCars] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
