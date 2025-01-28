@@ -3,27 +3,16 @@ import React, { useEffect, useState } from "react";
 import MediumAd from "./MediumAd";
 import { fetchAds } from "@/lib/api";
 
-const CarList = () => {
-  const [cars, setCars] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
-  const [error, setError] = useState<string | null>(null); // Error state
+import { Car } from "@/types"; // Assuming you have a Car type defined
 
-  const getCarsFromBackend = async () => {
-    try {
-      setLoading(true); // Start loading
-      const fetchedCars = await fetchAds(); // Fetch the data
-      setCars(fetchedCars); // Update state with the fetched cars
-    } catch (err: any) {
-      console.error("Error fetching ads:", err);
-      setError(err.message || "Failed to load ads");
-    } finally {
-      setLoading(false); // Stop loading
-    }
-  };
-
-  useEffect(() => {
-    getCarsFromBackend();
-  }, []);
+const CarList: React.FC<{
+  cars: Car[];
+  loading: boolean;
+  error: string | null;
+}> = ({ cars, loading, error }) => {
+  //const [cars, setCars] = useState<any[]>([]);
+  //const [loading, setLoading] = useState<boolean>(true); // Loading state
+  //const [error, setError] = useState<string | null>(null); // Error state
 
   return (
     <div className="flex flex-wrap items-center justify-center w-full sm:gap-x-6 gap-x-2">

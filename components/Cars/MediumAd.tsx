@@ -42,9 +42,9 @@ const MediumAd = ({
   };
 
   return (
-    <div className=" mb-7  shadow-md w-[182px] sm:w-[270px] md:w-[360px] lg:w-[400px] h-auto rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  ">
+    <div className=" mb-7  shadow-md mt-2 sm:mt-10 w-full sm:w-[250px] overflow-hidden sm:h-[500px] md:w-[370px] md:h-[550px] h-[300px] lg:w-[400px] dark:bg-[#000B17]  rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  ">
       <Image
-        className="w-[85%] rounded-md  mt-2 "
+        className="w-[85%] rounded-md object-contain h-[60%]  mt-2 "
         src={image}
         alt={make + modle}
         width={500}
@@ -58,9 +58,9 @@ const MediumAd = ({
         {modle + " " + manufacture}
       </div>
 
-      <div className=" w-[100%] h-full bg-slate-50  mt-1  rounded-md py-2 items-center justify-center flex flex-col">
+      <div className=" w-[100%] h-full bg-slate-50 dark:bg-[#000E1E]  mt-1  rounded-md py-2 items-center justify-center flex flex-col">
         <div className=" text-xs sm:text-sm md:text-base lg:text-lg text-[#2980b9]  w-full text-center font-semibold">
-          {price}
+          Rs. {price}
         </div>
         <div className="  mt-2 md:mt-4  flex justify-between sm:justify-around   gap-y-1 sm:gap-y-2 md:gap-y-4  sm:gap-x-12 text-[#847E7E]   items-center  flex-wrap w-[95%]">
           <div className="flex items-center gap-1 text-xs sm:text-sm float-start sm:gap-2">

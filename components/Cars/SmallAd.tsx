@@ -17,24 +17,25 @@ const SmallAd = ({ make, price, image, model, ad_id }: SmallAdProps) => {
   };
 
   return (
-    <div className=" mb-2 px-0 mx-1  pt-4  w-[250px] h-auto shadow-md  rounded-md flex justify-center flex-col items-center gap-4 hover:cursor-pointer  ">
+    <div className="flex flex-col items-center justify-center w-full  h-[300px] md:h-[310px] gap-4 px-0 pt-4 mx-1 mb-4  rounded-md shadow-md  hover:cursor-pointer">
       <Image
-        className=" w-[80%] rounded-md p-0 "
+        className=" w-[100%]  h-[70%]   rounded-md p-0 object-contain "
         width={500}
         height={500}
         src={image}
-        alt="BMW 2024"
+        alt={make + " " + model}
         onClick={handleAd}
+        loading="lazy"
       />
 
       <div className="flex flex-col items-center justify-end p-1">
-        <h2 className=" font-semibold text-[#130F40] text-[10px] md:text-sm dark:text-white">
+        <h2 className=" font-semibold text-[#130F40] text-[14px] md:text-sm dark:text-white">
           {make}
         </h2>
-        <h2 className=" font-semibold text-[#130F40] text-[10px] md:text-sm dark:text-white">
+        <h2 className=" font-semibold text-[#130F40] text-[14px] md:text-sm dark:text-white">
           {model}
         </h2>
-        <h3 className=" text-[#8b8787] text-xs md:text-sm">{price}</h3>
+        <h3 className=" text-[#8b8787] text-sm md:text-sm">Rs. {price}</h3>
       </div>
     </div>
   );

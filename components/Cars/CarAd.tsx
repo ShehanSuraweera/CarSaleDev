@@ -165,7 +165,7 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
           <p className="text-sm md:text-base">{car?.owner_comments}</p>
         </div>
         <div className="flex justify-end mt-4 text-sm">
-          <span>365 views</span>
+          <span>{car?.views} views</span>
         </div>
       </div>
     </div>

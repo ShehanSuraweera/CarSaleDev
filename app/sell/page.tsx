@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserContext } from "../UserContext";
 import {
   carMakes,
@@ -33,6 +33,7 @@ import {
   Button,
   Alert,
 } from "@heroui/react";
+import ConfirmationBox from "@/components/ConfirmationBox";
 
 // Function to format numbers with commas
 const formatNumber = (num: number): string => {
@@ -40,7 +41,7 @@ const formatNumber = (num: number): string => {
 };
 
 export default function Page() {
-  const { user } = useContext(UserContext) || {};
+  const { user, ready } = useContext(UserContext) || {};
   const [vehicle, setVehicle] = useState("Car");
   const [price, setPrice] = useState("");
   const [formattedPrice, setFormattedPrice] = useState("");
@@ -49,6 +50,9 @@ export default function Page() {
   const [isNegotiable, setIsNegotiable] = useState(false);
   const [loading, setLoading] = useState(false);
   const [successPopup, setSuccessPopup] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+
   const router = useRouter();
   const [ownerDetails, setOwnerDetails] = useState({
     name: user?.name || "",
@@ -78,6 +82,31 @@ export default function Page() {
   const handleImagesChange = (images: string[]) => {
     setImageUrls(images);
   };
+
+  useEffect(() => {
+    if (!ready) return; // Wait until user context is ready
+    if (user) {
+      setAuthenticated(true);
+    }
+
+    if (!user) {
+      setAuthenticated(false);
+      setShowAlert(true);
+      // Redirect to login page if the user is not logged in
+      //router.push("/login");
+    }
+  }, [user, ready]); // Run the effect when user or ready state changes
+
+  const handleRedirect = () => {
+    // Close the alert and redirect the user to the login page
+    setShowAlert(false);
+    router.push("/login");
+  };
+
+  // Your profile page content here
+  if (!user) {
+    return <Spinner color="warning" label="Loading..." />; // Optionally show a loading message until the redirect happens
+  }
 
   const title = "Upload Succesfull";
   const description =
@@ -302,6 +331,13 @@ export default function Page() {
           </div>
         )}
       </>
+      <ConfirmationBox
+        title="Alert"
+        message="You need to login to post an ad"
+        isOpen={showAlert}
+        onClose={handleRedirect}
+        onConfirm={handleRedirect}
+      />
     </div>
   );
 }

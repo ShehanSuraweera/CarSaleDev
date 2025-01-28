@@ -7,6 +7,8 @@ import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 import { UserContextProvider } from "./UserContext";
+import { Button } from "@heroui/button";
+import SeconderyNavBar from "@/components/SeconderyNavBar";
 
 export const metadata: Metadata = {
   title: {
@@ -44,7 +46,8 @@ export default function RootLayout({
           <UserContextProvider>
             <div className="relative flex flex-col h-screen">
               <Navbar />
-              <main className="container flex-grow px-6 pt-16 mx-auto max-w-7xl">
+              <SeconderyNavBar />
+              <main className="container flex-grow px-6 mx-auto sm:pt-16 max-w-7xl">
                 {children}
               </main>
               <footer className="flex items-center justify-center w-full py-3">
