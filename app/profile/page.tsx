@@ -4,26 +4,19 @@ import { UserContext } from "../UserContext";
 import { Button } from "@heroui/button";
 import apiClient from "@/services/api-client";
 import { useRouter } from "next/navigation";
-import SideBar from "@/components/SideBar";
-import OwnerDetails from "@/components/OwnerDetails";
 import { Chip, Divider, Spinner, Tab, Tabs } from "@heroui/react";
-import MiddleTab from "@/components/MiddleTab";
 import { UserIcon } from "@/components/icons";
 import ConfirmationBox from "@/components/ConfirmationBox";
-import { title } from "process";
 import { fetchUserAds, userAuthenticator } from "@/lib/api";
 import CarList from "@/components/Cars/CarList";
 import LoginModel from "@/components/LoginModel";
-import Link from "next/link";
 
 const Page = () => {
   const { ready, user, setUser } = useContext(UserContext) ?? {};
   const router = useRouter();
   const [isModalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState("");
-  const [selectedPost, setSelectedPost] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [authenticated, setAuthenticated] = useState(true);
 
   const [cars, setCars] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Loading state
@@ -56,9 +49,6 @@ const Page = () => {
     if (selected === "myAds") {
       getCarsFromBackend();
     }
-    if (selected === "postAd") {
-      reDirect();
-    }
   }, [selected]);
 
   const handleOnClose = async () => {
@@ -66,15 +56,11 @@ const Page = () => {
 
     try {
       const authenticatedUser = await userAuthenticator();
-      console.log(authenticatedUser.username);
+
       if (authenticatedUser.username === user?.user_name) {
         console.log("User is authenticated");
-        setAuthenticated(true);
       } else {
-        console.log("User is not authenticated");
-        setAuthenticated(false);
         localStorage.removeItem("user");
-
         router.push("/login");
       }
     } catch (error) {
