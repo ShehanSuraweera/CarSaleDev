@@ -53,7 +53,6 @@ const Page = () => {
   };
 
   useEffect(() => {
-    getCarsFromBackend();
     if (selected === "myAds") {
       getCarsFromBackend();
     }
