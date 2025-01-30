@@ -28,6 +28,7 @@ export interface Car {
   transmission: string;
 
   ad_location: string;
+  created_at: string;
 }
 
 export interface UserProfileData {

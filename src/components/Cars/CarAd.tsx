@@ -15,6 +15,8 @@ import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { Swiper as SwiperClass } from "swiper";
 import { fetchAd } from "@/src/lib/api";
+import { formatDistanceToNow } from "date-fns";
+import TimeAgo from "../TimeAgo";
 
 interface CarAdProps {
   ad_id: string;
@@ -57,7 +59,7 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
             car?.ad_location}
         </p>
         <div className="flex justify-end mb-4 text-xs">
-          <span>57 minutes ago</span>
+          <TimeAgo createdAt={car?.created_at || ""} />
         </div>
         <div className="flex flex-col items-center justify-center ">
           <div className="w-full ">

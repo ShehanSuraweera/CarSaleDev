@@ -34,6 +34,7 @@ const CarList: React.FC<{
             transmission={car.transmission}
             id={car.ad_id}
             location={car.ad_location}
+            created_at={car.created_at}
           />
         </div>
       ))}

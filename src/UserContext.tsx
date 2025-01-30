@@ -35,7 +35,7 @@ export const UserContextProvider = ({
     const fetchUser = async () => {
       try {
         const { data } = await supabaseBrowserClient.auth.getSession(); // ✅ Directly fetch session
-        console.log("fetchUser -> data", data.session?.user);
+        //console.log("fetchUser -> data", data.session?.user);
         setUser(data.session?.user ?? null);
         setSession(data.session);
       } catch (error) {
@@ -51,7 +51,7 @@ export const UserContextProvider = ({
     const { data: authListener } = supabaseBrowserClient.auth.onAuthStateChange(
       (_event, session) => {
         setLoading(true);
-        console.log("onAuthStateChange -> session", session?.user);
+        //console.log("onAuthStateChange -> session", session?.user);
         setUser(session?.user ?? null);
         setSession(session);
         setLoading(false);

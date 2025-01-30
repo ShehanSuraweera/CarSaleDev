@@ -6,6 +6,7 @@ import bodytypepic from "../../assets/icons/bodytypepic.svg";
 import transmissionpic from "../../assets/icons/transmissionpic.svg";
 import fuelpic from "../../assets/icons/fuelpic.svg";
 import { useRouter } from "next/navigation";
+import TimeAgo from "../TimeAgo";
 
 interface MediumAdProps {
   id: string;
@@ -20,6 +21,7 @@ interface MediumAdProps {
   image: string | StaticImageData;
   manufacture: string;
   location: string;
+  created_at: string;
 }
 const MediumAd = ({
   make,
@@ -34,6 +36,7 @@ const MediumAd = ({
   image,
   id,
   location,
+  created_at,
 }: MediumAdProps) => {
   const router = useRouter();
 
@@ -101,7 +104,9 @@ const MediumAd = ({
           </div>
           <div className="flex items-center  justify-between w-[100%] text-[#130F40] mt-2  sm:text-sm text-xs  ">
             <div>{location}</div>
-            <div>1 hour</div>
+            <div>
+              <TimeAgo createdAt={created_at || ""} />
+            </div>
           </div>
         </div>
       </div>
