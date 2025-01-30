@@ -1,26 +1,87 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
-import { Chip, Divider, Tab, Tabs } from "@heroui/react";
-import { fetchUserAds, getUserProfileData } from "@/src/lib/api";
+import {
+  Checkbox,
+  Chip,
+  Divider,
+  Form,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Tab,
+  Tabs,
+  useDisclosure,
+} from "@heroui/react";
+import {
+  fetchUserAds,
+  getUserProfileData,
+  updateUserProfile,
+} from "@/src/lib/api";
 import CarList from "@/src/components/Cars/CarList";
 import SignOut from "@/src/components/SignOut";
 import { UserProfileData } from "@/src/types";
-import { Loader2 } from "lucide-react";
+import {
+  Loader2,
+  LockIcon,
+  MailIcon,
+  MapPin,
+  Phone,
+  UserRoundPen,
+} from "lucide-react";
 import { useUser } from "@/src/UserContext";
+import Link from "next/link";
+import toast from "react-hot-toast";
 
 const Page = () => {
   const router = useRouter();
 
   const [selected, setSelected] = useState("");
   const [cars, setCars] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
+  const [carsLoading, setCarsLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
   const [userProfileData, setUserProfileData] =
     useState<UserProfileData | null>(null);
+  const { onOpen } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const { user } = useUser();
+  useEffect(() => {
+    if (userProfileData?.name === null) {
+      setIsOpen(true);
+    }
+  }, []);
+
+  const { user, loading } = useUser();
+
+  const handleUpdateProfileModel = (open: boolean) => {
+    onOpen();
+    setIsOpen(open);
+  };
+
+  const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!user) return;
+
+    let formData = new FormData();
+    formData.append("user_id", user.id);
+    formData.append("name", userProfileData?.name || "");
+    formData.append("phone", userProfileData?.phone || "");
+    formData.append("city", userProfileData?.city || "");
+
+    try {
+      const response = await updateUserProfile(formData);
+
+      toast.success("Profile updated successfully");
+      handleUpdateProfileModel(!isOpen); // Close modal on success
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile");
+    }
+  };
 
   // Fetch user profile data when user state updates
   useEffect(() => {
@@ -42,13 +103,13 @@ const Page = () => {
       if (!user) return;
 
       try {
-        setLoading(true);
+        setCarsLoading(true);
         const fetchedCars = await fetchUserAds(user.id as string);
         setCars(fetchedCars);
       } catch (error: any) {
         setError(error.message || "Failed to load ads");
       } finally {
-        setLoading(false);
+        setCarsLoading(false);
       }
     };
 
@@ -100,6 +161,104 @@ const Page = () => {
 
                         <div>{userProfileData?.city}</div>
                       </div>
+                      <div className="flex items-center justify-center mt-4">
+                        <Button
+                          color="secondary"
+                          variant="flat"
+                          onPress={() => handleUpdateProfileModel(!isOpen)}
+                        >
+                          Update Profile
+                        </Button>
+                      </div>
+                      <Modal
+                        isOpen={isOpen}
+                        placement="top-center"
+                        onOpenChange={handleUpdateProfileModel}
+                        className="w-full"
+                      >
+                        <ModalContent>
+                          {(onClose) => (
+                            <>
+                              <ModalHeader className="flex flex-col gap-1">
+                                Update Profile
+                              </ModalHeader>
+                              <ModalBody>
+                                <Form
+                                  className="w-full "
+                                  validationBehavior="native"
+                                  onSubmit={handleUpdateProfile}
+                                >
+                                  <Input
+                                    endContent={
+                                      <UserRoundPen className="flex-shrink-0 text-2xl pointer-events-none text-default-400" />
+                                    }
+                                    name="name"
+                                    label="Name"
+                                    required
+                                    placeholder="Enter your name"
+                                    variant="bordered"
+                                    value={userProfileData?.name || ""}
+                                    onChange={(e) =>
+                                      setUserProfileData({
+                                        ...userProfileData,
+                                        name: e.target.value,
+                                      })
+                                    }
+                                  />
+                                  <Input
+                                    endContent={
+                                      <Phone className="flex-shrink-0 text-2xl pointer-events-none text-default-400" />
+                                    }
+                                    name="phone"
+                                    label="Phone"
+                                    placeholder="Enter your phone"
+                                    type="text"
+                                    required
+                                    variant="bordered"
+                                    value={userProfileData?.phone || ""}
+                                    onChange={(e) =>
+                                      setUserProfileData({
+                                        ...userProfileData,
+                                        phone: e.target.value,
+                                      })
+                                    }
+                                  />
+                                  <Input
+                                    endContent={
+                                      <MapPin className="flex-shrink-0 text-2xl pointer-events-none text-default-400" />
+                                    }
+                                    name="city"
+                                    required
+                                    label="City"
+                                    placeholder="Enter your city"
+                                    type="text"
+                                    variant="bordered"
+                                    value={userProfileData?.city || ""}
+                                    onChange={(e) =>
+                                      setUserProfileData({
+                                        ...userProfileData,
+                                        city: e.target.value,
+                                      })
+                                    }
+                                  />
+                                  <div className="flex items-center justify-end w-full gap-4 pr-5 mt-5">
+                                    <Button
+                                      color="primary"
+                                      variant="flat"
+                                      onPress={onClose}
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button type="submit" color="danger">
+                                      Update
+                                    </Button>
+                                  </div>
+                                </Form>
+                              </ModalBody>
+                            </>
+                          )}
+                        </ModalContent>
+                      </Modal>
                     </>
                   ) : (
                     <div className="flex items-center justify-center h-20">

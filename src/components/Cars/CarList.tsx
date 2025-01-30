@@ -11,8 +11,8 @@ const CarList: React.FC<{
 }> = ({ cars, loading, error }) => {
   if (loading) {
     return (
-      <div>
-        <Loader2 className=" animate-spin" />
+      <div className="flex items-center justify-center w-full h-96">
+        <Loader2 className="w-10 h-10 text-green-500 animate-spin" />
       </div>
     );
   }

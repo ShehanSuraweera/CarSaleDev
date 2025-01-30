@@ -14,14 +14,16 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import hideSearch from "@/src/assets/icons/hide-arrow.png";
 import { SearchIcon } from "@/src/components/icons";
+import { useWindowSize } from "react-use";
 
 export default function Page() {
   const [cars, setCars] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Loading state
-  const [error, setError] = useState<string | null>(null); // Error state
+  const [error, setError] = useState<string | null>(null);
+  const { width } = useWindowSize();
 
-  const { onOpen, onOpenChange } = useDisclosure();
-  const [isOpen, setIsOpen] = useState(true);
+  const { onOpen } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(width < 640 && true);
   const [placement, setPlacement] = useState<
     "top" | "right" | "bottom" | "left"
   >("top");
@@ -49,7 +51,7 @@ export default function Page() {
   }, []);
 
   return (
-    <div>
+    <div className="">
       <Drawer
         isOpen={isOpen}
         placement={placement}
@@ -57,8 +59,9 @@ export default function Page() {
         size="lg"
         defaultOpen={false}
         radius="md"
+        className="block sm:hidden"
       >
-        <DrawerContent>
+        <DrawerContent className="block bg-white sm:hidden">
           {(onClose) => (
             <>
               {/* <DrawerHeader className="flex flex-col gap-1">

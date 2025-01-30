@@ -138,3 +138,23 @@ export const createAd = async (formData: FormData, imageUrls: string[]) => {
     return "Error";
   }
 };
+
+export const updateUserProfile = async (formData: FormData) => {
+  try {
+    const response = await apiClient.post("/user/update", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (response.status === 200) {
+      return "Profile updated";
+    } else {
+      console.error("Failed to update profile:", response.status);
+      return "Failed";
+    }
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    return "Error";
+  }
+};
