@@ -298,6 +298,7 @@ export default function Page() {
             radius="lg"
             onPress={handlePostAd}
             isDisabled={isPending}
+            isLoading={isPending}
             className=" md:w-[40%] w-[80%]  bg-[#FDC221] dark:bg-[#01172F] dark:text-[#FDC221] "
           >
             Post AD

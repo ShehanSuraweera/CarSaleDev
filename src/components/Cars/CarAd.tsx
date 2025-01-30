@@ -29,6 +29,10 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
     setCar(vehicleAd);
   };
 
+  const formatNumber = (num: number): string => {
+    return new Intl.NumberFormat("en-US").format(num);
+  };
+
   useEffect(() => {
     handleAd();
   }, [ad_id]);
@@ -132,7 +136,10 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
                 {car?.owner_contact}
               </div>
               <div className="w-1/2 p-2 mb-2 text-lg font-semibold text-center shadow-md bg-slate-500 rounded-xl">
-                Rs.{car?.price}
+                Rs. {formatNumber(car?.price)}{" "}
+                <span className="text-xs font-light ">
+                  {car?.is_negotiable && "(Negotiable)"}
+                </span>
               </div>
             </div>
 
