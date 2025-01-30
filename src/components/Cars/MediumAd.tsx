@@ -45,7 +45,7 @@ const MediumAd = ({
     <div className=" mb-7  shadow-md mt-2 sm:mt-10 w-full sm:w-[250px] overflow-hidden sm:h-[500px] md:w-[370px] md:h-[550px] h-[300px] lg:w-[400px] dark:bg-[#000B17]  rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  ">
       <Image
         className="w-[85%] rounded-md object-contain h-[60%]  mt-2 "
-        src={image || "../../assets/images/no-image.svg"}
+        src={image || "/images/no-image.png"}
         alt={make + modle}
         width={500}
         height={500}

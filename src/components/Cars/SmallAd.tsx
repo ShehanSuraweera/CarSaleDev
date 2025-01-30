@@ -22,7 +22,7 @@ const SmallAd = ({ make, price, image, model, ad_id }: SmallAdProps) => {
         className=" w-[100%]  h-[70%]   rounded-md p-0 object-contain "
         width={500}
         height={500}
-        src={image || "../../assets/images/no-image.svg"}
+        src={image || "/images/no-image.png"}
         alt={make + " " + model}
         onClick={handleAd}
         loading="lazy"

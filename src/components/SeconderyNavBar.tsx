@@ -4,25 +4,25 @@ import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useUser } from "../UserContext";
-import { User } from "@supabase/supabase-js";
+import toast from "react-hot-toast";
 
 const SeconderyNavBar = () => {
-  const { user } = useUser();
-  const [loggedUser, setLoggedUser] = useState<User | null>(null);
+  const { user, loading } = useUser();
+
+  const handleSellButton = () => {
+    router.push("/sell");
+    if (!user && !loading) {
+      toast.error("Please login to post an ad");
+    }
+  };
+
   const router = useRouter();
   const pathName = usePathname();
-  useEffect(() => {
-    setLoggedUser(user);
-  }, [user]);
+
   return (
     <div className="flex flex-row justify-center w-full gap-5 mt-2 ">
       {pathName !== "/profile" && (
-        <Button
-          color="warning"
-          onPress={() => {
-            router.push("/sell");
-          }}
-        >
+        <Button color="warning" onPress={handleSellButton}>
           POST FREE
         </Button>
       )}

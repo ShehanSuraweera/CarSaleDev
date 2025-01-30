@@ -75,7 +75,7 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
             },
           }}
           modules={[Navigation, Pagination, A11y, Autoplay]}
-          className="w-full h-full h-"
+          className="w-full h-full "
         >
           {cars.map((car) => (
             <SwiperSlide
@@ -86,7 +86,7 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
                 make={car.make}
                 model={car.model}
                 price={car.price}
-                image={car.ad_images[0]?.image_url || ""}
+                image={car.ad_images[0]?.image_url || "/images/no-image.png"}
                 ad_id={car.ad_id}
               />
             </SwiperSlide>

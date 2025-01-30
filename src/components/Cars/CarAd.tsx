@@ -79,7 +79,11 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
                   >
                     <Image
                       id={image.created_at}
-                      src={image.image_url}
+                      src={
+                        image.image_url === "" || !image.image_url
+                          ? "/images/no-image.png"
+                          : image.image_url
+                      }
                       alt={image.image_url}
                       width={500}
                       height={500}
@@ -107,7 +111,11 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
                   >
                     <Image
                       id={image.created_at}
-                      src={image.image_url}
+                      src={
+                        image.image_url === "" || !image.image_url
+                          ? "/images/no-image.png"
+                          : image.image_url
+                      }
                       alt={image.image_url}
                       width={500}
                       height={500}

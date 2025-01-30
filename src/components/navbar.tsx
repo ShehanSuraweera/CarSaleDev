@@ -30,10 +30,13 @@ import { User } from "@supabase/supabase-js";
 import { createSupabaseClient } from "../auth/client";
 import SignOut from "./SignOut";
 import { useUser } from "../UserContext";
+import { Loader2 } from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
+import { it } from "node:test";
 
 export const Navbar = () => {
   //const [user, setUser] = useState<User | null>(null);
-  const { user } = useUser();
+  const { user, loading } = useUser();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathName = usePathname();
@@ -46,6 +49,13 @@ export const Navbar = () => {
 
   const handleOpen = () => {
     onOpen();
+  };
+
+  const handleSellButton = () => {
+    router.push("/sell");
+    if (!user && !loading) {
+      toast.error("Please login to post an ad");
+    }
   };
 
   return (
@@ -63,7 +73,7 @@ export const Navbar = () => {
           </NextLink>
         </NavbarBrand>
         <NavbarContent className="basis-1/5 sm:basis-full" justify="center">
-          <ul className="justify-center hidden gap-4 ml-2 md:flex">
+          <ul className="items-center justify-center hidden gap-4 ml-2 md:flex">
             {siteConfig.navItems.map((item) => (
               <NavbarItem key={item.label}>
                 <NextLink
@@ -71,7 +81,12 @@ export const Navbar = () => {
                     item.href === pathName
                       ? "  font-medium   text-[#FDC221] "
                       : "text-white"
-                  }`}
+                  }
+                    ${
+                      item.label === "Buy"
+                        ? "border-solid border-1 shadow-sm shadow-slate-800 p-1 px-2 rounded-md "
+                        : ""
+                    }`}
                   color="foreground"
                   href={item.href}
                 >
@@ -79,6 +94,9 @@ export const Navbar = () => {
                 </NextLink>
               </NavbarItem>
             ))}
+            <Button color="warning" onPress={handleSellButton}>
+              POST FREE
+            </Button>
           </ul>
         </NavbarContent>
 
@@ -86,7 +104,7 @@ export const Navbar = () => {
           <NavbarItem className="flex sm:gap-2">
             <ThemeSwitch />
 
-            {user ? (
+            {!loading && user ? (
               <Link
                 href="/profile"
                 className="hidden text-white sm:flex hover:cursor-pointer"
@@ -113,7 +131,11 @@ export const Navbar = () => {
                 color="primary"
                 variant="ghost"
               >
-                Sign in
+                {loading ? (
+                  <Loader2 className="w-5 h-5 text-[#F5A524] animate-spin" />
+                ) : (
+                  "Sign in"
+                )}
               </Button>
             )}
             <Button
@@ -180,7 +202,7 @@ export const Navbar = () => {
                   <Button color="danger" variant="light" onPress={onClose}>
                     Close
                   </Button>
-                  {!user ? (
+                  {!loading && !user ? (
                     <Button
                       color="primary"
                       variant="ghost"
@@ -188,7 +210,11 @@ export const Navbar = () => {
                         router.push("/login");
                       }}
                     >
-                      Sign in
+                      {loading ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        " Sign in"
+                      )}
                     </Button>
                   ) : (
                     <SignOut />

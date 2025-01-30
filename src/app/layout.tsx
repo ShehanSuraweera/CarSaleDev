@@ -48,9 +48,8 @@ export default function RootLayout({
           <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
             <div className="relative flex flex-col h-screen">
               <Navbar />
-              <SeconderyNavBar />
 
-              <main className="container flex-grow px-6 mx-auto sm:pt-16 max-w-7xl">
+              <main className="container flex-grow px-6 mx-auto sm:pt-8 max-w-7xl">
                 {children}
               </main>
 

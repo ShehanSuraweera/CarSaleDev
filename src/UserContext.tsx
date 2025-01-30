@@ -10,6 +10,7 @@ interface UserContextType {
   session: Session | null;
   supabaseBrowserClient: ReturnType<typeof createBrowserClient>;
   setUser: (user: User | null) => void;
+  loading: boolean;
 }
 
 // Create Context
@@ -66,9 +67,9 @@ export const UserContextProvider = ({
 
   return (
     <UserContext.Provider
-      value={{ user, session, supabaseBrowserClient, setUser }}
+      value={{ user, session, supabaseBrowserClient, setUser, loading }}
     >
-      {!loading ? children : <Loader2 className=" animate-spin" />}
+      {children}
     </UserContext.Provider>
   );
 };

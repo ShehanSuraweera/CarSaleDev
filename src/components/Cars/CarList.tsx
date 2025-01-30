@@ -22,7 +22,7 @@ const CarList: React.FC<{
       {cars.map((car) => (
         <div key={car.ad_id}>
           <MediumAd
-            image={car.ad_images[0]?.image_url || ""}
+            image={car.ad_images[0]?.image_url || "/images/no-image.png"}
             bodyType={car.body_type}
             make={car.make}
             modle={car.model}
