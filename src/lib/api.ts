@@ -1,4 +1,5 @@
 import apiClient from "@/src/services/api-client";
+import { convertAndUploadBlobs } from "../config/uploadBlobs";
 
 export const fetchAds = async () => {
   try {
@@ -40,22 +41,14 @@ export const fetchAd = async (ad_id: string) => {
   }
 };
 
-export const fetchUserAds = async (username: string) => {
+export const fetchUserAds = async (id: string) => {
   try {
     const response = await apiClient.post("/uploads/user-ads", {
-      owner_username: username,
+      id: id,
     });
 
     return response.data.ads;
   } catch (error: any) {
-    if (
-      error.response?.data?.error === "User not Authenticated!" ||
-      error.response?.data?.error === "Invalid token!"
-    ) {
-      // Throw a specific error for authentication issues
-      throw new Error("AUTHENTICATION_ERROR");
-    }
-
     console.error("Error fetching  ads:", error.message || error);
     throw new Error(error.response?.data?.message || "Failed to fetch  ads");
   }
@@ -94,5 +87,54 @@ export const userAuthenticator = async () => {
     throw new Error(
       error.response?.data?.message || "Failed to authenticate user"
     );
+  }
+};
+
+export const getUserProfileData = async (id: string) => {
+  try {
+    const response = await apiClient.post("/user/profile", {
+      user_id: id,
+    });
+
+    return response.data.user;
+  } catch (error: any) {
+    console.error("Error fetching user profile:", error.message || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch user profile"
+    );
+  }
+};
+
+export const createAd = async (formData: FormData, imageUrls: string[]) => {
+  try {
+    const response = await apiClient.post("/uploads/create", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    let adId = 0;
+
+    if (response.status === 201) {
+      const data = response.data; // Access data directly
+      adId = data.adId;
+      // Access adId
+    } else {
+      console.error("Failed to post ad:", response.status);
+      return "Failed";
+    }
+
+    const bucketName = "ad_pics"; // Supabase storage bucket name
+    try {
+      await convertAndUploadBlobs(imageUrls, adId.toString(), bucketName); // Upload images to Supabase storage
+
+      return "Adposted";
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      return "Failed to upload images";
+    }
+  } catch (error) {
+    console.error("Error posting ad:", error);
+    return "Error";
   }
 };

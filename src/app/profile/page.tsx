@@ -1,106 +1,68 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../UserContext";
+import React, { useEffect, useState } from "react";
 import { Button } from "@heroui/button";
-import apiClient from "@/src/services/api-client";
 import { useRouter } from "next/navigation";
-import { Chip, Divider, Spinner, Tab, Tabs } from "@heroui/react";
-import { UserIcon } from "@/src/components/icons";
-import ConfirmationBox from "@/src/components/ConfirmationBox";
-import { fetchUserAds, userAuthenticator } from "@/src/lib/api";
+import { Chip, Divider, Tab, Tabs } from "@heroui/react";
+import { fetchUserAds, getUserProfileData } from "@/src/lib/api";
 import CarList from "@/src/components/Cars/CarList";
-import LoginModel from "@/src/components/LoginModel";
+import SignOut from "@/src/components/SignOut";
+import { UserProfileData } from "@/src/types";
+import { Loader2 } from "lucide-react";
+import { useUser } from "@/src/UserContext";
 
 const Page = () => {
-  const { ready, user, setUser } = useContext(UserContext) ?? {};
   const router = useRouter();
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [selected, setSelected] = useState("");
-  const [showLoginModal, setShowLoginModal] = useState(false);
 
+  const [selected, setSelected] = useState("");
   const [cars, setCars] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
+  const [userProfileData, setUserProfileData] =
+    useState<UserProfileData | null>(null);
 
-  const reDirect = () => {
-    router.push("/sell");
-  };
+  const { user } = useUser();
 
-  const getCarsFromBackend = async () => {
-    if (!user?.user_name) return; // Ensure user is logged in
+  // Fetch user profile data when user state updates
+  useEffect(() => {
+    if (user) {
+      (async () => {
+        try {
+          const fetchUserProfile = await getUserProfileData(user.id as string);
+          setUserProfileData(fetchUserProfile[0]); // Ensure profile data is set correctly
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+        }
+      })();
+    }
+  }, [user]); // Only depend on `user`,
 
-    try {
-      setLoading(true);
-      const fetchedCars = await fetchUserAds(user.user_name);
-      setCars(fetchedCars);
-    } catch (error: any) {
-      if (error.message === "AUTHENTICATION_ERROR") {
-        setShowLoginModal(true); // Trigger login modal
-      } else {
-        console.error("Error fetching ads:", error);
+  // Fetch cars when "myAds" tab is selected
+  useEffect(() => {
+    const getCarsFromBackend = async () => {
+      if (!user) return;
+
+      try {
+        setLoading(true);
+        const fetchedCars = await fetchUserAds(user.id as string);
+        setCars(fetchedCars);
+      } catch (error: any) {
+        setError(error.message || "Failed to load ads");
+      } finally {
+        setLoading(false);
       }
-      setError(error.message || "Failed to load ads");
-    } finally {
-      setLoading(false); // Stop loading
-    }
-  };
+    };
 
-  // Handle login modal close
-  const handleOnClose = () => {
-    console.log("Modal is closing... profile", ready, user);
-
-    setShowLoginModal(false);
-
-    if (!ready) {
-      return <Spinner color="warning" label="Loading..." />;
-    }
-
-    if (!user) {
-      router.push("/");
-    } else {
-      router.push("/profile");
-    }
-  };
-
-  // Handle logout confirmation
-  const handleConfirm = async () => {
-    try {
-      await apiClient.post("/auth/logout");
-      localStorage.removeItem("user");
-      setUser?.(null); // Clear user context
-      router.push("/");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setModalOpen(false);
-    }
-  };
-
-  // Handle Logout
-  function handleLogout() {
-    setModalOpen(true);
-  }
-
-  // Trigger login modal if the user is not logged in
-  useEffect(() => {
-    if (ready && !user) {
-      setShowLoginModal(true);
-    }
-  }, [ready, user]);
-
-  // Fetch data when a tab is selected
-  useEffect(() => {
     if (selected === "myAds") {
       getCarsFromBackend();
     }
-  }, [selected]);
+  }, [selected, user]); // Ensure `user` is in the dependency array
 
   return (
     <div className="flex flex-col items-center justify-between w-full h-full p-5 bg-slate-50">
       <div className="flex flex-col justify-center ">
         <div className="flex justify-center mb-5 ">
           <div>
-            <Button color="warning" onPress={reDirect}>
+            <Button color="warning" onPress={() => router.push("/sell")}>
               Post Ad
             </Button>
           </div>
@@ -115,43 +77,49 @@ const Page = () => {
             <Tab key="profile" title="Profile">
               <div>
                 {user ? (
-                  <>
-                    <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
-                      <div>Name</div>
+                  userProfileData ? (
+                    <>
+                      <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
+                        <div>Name</div>
 
-                      <div>{user.name}</div>
-                    </div>
-                    <Divider />
-                    <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
-                      <div>Email</div>
-                      <div>{user.email}</div>
-                    </div>
-                    <Divider />
-                    <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
-                      <div>Phone</div>
-                      <div>{user.phone}</div>
-                    </div>
-                    <Divider />
-                    <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
-                      <div>City</div>
+                        <div>{userProfileData?.name}</div>
+                      </div>
+                      <Divider />
+                      <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
+                        <div>Email</div>
+                        <div>{userProfileData?.email}</div>
+                      </div>
+                      <Divider />
+                      <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
+                        <div>Phone</div>
+                        <div>{userProfileData?.phone}</div>
+                      </div>
+                      <Divider />
+                      <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
+                        <div>City</div>
 
-                      <div>{user.city}</div>
+                        <div>{userProfileData?.city}</div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-center h-20">
+                      <Loader2 className="w-6 h-6 text-gray-500 animate-spin" />
                     </div>
-                  </>
+                  )
                 ) : (
                   <div>No user data available</div>
                 )}
               </div>
             </Tab>
             <Tab key="myAds" title="myAds">
-              {cars && cars.length > 0 ? (
-                <div className="">
-                  <CarList cars={cars} loading={loading} error={error} />
+              {loading ? (
+                <div className="flex items-center justify-center h-20">
+                  <Loader2 className="w-6 h-6 text-gray-500 animate-spin" />
                 </div>
+              ) : cars.length > 0 ? (
+                <CarList cars={cars} loading={loading} error={error} />
               ) : (
-                <div>
-                  <div>Sorry currently No ads available!</div>
-                </div>
+                <div>No ads available!</div>
               )}
             </Tab>
 
@@ -171,27 +139,10 @@ const Page = () => {
           </Tabs>
         </div>
       </div>
-      <LoginModel isOpen={showLoginModal} onClose={handleOnClose} />
+
       <div className="flex flex-col items-center gap-2 rounded-md ">
-        <Button
-          className=""
-          color="danger"
-          startContent={<UserIcon />}
-          variant="bordered"
-          onPress={handleLogout}
-        >
-          Log out
-        </Button>
+        <SignOut />
       </div>
-      <ConfirmationBox
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        title="Confirm Action"
-        message="Are you sure you want to proceed?"
-        onConfirm={handleConfirm}
-        confirmText="Yes"
-        cancelText="No"
-      />
     </div>
   );
 };

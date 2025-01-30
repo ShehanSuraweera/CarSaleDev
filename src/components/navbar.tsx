@@ -2,8 +2,6 @@
 import {
   Navbar as NextUINavbar,
   NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
@@ -11,12 +9,12 @@ import {
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import NextLink from "next/link";
-import { useContext, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { siteConfig } from "@/src/config/site";
 import { ThemeSwitch } from "@/src/components/theme-switch";
-import { Logo, UserIcon } from "@/src/components/icons";
-import { UserContext } from "@/src/UserContext";
+import { Logo } from "@/src/components/icons";
+
 import {
   Divider,
   Drawer,
@@ -24,65 +22,30 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
-  Spinner,
   useDisclosure,
-  User,
+  User as HeroUser,
 } from "@heroui/react";
-import ConfirmationBox from "./ConfirmationBox";
-import apiClient from "@/src/services/api-client";
-import { userAuthenticator } from "@/src/lib/api";
-import LoginModal from "./LoginModel";
+
+import { User } from "@supabase/supabase-js";
+import { createSupabaseClient } from "../auth/client";
+import SignOut from "./SignOut";
+import { useUser } from "../UserContext";
 
 export const Navbar = () => {
+  //const [user, setUser] = useState<User | null>(null);
+  const { user } = useUser();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathName = usePathname();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [isModalOpen, setModalOpen] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
-  const [showLoginModal, setShowLoginModal] = useState(false);
-
-  const { user, setUser, ready } = useContext(UserContext) || {};
-
-  const handleOnClose = () => {
-    //router.push("/");
-
-    console.log("Modal is closing... navbar", ready, user);
-
-    if (!ready) {
-      return <Spinner color="warning" label="Loading..." />; // Optionally show a loading message until the redirect happens
-    }
-
-    if (!user) {
-      router.push("/");
-    } else {
-      router.push("/profile");
-    }
-    setShowLoginModal(false);
-  };
-
-  // Handle Logout
-  const handleConfirm = async () => {
-    try {
-      await apiClient.post("/auth/logout"); // Log the user out
-      localStorage.removeItem("user");
-      if (setUser) {
-        setUser(null); // Clear user context
-      }
-      router.push("/"); // Redirect to home
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setModalOpen(false); // Close the confirmation modal
-    }
-  };
-
-  // Handle Logout
-  function handleLogout() {
-    setModalOpen(true);
-  }
 
   const handleMenuItemClick = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleOpen = () => {
+    onOpen();
   };
 
   return (
@@ -128,20 +91,24 @@ export const Navbar = () => {
                 href="/profile"
                 className="hidden text-white sm:flex hover:cursor-pointer"
               >
-                <User
+                <HeroUser
                   avatarProps={{
                     src: "",
                     size: "sm",
                   }}
-                  description={user?.user_name}
-                  name={user?.name}
+                  description=""
+                  name={
+                    user.email && user.email?.length > 10
+                      ? user.email?.slice(0, 10) + "..."
+                      : user.email
+                  }
                 />
               </Link>
             ) : (
               <Button
                 className="hidden sm:flex"
                 onPress={() => {
-                  setShowLoginModal(true);
+                  router.push("/login");
                 }}
                 color="primary"
                 variant="ghost"
@@ -151,7 +118,7 @@ export const Navbar = () => {
             )}
             <Button
               className="flex sm:hidden"
-              onPress={onOpen}
+              onPress={handleOpen}
               color="primary"
               variant="light"
             >
@@ -173,7 +140,7 @@ export const Navbar = () => {
           backdrop="blur"
           isOpen={isOpen}
           placement="right"
-          onOpenChange={onOpenChange}
+          onClose={onClose}
         >
           <DrawerContent>
             {(onClose) => (
@@ -213,24 +180,18 @@ export const Navbar = () => {
                   <Button color="danger" variant="light" onPress={onClose}>
                     Close
                   </Button>
-                  {!user && ready ? (
+                  {!user ? (
                     <Button
                       color="primary"
                       variant="ghost"
                       onPress={() => {
-                        setShowLoginModal(true);
+                        router.push("/login");
                       }}
                     >
                       Sign in
                     </Button>
                   ) : (
-                    <Button
-                      onPress={handleLogout}
-                      color="danger"
-                      variant="ghost"
-                    >
-                      Logout
-                    </Button>
+                    <SignOut />
                   )}
                 </DrawerFooter>
               </>
@@ -238,16 +199,6 @@ export const Navbar = () => {
           </DrawerContent>
         </Drawer>
       </NextUINavbar>
-      <LoginModal isOpen={showLoginModal} onClose={handleOnClose} />
-      <ConfirmationBox
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        title="Confirm Action"
-        message="Are you sure you want to proceed?"
-        onConfirm={handleConfirm}
-        confirmText="Yes"
-        cancelText="No"
-      />
     </div>
   );
 };

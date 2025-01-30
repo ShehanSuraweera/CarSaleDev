@@ -1,106 +1,82 @@
-"use client";
+"use client"; // ✅ Ensures this runs on the client
+import { createContext, useContext, useEffect, useState } from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
+import { Loader2 } from "lucide-react";
 
-import apiClient from "@/src/services/api-client";
-import {
-  createContext,
-  useEffect,
-  useState,
-  ReactNode,
-  FC,
-  useCallback,
-} from "react";
-import { useRouter } from "next/navigation"; // For navigation
-import { userAuthenticator } from "@/src/lib/api";
-
-// Define the user data structure
-interface User {
-  user_name: string;
-  name: string;
-  email: string;
-  phone: string;
-  city: string;
-}
-
-// Define the context type
+// Type definitions for context
 interface UserContextType {
   user: User | null;
+  session: Session | null;
+  supabaseBrowserClient: ReturnType<typeof createBrowserClient>;
   setUser: (user: User | null) => void;
-  ready: boolean;
 }
 
-// Create UserContext
-export const UserContext = createContext<UserContextType | undefined>(
-  undefined
-);
+// Create Context
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserContextProvider: FC<{ children: ReactNode }> = ({
+// UserContext Provider Component
+export const UserContextProvider = ({
   children,
+}: {
+  children: React.ReactNode;
 }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [ready, setReady] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Function to verify an existing user
-  const verifyStoredUser = useCallback(
-    async (storedUser: User) => {
-      try {
-        const authenticatedUser = await userAuthenticator();
-        if (authenticatedUser.username === storedUser.user_name) {
-          console.log("Authenticated user:", storedUser);
-          setUser(storedUser);
-        } else {
-          throw new Error("Token mismatch");
-        }
-      } catch (error) {
-        console.error("Token verification failed:", error);
-        localStorage.removeItem("user");
-        setUser(null);
-        router.push("/login");
-      }
-    },
-    [router]
+  // Create Supabase client
+  const supabaseBrowserClient = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
-  // Function to fetch the user profile
-  const fetchUserProfile = useCallback(async () => {
-    try {
-      const response = await apiClient.get<User>("/auth/profile");
-      console.log("Fetched user profile:", response.data);
-      setUser(response.data);
-      localStorage.setItem("user", JSON.stringify(response.data));
-    } catch (error: any) {
-      console.error("Failed to fetch profile:", error);
-      if (error.response?.status === 401) {
-        router.push("/login");
-      } else {
-        setError("Unable to load user profile. Please try again later.");
-      }
-    }
-  }, [router]);
-  // Initialization function
-  const initializeUser = useCallback(async () => {
-    setReady(false);
-
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      await verifyStoredUser(parsedUser);
-    } else {
-      await fetchUserProfile();
-    }
-
-    setReady(true);
-  }, [fetchUserProfile, verifyStoredUser]);
-
-  // Initialize the user state on mount
   useEffect(() => {
-    initializeUser();
-  }, [initializeUser]);
+    const fetchUser = async () => {
+      try {
+        const { data } = await supabaseBrowserClient.auth.getSession(); // ✅ Directly fetch session
+        console.log("fetchUser -> data", data.session?.user);
+        setUser(data.session?.user ?? null);
+        setSession(data.session);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+
+    // ✅ Listen for authentication state changes (login/logout)
+    const { data: authListener } = supabaseBrowserClient.auth.onAuthStateChange(
+      (_event, session) => {
+        setLoading(true);
+        console.log("onAuthStateChange -> session", session?.user);
+        setUser(session?.user ?? null);
+        setSession(session);
+        setLoading(false);
+      }
+    );
+
+    // Cleanup the listener on unmount
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabaseBrowserClient, setUser]); // ✅ Include `supabase` in dependency array
 
   return (
-    <UserContext.Provider value={{ user, setUser, ready }}>
-      {children}
+    <UserContext.Provider
+      value={{ user, session, supabaseBrowserClient, setUser }}
+    >
+      {!loading ? children : <Loader2 className=" animate-spin" />}
     </UserContext.Provider>
   );
+};
+
+// Hook to use User Context
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context)
+    throw new Error("useUser must be used within a UserContextProvider");
+  return context;
 };

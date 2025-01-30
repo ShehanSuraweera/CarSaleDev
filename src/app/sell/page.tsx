@@ -1,6 +1,5 @@
 "use client";
-import React, { useContext, useEffect } from "react";
-import { UserContext } from "../../UserContext";
+import React, { useEffect, useTransition } from "react";
 import {
   carMakes,
   districts,
@@ -18,9 +17,7 @@ import { useState } from "react";
 import OwnerDetails from "@/src/components/OwnerDetails";
 import VehicleAbout from "@/src/components/VehicleAbout";
 import VehicleBackground from "@/src/components/VehicleBackground";
-import apiClient from "@/src/services/api-client";
 import InputImages from "@/src/components/InputImages";
-import { convertAndUploadBlobs } from "@/src/config/uploadBlobs";
 import { useRouter } from "next/navigation";
 import {
   Modal,
@@ -33,7 +30,11 @@ import {
   Button,
   Alert,
 } from "@heroui/react";
-import ConfirmationBox from "@/src/components/ConfirmationBox";
+import { User } from "@supabase/supabase-js";
+import { UserProfileData } from "@/src/types";
+import { createSupabaseClient } from "@/src/auth/client";
+import { createAd, getUserProfileData } from "@/src/lib/api";
+import toast from "react-hot-toast";
 
 // Function to format numbers with commas
 const formatNumber = (num: number): string => {
@@ -41,25 +42,24 @@ const formatNumber = (num: number): string => {
 };
 
 export default function Page() {
-  const { user, ready } = useContext(UserContext) || {};
+  const [user, setUser] = useState<User | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [userProfileData, setUserProfileData] =
+    useState<UserProfileData | null>(null);
+
   const [vehicle, setVehicle] = useState("Car");
   const [price, setPrice] = useState("");
   const [formattedPrice, setFormattedPrice] = useState("");
   const [displayPrice, setDisplayPrice] = useState("yes");
   const [ownerComments, setOwnerComments] = useState("");
   const [isNegotiable, setIsNegotiable] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [successPopup, setSuccessPopup] = useState(false);
-  const [authenticated, setAuthenticated] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
+  const [ownerName, setOwnerName] = useState(userProfileData?.name || "");
+  const [ownerPhone, setOwnerPhone] = useState(userProfileData?.phone || "");
+  const [ownerCity, setOwnerCity] = useState(userProfileData?.city || "");
+  const [ownerEmail, setOwnerEmail] = useState(userProfileData?.email || "");
 
   const router = useRouter();
-  const [ownerDetails, setOwnerDetails] = useState({
-    name: user?.name || "",
-    phone: user?.phone || "",
-    city: user?.city || "",
-    email: user?.email || "",
-  });
+
   const [vehicleAbout, setVehicleAbout] = useState({
     make: "",
     model: "",
@@ -78,39 +78,42 @@ export default function Page() {
   });
   const [imageUrls, setImageUrls] = useState<string[]>([]); // State to hold image URLs
 
+  useEffect(() => {
+    const { auth } = createSupabaseClient();
+
+    const { data: authListener } = auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
+  }, []);
+
+  // Fetch user profile data
+  useEffect(() => {
+    if (user) {
+      startTransition(async () => {
+        try {
+          const fetchUserProfile = await getUserProfileData(user.id as string);
+
+          setOwnerName(fetchUserProfile[0].name || "");
+          setOwnerPhone(fetchUserProfile[0].phone || "");
+          setOwnerCity(fetchUserProfile[0].city || "");
+          setOwnerEmail(fetchUserProfile[0].email || "");
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+        }
+      });
+    }
+  }, [user]);
+
   // Function to handle image updates from the child component
   const handleImagesChange = (images: string[]) => {
     setImageUrls(images);
   };
 
-  useEffect(() => {
-    if (!ready) return; // Wait until user context is ready
-    if (user) {
-      setAuthenticated(true);
-    }
-
-    if (!user) {
-      setAuthenticated(false);
-      setShowAlert(true);
-      // Redirect to login page if the user is not logged in
-      //router.push("/login");
-    }
-  }, [user, ready]); // Run the effect when user or ready state changes
-
-  const handleRedirect = () => {
-    // Close the alert and redirect the user to the login page
-    setShowAlert(false);
-    router.push("/login");
-  };
-
   // Your profile page content here
-  if (!user) {
-    return <Spinner color="warning" label="Loading..." />; // Optionally show a loading message until the redirect happens
-  }
-
-  const title = "Upload Succesfull";
-  const description =
-    "Your ad has been uploaded successfully. We'll notify you when updates are available.";
 
   const handlePriceChange = (e: { target: { value: any } }) => {
     const value = e.target.value;
@@ -126,21 +129,16 @@ export default function Page() {
     setDisplayPrice(value);
   };
 
-  const handleOnClose = () => {
-    setSuccessPopup(false);
-    router.push("/profile");
-  };
-
   const handlePostAd = async () => {
-    setLoading(true);
-    try {
+    startTransition(async () => {
       const formData = new FormData();
       imageUrls.forEach((url) => {
         formData.append("images", url);
       });
 
-      // Append other form data to the FormData object
-      formData.append("owner_username", user?.user_name || "");
+      console.log("FormData entries:", Array.from(formData.entries()));
+
+      formData.append("user_id", user?.id as string);
       formData.append("make", vehicleAbout.make);
       formData.append("model", vehicleAbout.model);
       formData.append("frame_code", vehicleAbout.frameCode);
@@ -155,54 +153,40 @@ export default function Page() {
       formData.append("fuel_type", vehicleBackground.fuelType);
       formData.append("price", String(price));
       formData.append("owner_comments", ownerComments);
-      formData.append("owner_contact", ownerDetails.phone);
-      formData.append("ad_location", ownerDetails.city);
-      formData.append("owner_display_name", ownerDetails.name);
+      formData.append("owner_contact", ownerPhone);
+      formData.append("ad_location", ownerCity);
+      formData.append("owner_display_name", ownerName);
       formData.append("is_negotiable", isNegotiable ? "TRUE" : "FALSE");
       formData.append("vehicle_type", vehicle);
 
-      const response = await apiClient.post("/uploads/create", formData, {
-        // Post the ad to the server
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const result = await createAd(formData, imageUrls);
 
-      let adId = 0;
-
-      if (response.status === 201) {
-        const data = response.data; // Access data directly
-        adId = data.adId;
-        console.log("Ad ID:", data.adId);
-        console.log("Ad posted successfully!"); // Access adId
+      if (result === "Adposted") {
+        toast.success(
+          "Your ad has been uploaded successfully. We'll notify you when updates are available.",
+          {
+            duration: 5000,
+          }
+        );
+        router.push("/profile");
       } else {
-        console.error("Failed to post ad:", response.status);
+        toast.error("Failed to post ad");
+        console.error("Failed to post ad:", result);
       }
-
-      const bucketName = "ad_pics"; // Supabase storage bucket name
-      try {
-        await convertAndUploadBlobs(
-          imageUrls,
-          adId.toString(),
-
-          bucketName
-        ); // Upload images to Supabase storage
-        console.log("All images uploaded successfully!");
-
-        setSuccessPopup(true);
-        setLoading(false); // Set loading to false when upload is complete
-      } catch (error) {
-        console.error("Error uploading images:", error);
-        setLoading(false); // Hide loading state if there's an error
-      }
-    } catch (error) {
-      console.error("Error posting ad:", error);
-      setLoading(false); // Hide loading state if there's an error
-    }
+    });
   };
   return (
     <div className="flex flex-col items-center justify-center w-full gap-3 sm:px-5 sm:gap-8 sm:p-4">
-      <OwnerDetails setOwnerDetails={setOwnerDetails} />
+      <OwnerDetails
+        name={ownerName}
+        phone={ownerPhone}
+        city={ownerCity}
+        setName={setOwnerName}
+        setPhone={setOwnerPhone}
+        setCity={setOwnerCity}
+        email=""
+        avatar_url=""
+      />
 
       <div className=" sm:w-[90%] shadow-md w-full p-8   ">
         <h2></h2>
@@ -298,7 +282,7 @@ export default function Page() {
       </div>
       <InputImages onImagesChange={handleImagesChange} />
       <div>
-        {loading && (
+        {isPending && (
           <div className="fixed z-50 flex items-center inset-1/2 bg-white/80 backdrop-blur-sm">
             <div className="flex items-center justify-center">
               <Spinner color="success" label="loading" labelColor="success" />
@@ -308,36 +292,18 @@ export default function Page() {
       </div>
 
       <>
-        {successPopup ? (
-          <Alert
+        <div className="flex justify-center w-full h-10 ">
+          <Button
             color="success"
-            description={description}
-            isVisible={successPopup}
-            title={title}
-            variant="faded"
-            onClose={() => handleOnClose()}
-          />
-        ) : (
-          <div className="flex justify-center w-full h-10 ">
-            <Button
-              color="success"
-              radius="lg"
-              onPress={handlePostAd}
-              isDisabled={loading}
-              className=" md:w-[40%] w-[80%]  bg-[#FDC221] dark:bg-[#01172F] dark:text-[#FDC221] "
-            >
-              Post AD
-            </Button>
-          </div>
-        )}
+            radius="lg"
+            onPress={handlePostAd}
+            isDisabled={isPending}
+            className=" md:w-[40%] w-[80%]  bg-[#FDC221] dark:bg-[#01172F] dark:text-[#FDC221] "
+          >
+            Post AD
+          </Button>
+        </div>
       </>
-      <ConfirmationBox
-        title="Alert"
-        message="You need to login to post an ad"
-        isOpen={showAlert}
-        onClose={handleRedirect}
-        onConfirm={handleRedirect}
-      />
     </div>
   );
 }

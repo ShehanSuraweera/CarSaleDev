@@ -29,3 +29,11 @@ export interface Car {
 
   ad_location: string;
 }
+
+export interface UserProfileData {
+  name: string;
+  email: string;
+  phone: string;
+  city: string;
+  avatar_url: string;
+}

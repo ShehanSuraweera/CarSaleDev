@@ -2,41 +2,36 @@
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import Link from "next/link";
-import React, { useContext, useState } from "react";
-import { UserContext } from "../../UserContext";
+import React, { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import apiClient from "@/src/services/api-client";
+import { loginAction } from "@/src/actions/users";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import { useUser } from "@/src/UserContext";
 
 const Page: React.FC = () => {
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [redirect, setRedirect] = useState(false);
-  const userContext = useContext(UserContext);
   const router = useRouter();
+  const { supabaseBrowserClient } = useUser();
 
-  const handleLoginSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
-    e.preventDefault();
-    try {
-      const response = await apiClient.post("/auth/login", {
-        username,
+  const [isPending, startTransition] = useTransition();
+
+  const handleClickLoginButton = (formData: FormData) => {
+    startTransition(async () => {
+      const { errorMessage } = await loginAction(formData);
+      const { error } = await supabaseBrowserClient.auth.signInWithPassword({
+        email,
         password,
       });
 
-      if (response.data.user) {
-        alert("Login Successfull");
-        // Update the context with user data
-        userContext?.setUser(response.data.user);
-        // Optionally store user in localStorage to persist the session
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+      if (errorMessage || error) {
+        toast.error(errorMessage || error.message);
+      } else {
+        toast.success("Successfully logged in");
+        router.push("/");
       }
-      setRedirect(true);
-      router.push("/");
-    } catch (error) {
-      alert("Login failed try again...!");
-      console.log(error);
-    }
+    });
   };
 
   return (
@@ -46,25 +41,31 @@ const Page: React.FC = () => {
         <form
           action="submit"
           className="flex flex-col gap-2 mt-4"
-          onSubmit={handleLoginSubmit}
+          //onSubmit={login}
         >
           <Input
+            name="email"
             type="text"
-            label="user name"
+            label="email"
             labelPlacement="outside"
-            placeholder="enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            placeholder="enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isPending}
           />
           <Input
+            name="password"
             type="password"
             label=" password"
             labelPlacement="outside"
             placeholder="enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={isPending}
           />
-          <Button type="submit">Login</Button>
+          <Button formAction={handleClickLoginButton} type="submit">
+            {isPending ? <Loader2 className="animate-spin" /> : "Login"}
+          </Button>
         </form>
         <div className="flex justify-center mt-2">
           <span className="text-gray-500 ">

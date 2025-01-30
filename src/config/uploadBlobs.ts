@@ -1,5 +1,5 @@
 import apiClient from "@/src/services/api-client";
-import { createSupabaseClient } from "@/src/supabase/client";
+import { createSupabaseClient } from "@/src/utils/supabase/client";
 import imageCompression from "browser-image-compression";
 
 export const convertAndUploadBlobs = async (

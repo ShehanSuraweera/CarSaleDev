@@ -9,6 +9,7 @@ import { Navbar } from "@/src/components/navbar";
 import { UserContextProvider } from "@/src/UserContext";
 import { Button } from "@heroui/button";
 import SeconderyNavBar from "@/src/components/SeconderyNavBar";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: {
@@ -43,8 +44,8 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <UserContextProvider>
+        <UserContextProvider>
+          <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
             <div className="relative flex flex-col h-screen">
               <Navbar />
               <SeconderyNavBar />
@@ -65,8 +66,16 @@ export default function RootLayout({
                 </Link>
               </footer>
             </div>
-          </UserContextProvider>
-        </Providers>
+          </Providers>
+
+          <Toaster
+            toastOptions={{
+              style: {
+                textAlign: "center",
+              },
+            }}
+          />
+        </UserContextProvider>
       </body>
     </html>
   );

@@ -2,28 +2,25 @@ import React, { useContext, useEffect, useState } from "react";
 import { Select, SelectItem } from "@heroui/select";
 import { Input, Textarea } from "@heroui/input";
 
-import { UserContext } from "@/src/UserContext";
+import { UserProfileData } from "../types";
 
-interface OwnerDetailsProps {
-  setOwnerDetails: (details: {
-    name: string;
-    phone: string;
-    city: string;
-    email: string;
-  }) => void;
-}
-
-const OwnerDetails: React.FC<OwnerDetailsProps> = ({ setOwnerDetails }) => {
-  const { user } = useContext(UserContext) || {};
-
-  const [name, setName] = useState(user?.name || "");
-  const [phone, setPhone] = useState(user?.phone || "");
-  const [city, setCity] = useState(user?.city || "");
-  const [email, setEmail] = useState(user?.email || "");
-
+const OwnerDetails = ({
+  name,
+  phone,
+  city,
+  setName,
+  setPhone,
+  setCity,
+}: UserProfileData & {
+  setName: React.Dispatch<React.SetStateAction<string>>;
+  setPhone: React.Dispatch<React.SetStateAction<string>>;
+  setCity: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   useEffect(() => {
-    setOwnerDetails({ name, phone, city, email });
-  }, [name, phone, city, email, setOwnerDetails]);
+    setName(name || "");
+    setPhone(phone || "");
+    setCity(city || "");
+  }, [name, phone, city, setName, setPhone, setCity]); // Update state when props change
 
   return (
     <div className=" sm:w-[90%] shadow-md w-full   p-8">
