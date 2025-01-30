@@ -27,6 +27,7 @@ const OwnerDetails = ({
       <h2>Owner Details</h2>
       <div className="flex flex-col items-start justify-start gap-8 mt-4">
         <Input
+          isRequired={true}
           type="string"
           label="Name"
           labelPlacement="outside"
@@ -36,6 +37,7 @@ const OwnerDetails = ({
           description="This will display as owner name of the AD"
         />
         <Input
+          isRequired={true}
           type="string"
           label="Contact"
           value={phone}
@@ -45,6 +47,7 @@ const OwnerDetails = ({
           description="This will display as contact number of the AD"
         />
         <Input
+          isRequired={true}
           type="string"
           label="Location"
           value={city}

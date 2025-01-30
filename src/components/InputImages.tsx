@@ -53,6 +53,7 @@ const InputImages: React.FC<InputImagesProps> = ({ onImagesChange }) => {
   return (
     <div className="sm:w-[90%] shadow-md w-full p-8">
       <Input
+        isRequired={true}
         labelPlacement="outside"
         label="Images (max 6)"
         type="file"

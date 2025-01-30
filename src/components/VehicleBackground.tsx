@@ -96,6 +96,7 @@ const VehicleBackground: React.FC<VehicleBackgroundProps> = ({
       </h1>
       <div className="flex flex-wrap justify-center gap-8 mt-5">
         <Select
+          isRequired={true}
           labelPlacement="outside"
           label="Condition"
           className="w-full text-black sm:max-w-96"
@@ -163,6 +164,7 @@ const VehicleBackground: React.FC<VehicleBackgroundProps> = ({
           onChange={(e) => handleColourChange(e.target.value)}
         />
         <Select
+          isRequired={true}
           labelPlacement="outside"
           label="Fuel Type"
           className="w-full text-black sm:max-w-96"

@@ -29,6 +29,7 @@ import {
   Textarea,
   Button,
   Alert,
+  Form,
 } from "@heroui/react";
 import { User } from "@supabase/supabase-js";
 import { UserProfileData } from "@/src/types";
@@ -176,135 +177,138 @@ export default function Page() {
     });
   };
   return (
-    <div className="flex flex-col items-center justify-center w-full gap-3 sm:px-5 sm:gap-8 sm:p-4">
-      <OwnerDetails
-        name={ownerName}
-        phone={ownerPhone}
-        city={ownerCity}
-        setName={setOwnerName}
-        setPhone={setOwnerPhone}
-        setCity={setOwnerCity}
-        email=""
-        avatar_url=""
-      />
+    <Form validationBehavior="native" onSubmit={handlePostAd}>
+      <div className="flex flex-col items-center justify-center w-full gap-3 sm:px-5 sm:gap-8 sm:p-4">
+        <OwnerDetails
+          name={ownerName}
+          phone={ownerPhone}
+          city={ownerCity}
+          setName={setOwnerName}
+          setPhone={setOwnerPhone}
+          setCity={setOwnerCity}
+          email=""
+          avatar_url=""
+        />
 
-      <div className=" sm:w-[90%] shadow-md w-full p-8   ">
-        <h2></h2>
-        <div className="flex flex-col gap-3 ">
-          <RadioGroup
-            label="Select your Vehicle type"
-            value={vehicle}
-            onValueChange={setVehicle}
-          >
-            {vehicleTypes.map((item, index) => (
-              <Radio key={index} value={item.label}>
-                {" "}
-                {item.label}
-              </Radio>
-            ))}
-          </RadioGroup>
-          <p className="text-default-500 text-small">Selected: {vehicle}</p>
+        <div className=" sm:w-[90%] shadow-md w-full p-8   ">
+          <h2></h2>
+          <div className="flex flex-col gap-3 ">
+            <RadioGroup
+              isRequired={true}
+              label="Select your Vehicle type"
+              value={vehicle}
+              onValueChange={setVehicle}
+            >
+              {vehicleTypes.map((item, index) => (
+                <Radio key={index} value={item.label}>
+                  {" "}
+                  {item.label}
+                </Radio>
+              ))}
+            </RadioGroup>
+            <p className="text-default-500 text-small">Selected: {vehicle}</p>
+          </div>
         </div>
-      </div>
 
-      <VehicleAbout
-        carMakes={carMakes}
-        toyotaModels={toyotaModels}
-        yom={yom}
-        transmissionTypes={transmissionTypes}
-        bodyTypes={bodyTypes}
-        setVehicleAbout={setVehicleAbout}
-      />
-      <VehicleBackground
-        yor={yom}
-        condition={conditions}
-        engine={engines}
-        fuel={fuelTypes}
-        setVehicleBackground={setVehicleBackground}
-      />
+        <VehicleAbout
+          carMakes={carMakes}
+          toyotaModels={toyotaModels}
+          yom={yom}
+          transmissionTypes={transmissionTypes}
+          bodyTypes={bodyTypes}
+          setVehicleAbout={setVehicleAbout}
+        />
+        <VehicleBackground
+          yor={yom}
+          condition={conditions}
+          engine={engines}
+          fuel={fuelTypes}
+          setVehicleBackground={setVehicleBackground}
+        />
 
-      <div className=" sm:w-[90%] shadow-md  w-full  p-8">
-        <RadioGroup
-          label="Do you like to display price ?"
-          orientation="horizontal"
-          value={displayPrice}
-          onValueChange={handleDisplayPriceChange}
-          className="mb-6"
-          size="sm"
-        >
-          <Radio value="yes">Yes</Radio>
-          <Radio value="no">No</Radio>
-        </RadioGroup>
-        {displayPrice === "yes" && (
-          <>
-            <div className="flex flex-col justify-between gap-4 sm:flex-row ">
-              <Input
-                type="number"
-                label="Price (Rs)"
-                labelPlacement="outside"
-                className="w-full text-black sm:max-w-96"
-                placeholder="e.g 6000000, 1500000 "
-                value={price}
-                onChange={handlePriceChange}
-                endContent={
-                  <Checkbox
-                    defaultSelected={false}
-                    onChange={(e) =>
-                      !isNegotiable
-                        ? setIsNegotiable(true)
-                        : setIsNegotiable(false)
-                    }
-                    className=""
-                    size="sm"
-                  >
-                    Negotiable
-                  </Checkbox>
-                }
-              />
-              <div className=" sm:w-[50%] mt-4 sm:mt-0 text-sm flex flex-col gap-2">
-                {formattedPrice && <p>You entered price : </p>}
-                <p className="text-lg font-semibold">{formattedPrice}</p>
+        <div className=" sm:w-[90%] shadow-md  w-full  p-8">
+          <RadioGroup
+            label="Do you like to display price ?"
+            orientation="horizontal"
+            value={displayPrice}
+            onValueChange={handleDisplayPriceChange}
+            className="mb-6"
+            size="sm"
+          >
+            <Radio value="yes">Yes</Radio>
+            <Radio value="no">No</Radio>
+          </RadioGroup>
+          {displayPrice === "yes" && (
+            <>
+              <div className="flex flex-col justify-between gap-4 sm:flex-row ">
+                <Input
+                  type="number"
+                  label="Price (Rs)"
+                  labelPlacement="outside"
+                  className="w-full text-black sm:max-w-96"
+                  placeholder="e.g 6000000, 1500000 "
+                  value={price}
+                  onChange={handlePriceChange}
+                  endContent={
+                    <Checkbox
+                      defaultSelected={false}
+                      onChange={(e) =>
+                        !isNegotiable
+                          ? setIsNegotiable(true)
+                          : setIsNegotiable(false)
+                      }
+                      className=""
+                      size="sm"
+                    >
+                      Negotiable
+                    </Checkbox>
+                  }
+                />
+                <div className=" sm:w-[50%] mt-4 sm:mt-0 text-sm flex flex-col gap-2">
+                  {formattedPrice && <p>You entered price : </p>}
+                  <p className="text-lg font-semibold">{formattedPrice}</p>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        <div className=" sm:w-[90%] shadow-md  w-full  p-8">
+          <Textarea
+            variant="flat"
+            label="Owner Comments:"
+            labelPlacement="outside"
+            placeholder="Enter your description"
+            className="col-span-12 mb-6 md:col-span-6 md:mb-0"
+            value={ownerComments}
+            onChange={(e) => setOwnerComments(e.target.value)}
+          />
+        </div>
+        <InputImages onImagesChange={handleImagesChange} />
+        <div>
+          {isPending && (
+            <div className="fixed z-50 flex items-center inset-1/2 bg-white/80 backdrop-blur-sm">
+              <div className="flex items-center justify-center">
+                <Spinner color="success" label="loading" labelColor="success" />
               </div>
             </div>
-          </>
-        )}
-      </div>
-      <div className=" sm:w-[90%] shadow-md  w-full  p-8">
-        <Textarea
-          variant="flat"
-          label="Owner Comments:"
-          labelPlacement="outside"
-          placeholder="Enter your description"
-          className="col-span-12 mb-6 md:col-span-6 md:mb-0"
-          value={ownerComments}
-          onChange={(e) => setOwnerComments(e.target.value)}
-        />
-      </div>
-      <InputImages onImagesChange={handleImagesChange} />
-      <div>
-        {isPending && (
-          <div className="fixed z-50 flex items-center inset-1/2 bg-white/80 backdrop-blur-sm">
-            <div className="flex items-center justify-center">
-              <Spinner color="success" label="loading" labelColor="success" />
-            </div>
-          </div>
-        )}
-      </div>
-
-      <>
-        <div className="flex justify-center w-full h-10 ">
-          <Button
-            color="success"
-            radius="lg"
-            onPress={handlePostAd}
-            isDisabled={isPending}
-            isLoading={isPending}
-            className=" md:w-[40%] w-[80%]  bg-[#FDC221] dark:bg-[#01172F] dark:text-[#FDC221] "
-          >
-            Post AD
-          </Button>
+          )}
         </div>
-      </>
-    </div>
+
+        <>
+          <div className="flex justify-center w-full h-10 ">
+            <Button
+              color="success"
+              radius="lg"
+              type="submit"
+              isDisabled={isPending}
+              isLoading={isPending}
+              className=" md:w-[40%] w-[80%]  bg-[#FDC221] dark:bg-[#01172F] dark:text-[#FDC221] "
+            >
+              Post AD
+            </Button>
+          </div>
+        </>
+      </div>
+    </Form>
   );
 }

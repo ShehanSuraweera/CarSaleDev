@@ -8,6 +8,7 @@ import { loginAction } from "@/src/actions/users";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { useUser } from "@/src/UserContext";
+import { Form } from "@heroui/react";
 
 const Page: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -17,7 +18,9 @@ const Page: React.FC = () => {
 
   const [isPending, startTransition] = useTransition();
 
-  const handleClickLoginButton = (formData: FormData) => {
+  const handleClickLoginButton = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     startTransition(async () => {
       const { errorMessage } = await loginAction(formData);
       const { error } = await supabaseBrowserClient.auth.signInWithPassword({
@@ -47,12 +50,14 @@ const Page: React.FC = () => {
 
       <div className="w-full p-5 pt-10 mt-10 rounded-md shadow-md sm:w-1/2">
         <h1 className="text-3xl text-center">Login</h1>
-        <form
-          action="submit"
-          className="flex flex-col gap-8 mt-4"
+        <Form
+          validationBehavior="native"
+          onSubmit={handleClickLoginButton}
+          className="flex flex-col items-center justify-center w-full gap-8 mt-4"
           //onSubmit={login}
         >
           <Input
+            isRequired
             name="email"
             type="text"
             label="Email"
@@ -63,6 +68,7 @@ const Page: React.FC = () => {
             disabled={isPending}
           />
           <Input
+            isRequired
             name="password"
             type="password"
             label="Password"
@@ -73,14 +79,14 @@ const Page: React.FC = () => {
             disabled={isPending}
           />
           <Button
+            isLoading={isPending}
             color="primary"
-            formAction={handleClickLoginButton}
             type="submit"
-            className="mt-5"
+            className="w-full mt-5"
           >
-            {isPending ? <Loader2 className="animate-spin" /> : "Login"}
+            Login
           </Button>
-        </form>
+        </Form>
         <div className="flex justify-center mt-2">
           <span className="text-gray-500 ">
             Don't have an account?{" "}

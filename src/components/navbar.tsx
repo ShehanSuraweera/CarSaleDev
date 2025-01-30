@@ -40,15 +40,18 @@ export const Navbar = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathName = usePathname();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { onOpen } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
+
   const router = useRouter();
 
   const handleMenuItemClick = () => {
     setIsMenuOpen(false);
   };
 
-  const handleOpen = () => {
+  const handleOpen = (open: boolean) => {
     onOpen();
+    setIsOpen(open);
   };
 
   const handleSellButton = () => {
@@ -140,7 +143,7 @@ export const Navbar = () => {
             )}
             <Button
               className="flex sm:hidden"
-              onPress={handleOpen}
+              onPress={() => handleOpen(!isOpen)}
               color="primary"
               variant="light"
             >
@@ -162,7 +165,7 @@ export const Navbar = () => {
           backdrop="blur"
           isOpen={isOpen}
           placement="right"
-          onClose={onClose}
+          onOpenChange={handleOpen}
         >
           <DrawerContent>
             {(onClose) => (

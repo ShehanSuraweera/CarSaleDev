@@ -88,6 +88,7 @@ const VehicleAbout: React.FC<VehicleAboutProps> = ({
       </h1>
       <div className="flex flex-wrap justify-center gap-8 mt-5">
         <Select
+          isRequired={true}
           labelPlacement="outside"
           label="Make"
           className="w-full text-black sm:max-w-96"
@@ -115,6 +116,7 @@ const VehicleAbout: React.FC<VehicleAboutProps> = ({
           ))}
         </Select> */}
         <Input
+          isRequired={true}
           type="string"
           label="Model"
           labelPlacement="outside"
@@ -146,6 +148,7 @@ const VehicleAbout: React.FC<VehicleAboutProps> = ({
           onChange={(e) => handleFrameCodeChange(e.target.value)}
         />
         <Select
+          isRequired={true}
           labelPlacement="outside"
           label="Build year"
           className="w-full text-black sm:max-w-96"
@@ -159,6 +162,7 @@ const VehicleAbout: React.FC<VehicleAboutProps> = ({
           ))}
         </Select>
         <Select
+          isRequired={true}
           labelPlacement="outside"
           label="Transmission"
           className="w-full text-black sm:max-w-96"
@@ -172,6 +176,7 @@ const VehicleAbout: React.FC<VehicleAboutProps> = ({
           ))}
         </Select>
         <Select
+          isRequired={true}
           labelPlacement="outside"
           label="Body type"
           className="w-full text-black sm:max-w-96"
