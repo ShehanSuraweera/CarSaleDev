@@ -1,6 +1,7 @@
 import React from "react";
 import Image, { StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@heroui/react";
 
 interface SmallAdProps {
   make: string;

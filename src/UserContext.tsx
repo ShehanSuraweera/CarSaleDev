@@ -9,7 +9,6 @@ interface UserContextType {
   user: User | null;
   session: Session | null;
   supabaseBrowserClient: ReturnType<typeof createBrowserClient>;
-  setUser: (user: User | null) => void;
   loading: boolean;
 }
 
@@ -63,11 +62,11 @@ export const UserContextProvider = ({
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [supabaseBrowserClient, setUser]); // ✅ Include `supabase` in dependency array
+  }, [supabaseBrowserClient]); // ✅ Include `supabase` in dependency array
 
   return (
     <UserContext.Provider
-      value={{ user, session, supabaseBrowserClient, setUser, loading }}
+      value={{ user, session, supabaseBrowserClient, loading }}
     >
       {children}
     </UserContext.Provider>

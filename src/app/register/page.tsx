@@ -1,5 +1,4 @@
 "use client";
-import apiClient from "@/src/services/api-client";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import Link from "next/link";
