@@ -3,53 +3,67 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { useUser } from "@/src/UserContext";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 function UserConfirm() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const tokenHash = searchParams.get("token_hash");
+  const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
   const [status, setStatus] = useState("Confirming...");
   const { supabaseBrowserClient } = useUser();
 
   useEffect(() => {
     const confirmUser = async () => {
-      if (!tokenHash || type !== "signup") {
+      if (!token_hash || type !== "signup") {
         setStatus("Invalid or missing confirmation token.");
         return;
       }
 
       try {
-        const { auth } = await supabaseBrowserClient();
-
-        const { error } = await auth.verifyOtp({
+        const supabase = supabaseBrowserClient(); // Call the function to get the client
+        const { error } = await supabase.auth.verifyOtp({
           type: "signup",
-          token_hash: tokenHash,
+          token_hash: token_hash,
         });
 
         if (error) {
           setStatus("Error confirming signup: " + error.message);
         } else {
+          toast.success("Signup confirmed! Redirecting...");
           setStatus("Signup confirmed! Redirecting...");
           setTimeout(() => router.push("/login"), 2000);
         }
       } catch (err) {
-        setStatus("Something went wrong.");
+        toast.error("Something went wrong. Redirecting...");
+        setStatus("Something went wrong.! Redirecting...");
+        setTimeout(() => router.push("/register"), 2000);
       }
     };
 
     confirmUser();
-  }, [tokenHash, type, router]);
+  }, [token_hash, type, router, supabaseBrowserClient]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
+      <Loader2 className="animate-spin" />
       <p className="text-lg">{status}</p>
     </div>
   );
 }
 
 export default function Page() {
-  <Suspense>
-    <UserConfirm />
-  </Suspense>;
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center min-h-screen">
+          <span className="text-lg">Loading...</span>
+          <Loader2 className="animate-spin" />
+        </div>
+      }
+    >
+      <UserConfirm />
+    </Suspense>
+  );
 }
