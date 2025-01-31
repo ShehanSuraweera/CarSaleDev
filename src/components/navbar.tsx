@@ -24,6 +24,7 @@ import {
   DrawerHeader,
   useDisclosure,
   User as HeroUser,
+  Tooltip,
 } from "@heroui/react";
 
 import { User } from "@supabase/supabase-js";
@@ -112,18 +113,20 @@ export const Navbar = () => {
                 href="/profile"
                 className="hidden text-white sm:flex hover:cursor-pointer"
               >
-                <HeroUser
-                  avatarProps={{
-                    src: "",
-                    size: "sm",
-                  }}
-                  description=""
-                  name={
-                    user.email && user.email?.length > 10
-                      ? user.email?.slice(0, 10) + "..."
-                      : user.email
-                  }
-                />
+                <Tooltip content={user?.email || ""} color="primary">
+                  <HeroUser
+                    avatarProps={{
+                      src: "",
+                      size: "sm",
+                    }}
+                    description=""
+                    name={
+                      user.email && user.email?.length > 10
+                        ? user.email?.slice(0, 10) + "..."
+                        : user.email
+                    }
+                  />
+                </Tooltip>
               </Link>
             ) : (
               <Button
