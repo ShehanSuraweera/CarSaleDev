@@ -15,8 +15,8 @@ import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { Swiper as SwiperClass } from "swiper";
 import { fetchAd } from "@/src/lib/api";
-import { formatDistanceToNow } from "date-fns";
 import TimeAgo from "../TimeAgo";
+import { Loader2, LoaderPinwheel } from "lucide-react";
 
 interface CarAdProps {
   ad_id: string;
@@ -25,10 +25,13 @@ interface CarAdProps {
 const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
   const [car, setCar] = useState<any>(null);
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const handleAd = async () => {
+    setLoading(true);
     const vehicleAd = await fetchAd(ad_id);
     setCar(vehicleAd);
+    setLoading(false);
   };
 
   const formatNumber = (num: number): string => {
@@ -38,6 +41,17 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
   useEffect(() => {
     handleAd();
   }, [ad_id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen ">
+        <Loader2 className="w-20 h-20 text-[#F5A524] animate-spin" />
+        <span className="ml-2 text-lg font-semibold text-[#F5A524]">
+          Loading...
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div className="container w-full mx-0 my-0 rounded-lg sm:my-2 md:px-12 sm:p-6 xl:px-40">
@@ -51,6 +65,7 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
             " " +
             car?.frame_code}
         </h1>
+
         <p className="mb-4 text-gray-600">
           {car?.owner_display_name +
             " - " +

@@ -11,8 +11,11 @@ const CarList: React.FC<{
 }> = ({ cars, loading, error }) => {
   if (loading) {
     return (
-      <div className="flex items-center justify-center w-full h-96">
-        <Loader2 className="w-10 h-10 text-green-500 animate-spin" />
+      <div className="flex items-center justify-center w-full ">
+        <Loader2 className="w-10 h-0 text-[#F5A524] animate-spin" />
+        <span className="ml-2 text-lg font-semibold text-[#F5A524]">
+          Loading...
+        </span>
       </div>
     );
   }
