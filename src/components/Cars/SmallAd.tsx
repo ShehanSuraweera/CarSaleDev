@@ -41,7 +41,9 @@ const SmallAd = ({ make, price, image, model, ad_id }: SmallAdProps) => {
           {model}
         </h2>
         <h3 className=" text-[#8b8787] text-sm md:text-sm">
-          Rs. {formatNumber(Number(price))}
+          {price === "negotiable"
+            ? price
+            : `Rs. ${formatNumber(Number(price))}`}
         </h3>
       </div>
     </div>

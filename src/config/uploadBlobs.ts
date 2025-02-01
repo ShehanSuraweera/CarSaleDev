@@ -52,19 +52,14 @@ export const convertAndUploadBlobs = async (
         data?.path
       }`;
 
-      console.log(imageUrl);
-
       try {
         await apiClient.post("/uploads/upload-imageUrls", {
           ad_id: adId,
           image_url: imageUrl,
         });
-        console.log("uploaded urls to db");
       } catch (error) {
-        console.log("Error uploading urls to db");
+        console.log("Error uploading urls to db", error);
       }
-
-      console.log(`Successfully uploaded ${newFileName}`);
     } catch (error) {
       console.error("Error processing blob URL:", blobUrl, error);
     }

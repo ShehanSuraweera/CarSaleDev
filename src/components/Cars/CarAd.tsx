@@ -54,7 +54,7 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
   }
 
   return (
-    <div className="container w-full mx-0 my-0 rounded-lg sm:my-2 md:px-12 sm:p-6 xl:px-40">
+    <div className="container w-full mx-0 my-3 rounded-lg sm:my-2 md:px-12 sm:p-6 xl:px-40">
       <div className="px-2 py-2 bg-white rounded-md shadow-md sm:py-5 dark:bg-slate-900 sm:px-10 lg:px-24 ">
         <h1 className="mb-2 text-2xl font-semibold">
           {car?.build_year +
@@ -151,12 +151,21 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
             <div className="flex justify-between w-full gap-2 text-white rounded-md ">
               <div className="font-semibold text-lg mb-2 bg-[#130F40] w-1/2 p-2 text-center rounded-xl shadow-md">
                 {car?.owner_contact}
+                <div
+                  className={`text-xs font-light ${
+                    car?.is_negotiable ? "block" : "hidden"
+                  }`}
+                >
+                  Call
+                </div>
               </div>
-              <div className="w-1/2 p-2 mb-2 text-lg font-semibold text-center shadow-md bg-slate-500 rounded-xl">
-                Rs. {formatNumber(car?.price)}{" "}
-                <span className="text-xs font-light ">
+              <div className="flex flex-col w-1/2 p-2 mb-2 text-lg font-semibold text-center shadow-md bg-slate-500 rounded-xl">
+                {car?.price === "negotiable"
+                  ? car?.price
+                  : `Rs. ${formatNumber(Number(car?.price))}`}
+                <div className="text-xs font-light ">
                   {car?.is_negotiable && "(Negotiable)"}
-                </span>
+                </div>
               </div>
             </div>
 
@@ -194,7 +203,7 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
         </div>
         <div className="mt-6 xl:px-10 md:text-base">
           <h3 className="mb-2 font-semibold">Owner Comments</h3>
-          <p className="text-sm md:text-base">{car?.owner_comments}</p>
+          <pre className="text-sm md:text-base">{car?.owner_comments}</pre>
         </div>
         <div className="flex justify-end mt-4 text-sm">
           <span>{car?.views} views</span>

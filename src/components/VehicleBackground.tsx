@@ -133,19 +133,7 @@ const VehicleBackground: React.FC<VehicleBackgroundProps> = ({
           value={vehicleMilage}
           onChange={(e) => handleMilageChange(e.target.value)}
         />
-        {/* <Select
-          labelPlacement="outside"
-          label="Engine"
-          className="w-full text-black sm:max-w-96"
-          placeholder="e.g VVTi 1.5L "
-          onChange={(e) => handleEngineChange(e.target.value)}
-        >
-          {engine.map((make) => (
-            <SelectItem key={make.key} value={make.key}>
-              {make.label}
-            </SelectItem>
-          ))}
-        </Select> */}
+
         <Input
           type="string"
           label="Engine"

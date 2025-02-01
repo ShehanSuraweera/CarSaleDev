@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useTransition } from "react";
+import React, { ReactEventHandler, useEffect, useTransition } from "react";
 import {
   carMakes,
   districts,
@@ -30,6 +30,8 @@ import {
   Button,
   Alert,
   Form,
+  Select,
+  SelectItem,
 } from "@heroui/react";
 import { User } from "@supabase/supabase-js";
 import { UserProfileData } from "@/src/types";
@@ -58,17 +60,11 @@ export default function Page() {
   const [ownerPhone, setOwnerPhone] = useState(userProfileData?.phone || "");
   const [ownerCity, setOwnerCity] = useState(userProfileData?.city || "");
   const [ownerEmail, setOwnerEmail] = useState(userProfileData?.email || "");
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [vehicleCondition, setVehicleCondition] = useState("");
 
   const router = useRouter();
 
-  const [vehicleAbout, setVehicleAbout] = useState({
-    make: "",
-    model: "",
-    frameCode: "",
-    yom: "",
-    transmission: "",
-    bodyType: "",
-  });
   const [vehicleBackground, setVehicleBackground] = useState({
     condition: "",
     yor: "",
@@ -114,6 +110,15 @@ export default function Page() {
     setImageUrls(images);
   };
 
+  const handleConditionChange = (value: string) => {
+    if (value === "registered") {
+      setIsRegistered(true);
+    } else {
+      setIsRegistered(false);
+    }
+    setVehicleCondition(value);
+  };
+
   // Your profile page content here
 
   const handlePriceChange = (e: { target: { value: any } }) => {
@@ -130,37 +135,55 @@ export default function Page() {
     setDisplayPrice(value);
   };
 
-  const handlePostAd = async () => {
+  const handlePostAd = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (imageUrls.length === 0) {
+      toast.error("Please upload at least one image");
+      return;
+    }
+
+    let data = new FormData(e.currentTarget);
+    console.log("data object", data);
     startTransition(async () => {
       const formData = new FormData();
       imageUrls.forEach((url) => {
-        formData.append("images", url);
+        data.append("images", url);
       });
-
+      data.append;
       console.log("FormData entries:", Array.from(formData.entries()));
 
-      formData.append("user_id", user?.id as string);
-      formData.append("make", vehicleAbout.make);
-      formData.append("model", vehicleAbout.model);
-      formData.append("frame_code", vehicleAbout.frameCode);
-      formData.append("build_year", String(vehicleAbout.yom));
-      formData.append("transmission", vehicleAbout.transmission);
-      formData.append("body_type", vehicleAbout.bodyType);
-      formData.append("vehicle_condition", vehicleBackground.condition);
-      formData.append("reg_year", String(vehicleBackground.yor));
-      formData.append("mileage", String(vehicleBackground.milage));
-      formData.append("engine", vehicleBackground.engine);
-      formData.append("colour", vehicleBackground.colour);
-      formData.append("fuel_type", vehicleBackground.fuelType);
-      formData.append("price", String(price));
-      formData.append("owner_comments", ownerComments);
-      formData.append("owner_contact", ownerPhone);
-      formData.append("ad_location", ownerCity);
-      formData.append("owner_display_name", ownerName);
-      formData.append("is_negotiable", isNegotiable ? "TRUE" : "FALSE");
-      formData.append("vehicle_type", vehicle);
+      data.append("user_id", user?.id as string);
+      data.append("is_negotiable", isNegotiable ? "TRUE" : "FALSE");
+      // formData.append("make", vehicleAbout.make);
+      // formData.append("model", vehicleAbout.model);
+      // formData.append("frame_code", vehicleAbout.frameCode);
+      // formData.append("build_year", String(vehicleAbout.yom));
+      // formData.append("transmission", vehicleAbout.transmission);
+      // formData.append("body_type", vehicleAbout.bodyType);
+      // formData.append("vehicle_condition", vehicleBackground.condition);
+      // formData.append("reg_year", String(vehicleBackground.yor));
+      // formData.append("mileage", String(vehicleBackground.milage));
+      // formData.append("engine", vehicleBackground.engine);
+      // formData.append("colour", vehicleBackground.colour);
+      // formData.append("fuel_type", vehicleBackground.fuelType);
+      // formData.append("price", String(price));
+      // formData.append("owner_comments", ownerComments);
+      // formData.append("owner_contact", ownerPhone);
+      // formData.append("ad_location", ownerCity);
+      // formData.append("owner_display_name", ownerName);
+      // formData.append("is_negotiable", isNegotiable ? "TRUE" : "FALSE");
+      // formData.append("vehicle_type", vehicle);
 
-      const result = await createAd(formData, imageUrls);
+      // console.log("formData", formData);
+      console.log("data", JSON.stringify(Object.fromEntries(data.entries())));
+
+      localStorage.setItem(
+        "adFormData",
+        JSON.stringify(Object.fromEntries(data.entries()))
+      );
+
+      const result = await createAd(data, imageUrls);
 
       if (result === "Adposted") {
         toast.success(
@@ -179,21 +202,49 @@ export default function Page() {
   return (
     <Form validationBehavior="native" onSubmit={handlePostAd}>
       <div className="flex flex-col items-center justify-center w-full gap-3 sm:px-5 sm:gap-8 sm:p-4">
-        <OwnerDetails
-          name={ownerName}
-          phone={ownerPhone}
-          city={ownerCity}
-          setName={setOwnerName}
-          setPhone={setOwnerPhone}
-          setCity={setOwnerCity}
-          email=""
-          avatar_url=""
-        />
-
+        <div className=" sm:w-[90%] shadow-md w-full   p-8">
+          <h2>Owner Details</h2>
+          <div className="flex flex-col items-start justify-start gap-8 mt-4">
+            <Input
+              name="owner_display_name"
+              isRequired={true}
+              type="string"
+              label="Name"
+              labelPlacement="outside"
+              className="sm:max-w-96"
+              value={ownerName}
+              onChange={(e) => setOwnerName(e.target.value)}
+              description="This will display as owner name of the AD"
+            />
+            <Input
+              name="owner_contact"
+              isRequired={true}
+              type="string"
+              label="Contact"
+              value={ownerPhone}
+              labelPlacement="outside"
+              className="sm:max-w-96"
+              onChange={(e) => setOwnerPhone(e.target.value)}
+              description="This will display as contact number of the AD"
+            />
+            <Input
+              name="ad_location"
+              isRequired={true}
+              type="string"
+              label="Location"
+              value={ownerCity}
+              labelPlacement="outside"
+              className="sm:max-w-96"
+              onChange={(e) => setOwnerCity(e.target.value)}
+              description="This will display as Location"
+            />
+          </div>
+        </div>
         <div className=" sm:w-[90%] shadow-md w-full p-8   ">
           <h2></h2>
           <div className="flex flex-col gap-3 ">
             <RadioGroup
+              name="vehicle_type"
               isRequired={true}
               label="Select your Vehicle type"
               value={vehicle}
@@ -210,22 +261,168 @@ export default function Page() {
           </div>
         </div>
 
-        <VehicleAbout
-          carMakes={carMakes}
-          toyotaModels={toyotaModels}
-          yom={yom}
-          transmissionTypes={transmissionTypes}
-          bodyTypes={bodyTypes}
-          setVehicleAbout={setVehicleAbout}
-        />
-        <VehicleBackground
-          yor={yom}
-          condition={conditions}
-          engine={engines}
-          fuel={fuelTypes}
-          setVehicleBackground={setVehicleBackground}
-        />
+        <div className=" sm:w-[90%] shadow-md   p-8">
+          <h1 className="text-lg font-medium">
+            Let's start finding your car's make
+          </h1>
+          <div className="flex flex-wrap justify-center gap-8 mt-5">
+            <Select
+              isRequired={true}
+              labelPlacement="outside"
+              label="Make"
+              name="make"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g  Toyota, Honda, Mazda"
+            >
+              {carMakes.map((make) => (
+                <SelectItem key={make.key} value={make.key}>
+                  {make.label}
+                </SelectItem>
+              ))}
+            </Select>
 
+            <Input
+              isRequired={true}
+              type="string"
+              label="Model"
+              labelPlacement="outside"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g Allion, Vezel, Maruti"
+              name="model"
+            />
+
+            <Input
+              type="string"
+              label="Frame Code"
+              labelPlacement="outside"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g 260, RU1, "
+              name="frame_code"
+            />
+            <Select
+              isRequired={true}
+              labelPlacement="outside"
+              label="Build year"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g  2010, 2011, 2012,..."
+              name="build_year"
+            >
+              {yom.map((item) => (
+                <SelectItem key={item.key} value={item.key}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </Select>
+            <Select
+              isRequired={true}
+              labelPlacement="outside"
+              label="Transmission"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g Automatic, Manual,..."
+              name="transmission"
+            >
+              {transmissionTypes.map((item) => (
+                <SelectItem key={item.key} value={item.key}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </Select>
+            <Select
+              isRequired={true}
+              labelPlacement="outside"
+              label="Body type"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g Sedan, SUV, Hatchback, ... "
+              name="body_type"
+            >
+              {bodyTypes.map((item) => (
+                <SelectItem key={item.key} value={item.key}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+        </div>
+
+        <div className=" sm:w-[90%] shadow-md   p-8">
+          <h1 className="text-lg font-medium">
+            Let's start finding your car's background
+          </h1>
+          <div className="flex flex-wrap justify-center gap-8 mt-5">
+            <Select
+              isRequired={true}
+              labelPlacement="outside"
+              label="Condition"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g  Registered, Unregistered, "
+              name="vehicle_condition"
+              value={vehicleCondition}
+              onChange={(e) => {
+                handleConditionChange(e.target.value);
+              }}
+            >
+              {conditions.map((make) => (
+                <SelectItem key={make.key} value={make.key}>
+                  {make.label}
+                </SelectItem>
+              ))}
+            </Select>
+            <Select
+              labelPlacement="outside"
+              label="Year of Registration"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g  2024, 2023, 2022"
+              name="reg_year"
+              isDisabled={!isRegistered}
+            >
+              {yom.map((item) => (
+                <SelectItem key={item.key} value={item.key}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </Select>
+
+            <Input
+              type="string"
+              label="Milage (km)"
+              labelPlacement="outside"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g 60000, 150000 "
+              name="mileage"
+            />
+
+            <Input
+              type="string"
+              label="Engine"
+              labelPlacement="outside"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g e.g VVTi 1.5L "
+              name="engine"
+            />
+            <Input
+              type="string"
+              label="Colour"
+              labelPlacement="outside"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g Silver, White"
+              name="colour"
+            />
+            <Select
+              isRequired={true}
+              labelPlacement="outside"
+              label="Fuel Type"
+              className="w-full text-black sm:max-w-96"
+              placeholder="e.g Petrol, Diesel, Hybrid "
+              name="fuel_type"
+            >
+              {fuelTypes.map((item) => (
+                <SelectItem key={item.key} value={item.key}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+        </div>
         <div className=" sm:w-[90%] shadow-md  w-full  p-8">
           <RadioGroup
             label="Do you like to display price ?"
@@ -242,6 +439,7 @@ export default function Page() {
             <>
               <div className="flex flex-col justify-between gap-4 sm:flex-row ">
                 <Input
+                  name="price"
                   type="number"
                   label="Price (Rs)"
                   labelPlacement="outside"
@@ -251,6 +449,7 @@ export default function Page() {
                   onChange={handlePriceChange}
                   endContent={
                     <Checkbox
+                      name="is_negotiable"
                       defaultSelected={false}
                       onChange={(e) =>
                         !isNegotiable
@@ -279,8 +478,7 @@ export default function Page() {
             labelPlacement="outside"
             placeholder="Enter your description"
             className="col-span-12 mb-6 md:col-span-6 md:mb-0"
-            value={ownerComments}
-            onChange={(e) => setOwnerComments(e.target.value)}
+            name="owner_comments"
           />
         </div>
         <InputImages onImagesChange={handleImagesChange} />
@@ -293,7 +491,6 @@ export default function Page() {
             </div>
           )}
         </div>
-
         <>
           <div className="flex justify-center w-full h-10 ">
             <Button

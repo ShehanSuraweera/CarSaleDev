@@ -1,6 +1,7 @@
 import { Input } from "@heroui/react";
 import Image from "next/image";
 import React, { useState, ChangeEvent, useRef } from "react";
+import { InputImagesIcon } from "./icons";
 
 // Define types for the images state
 type ImageQueue = string[]; // Array of image URLs
@@ -51,19 +52,32 @@ const InputImages: React.FC<InputImagesProps> = ({ onImagesChange }) => {
   };
 
   return (
-    <div className="sm:w-[90%] shadow-md w-full p-8">
-      <Input
-        isRequired={true}
-        labelPlacement="outside"
-        label="Images (max 6)"
-        type="file"
-        accept="image/*"
-        multiple
-        onChange={handleImageChange}
-        ref={fileInputRef}
-      />
+    <div
+      className={`sm:w-[90%] shadow-md w-full p-8 ${
+        images.length === 0 ? "border-2 border-solid border-red-300" : ""
+      }`}
+    >
+      <label className="flex text-sm font-medium text-gray-700 hover:cursor-pointer">
+        <span>Choose Images (max 6)</span>
+        {"  "}
+        <span className="text-red-500">*</span>
+        <div className="block w-5 ml-3">
+          <InputImagesIcon />
+        </div>
+        <Input
+          labelPlacement="outside"
+          label="Images (max 6)"
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleImageChange}
+          ref={fileInputRef}
+          placeholder="Select images"
+          className="hidden"
+        ></Input>
+      </label>
 
-      <div className="mt-4">
+      <div className="mt-8">
         {images.length > 0 && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
             {images.map((image, index) => (

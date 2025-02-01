@@ -67,7 +67,9 @@ const MediumAd = ({
 
       <div className=" w-[100%] h-full bg-slate-50 dark:bg-[#000E1E]  mt-1  rounded-md py-2 items-center justify-center flex flex-col">
         <div className=" text-xs sm:text-sm md:text-base lg:text-lg text-[#2980b9]  w-full text-center font-semibold">
-          Rs. {formatNumber(Number(price))}
+          {price === "negotiable"
+            ? price
+            : `Rs. ${formatNumber(Number(price))}`}
         </div>
         <div className="  mt-2 md:mt-4  flex justify-between sm:justify-around   gap-y-1 sm:gap-y-2 md:gap-y-4  sm:gap-x-12 text-[#847E7E]   items-center  flex-wrap w-[95%]">
           <div className="flex items-center gap-1 text-xs sm:text-sm float-start sm:gap-2">
