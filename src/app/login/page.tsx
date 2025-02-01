@@ -3,12 +3,13 @@ import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import Link from "next/link";
 import React, { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { loginAction } from "@/src/actions/users";
+import { redirect, useRouter } from "next/navigation";
+import { loginAction, signInWithGoogle } from "@/src/actions/users";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { useUser } from "@/src/UserContext";
 import { Form } from "@heroui/react";
+import OneTapComponent from "@/src/components/OneTapComponent";
 
 const Page: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -36,6 +37,18 @@ const Page: React.FC = () => {
       }
     });
   };
+
+  async function handleSignInWithGoogle(response: any) {
+    const { data, error } = await supabaseBrowserClient.auth.signInWithOAuth({
+      provider: "google",
+      token: response.credential,
+    });
+
+    if (error) {
+      toast.error(error.message);
+      redirect("/login");
+    }
+  }
 
   return (
     <div className="flex flex-col items-center justify-around mt-4 mb-64 grow">
@@ -87,6 +100,35 @@ const Page: React.FC = () => {
             Login
           </Button>
         </Form>
+
+        <div className="flex justify-center mt-5">
+          <div
+            id="g_id_onload"
+            data-client_id="770587025850-0va4rd9geg78uont8mjjsqrorbv3pn72.apps.googleusercontent.com"
+            data-context="signup"
+            data-ux_mode="popup"
+            data-login_uri="https://eauvrmfsnhwjwnnacyzx.supabase.co/auth/v1/callback"
+            data-itp_support="true"
+          ></div>
+
+          <div
+            className="g_id_signin"
+            data-type="standard"
+            data-shape="pill"
+            data-theme="filled_blue"
+            data-text="signin_with"
+            data-size="large"
+            data-logo_alignment="left"
+          ></div>
+        </div>
+
+        <Button
+          color="primary"
+          onPress={handleSignInWithGoogle}
+          className="w-full mt-5"
+        >
+          Sign in with Google
+        </Button>
         <div className="flex justify-center mt-2">
           <span className="text-gray-500 ">
             Don't have an account?{" "}
@@ -99,6 +141,7 @@ const Page: React.FC = () => {
           </span>
         </div>
       </div>
+      <OneTapComponent />
     </div>
   );
 };

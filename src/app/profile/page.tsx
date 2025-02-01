@@ -75,6 +75,8 @@ const Page = () => {
     try {
       const response = await updateUserProfile(formData);
 
+      console.log(response);
+
       toast.success("Profile updated successfully");
       handleUpdateProfileModel(!isOpen); // Close modal on success
     } catch (error) {

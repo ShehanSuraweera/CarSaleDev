@@ -55,3 +55,24 @@ export const signOutAction = async () => {
     return { errorMessage: getErrorMessage(error) };
   }
 };
+
+const signInwith = (provider: any) => async () => {
+  const supabase = await createSupabaseClient();
+
+  const auth_callbacl_url = `${process.env.SITE_URL}/auth/callback`;
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: { redirectTo: auth_callbacl_url },
+  });
+
+  console.log(data);
+
+  if (error) {
+    console.error("Error logging in with Google", error);
+  }
+};
+
+const signInWithGoogle = signInwith("google");
+
+export { signInWithGoogle };
