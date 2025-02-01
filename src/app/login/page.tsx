@@ -109,6 +109,7 @@ const Page: React.FC = () => {
             data-ux_mode="popup"
             data-login_uri="https://eauvrmfsnhwjwnnacyzx.supabase.co/auth/v1/callback"
             data-itp_support="true"
+            data-use_fedcm_for_prompt="true"
           ></div>
 
           <div
