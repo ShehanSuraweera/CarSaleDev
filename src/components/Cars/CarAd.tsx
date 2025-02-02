@@ -201,9 +201,11 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
             </div>
           </div>
         </div>
-        <div className="mt-6 xl:px-10 md:text-base">
+        <div className="w-full mt-6 xl:px-10 md:text-base">
           <h3 className="mb-2 font-semibold">Owner Comments</h3>
-          <pre className="text-sm md:text-base">{car?.owner_comments}</pre>
+          <pre className="w-full overflow-hidden text-sm break-words whitespace-pre-wrap md:text-base text-ellipsis">
+            {car?.owner_comments}
+          </pre>
         </div>
         <div className="flex justify-end mt-4 text-sm">
           <span>{car?.views} views</span>

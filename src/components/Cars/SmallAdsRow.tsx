@@ -3,13 +3,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import SmallAd from "./SmallAd";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
-import { Pagination, Navigation, A11y } from "swiper/modules";
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
+import { fetchTrendingAds } from "@/src/lib/api";
+import { Swiper as SwiperClass } from "swiper/types";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { fetchTrendingAds } from "@/src/lib/api";
-
 interface SmallAdsRowProps {
   topic: string;
   make: string;
@@ -20,6 +20,9 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
   const [cars, setCars] = useState<any[]>([]); // Holds the fetched car ads
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
+
+  const [swiperRef, setSwiperRef] = useState<SwiperClass | null>(null);
+  let prependNumber = 1;
 
   const getCarsFromBackend = async () => {
     try {
@@ -37,6 +40,15 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
     getCarsFromBackend();
   }, [make]);
 
+  // Ensure autoplay starts when swiperRef is set
+  useEffect(() => {
+    if (swiperRef) {
+      setTimeout(() => {
+        swiperRef.autoplay.start();
+      }, 500);
+    }
+  }, [swiperRef]);
+
   return (
     <div className="pt-4 sm:pt-12">
       <div>
@@ -48,33 +60,41 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
       </div>
       <div>
         <Swiper
-          slidesPerView={1}
+          style={
+            {
+              "--swiper-navigation-color": "#FDC221",
+              "--swiper-navigation-size": "20px",
+            } as React.CSSProperties
+          }
+          slidesPerView={2}
+          centeredSlides={true}
+          onSwiper={setSwiperRef}
           spaceBetween={5}
-          pagination={false}
           loop={true}
+          navigation={{}}
           autoplay={{
             delay: 2500,
             disableOnInteraction: false,
           }}
           breakpoints={{
             320: {
-              slidesPerView: 1,
+              slidesPerView: 2,
               spaceBetween: 3,
             },
             575: {
-              slidesPerView: 2,
+              slidesPerView: 3,
             },
             767: {
-              slidesPerView: 3,
+              slidesPerView: 4,
             },
             991: {
-              slidesPerView: 3,
+              slidesPerView: 4,
             },
             1199: {
               slidesPerView: 5,
             },
           }}
-          modules={[Navigation, Pagination, A11y, Autoplay]}
+          modules={[Navigation, Pagination, Autoplay]}
           className="w-full h-full "
         >
           {cars.map((car) => (

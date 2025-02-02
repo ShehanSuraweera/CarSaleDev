@@ -24,7 +24,7 @@ const SmallAd = ({ make, price, image, model, ad_id }: SmallAdProps) => {
   return (
     <div className="flex flex-col items-center justify-center w-full  h-[300px] md:h-[310px] gap-4 px-0 pt-4 mx-1 mb-4  rounded-md shadow-md  hover:cursor-pointer">
       <Image
-        className=" w-[100%]  h-[70%]   rounded-md p-0 object-contain "
+        className=" w-[100%] block  sm:h-[70%]  h-[50%]  rounded-md p-0 object-contain "
         width={500}
         height={500}
         src={image || "/images/no-image.png"}
