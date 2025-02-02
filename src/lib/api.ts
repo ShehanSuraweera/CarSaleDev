@@ -105,7 +105,10 @@ export const getUserProfileData = async (id: string) => {
   }
 };
 
-export const createAd = async (formData: FormData, imageUrls: string[]) => {
+export const createAd = async (
+  formData: FormData,
+  imageUrls: string[]
+): Promise<string> => {
   try {
     const response = await apiClient.post("/uploads/create", formData, {
       headers: {
@@ -113,29 +116,30 @@ export const createAd = async (formData: FormData, imageUrls: string[]) => {
       },
     });
 
-    let adId = 0;
-
-    if (response.status === 201) {
-      const data = response.data; // Access data directly
-      adId = data.adId;
-      // Access adId
-    } else {
-      console.error("Failed to post ad:", response.status);
-      return "Failed";
+    if (response.status !== 201 || !response.data?.adId) {
+      console.error("Failed to post ad:", response.status, response.data);
+      return response.data?.message || "Failed to post ad";
     }
 
+    const adId = response.data.adId;
     const bucketName = "ad_pics"; // Supabase storage bucket name
+
     try {
-      await convertAndUploadBlobs(imageUrls, adId.toString(), bucketName); // Upload images to Supabase storage
+      const result = await convertAndUploadBlobs(
+        imageUrls,
+        adId.toString(),
+        bucketName
+      ); // Upload images to Supabase storage
+      console.log("result", result);
 
       return "Adposted";
     } catch (error) {
       console.error("Error uploading images:", error);
       return "Failed to upload images";
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error posting ad:", error);
-    return "Error";
+    return error.response?.data?.message || "Server error";
   }
 };
 

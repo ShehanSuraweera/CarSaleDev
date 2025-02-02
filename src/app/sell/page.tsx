@@ -194,7 +194,7 @@ export default function Page() {
         );
         router.push("/profile");
       } else {
-        toast.error("Failed to post ad");
+        toast.error(result);
         console.error("Failed to post ad:", result);
       }
     });
