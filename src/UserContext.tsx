@@ -2,7 +2,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { createBrowserClient } from "@supabase/ssr";
-import { Loader2 } from "lucide-react";
 
 // Type definitions for context
 interface UserContextType {

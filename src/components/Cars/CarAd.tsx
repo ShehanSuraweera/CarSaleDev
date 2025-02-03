@@ -1,6 +1,6 @@
 // components/CarAd.tsx
 "use client";
-
+import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
@@ -17,6 +17,7 @@ import { Swiper as SwiperClass } from "swiper";
 import { fetchAd } from "@/src/lib/api";
 import TimeAgo from "../TimeAgo";
 import { Loader2, LoaderPinwheel } from "lucide-react";
+import { Bars, ThreeCircles } from "react-loader-spinner";
 
 interface CarAdProps {
   ad_id: string;
@@ -44,11 +45,8 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center w-full h-screen ">
-        <Loader2 className="w-20 h-20 text-[#F5A524] animate-spin" />
-        <span className="ml-2 text-lg font-semibold text-[#F5A524]">
-          Loading...
-        </span>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <Bars color="#fbc531" height={50} width={50} />
       </div>
     );
   }

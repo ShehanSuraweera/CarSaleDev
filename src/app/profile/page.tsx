@@ -2,6 +2,7 @@
 import React, { use, useEffect, useState } from "react";
 import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   Checkbox,
   Chip,
@@ -36,6 +37,7 @@ import {
 import { useUser } from "@/src/UserContext";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { Bars } from "react-loader-spinner";
 
 const Page = () => {
   const router = useRouter();
@@ -142,129 +144,135 @@ const Page = () => {
                 {user ? (
                   userProfileData ? (
                     <>
-                      <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
-                        <div>Name</div>
-
-                        <div>{userProfileData?.name}</div>
-                      </div>
-                      <Divider />
-                      <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
-                        <div>Email</div>
-                        <div>{userProfileData?.email}</div>
-                      </div>
-                      <Divider />
-                      <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
-                        <div>Phone</div>
-                        <div>{userProfileData?.phone}</div>
-                      </div>
-                      <Divider />
-                      <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
-                        <div>City</div>
-
-                        <div>{userProfileData?.city}</div>
-                      </div>
-                      <div className="flex items-center justify-center mt-4">
-                        <Button
-                          color="secondary"
-                          variant="flat"
-                          onPress={() => handleUpdateProfileModel(!isOpen)}
-                        >
-                          Update Profile
-                        </Button>
-                      </div>
-                      <Modal
-                        isOpen={isOpen}
-                        placement="top-center"
-                        onOpenChange={handleUpdateProfileModel}
-                        className="w-full"
+                      <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ ease: "easeOut", duration: 0.5 }}
                       >
-                        <ModalContent>
-                          {(onClose) => (
-                            <>
-                              <ModalHeader className="flex flex-col gap-1">
-                                Update Profile
-                              </ModalHeader>
-                              <ModalBody>
-                                <Form
-                                  className="w-full "
-                                  validationBehavior="native"
-                                  onSubmit={handleUpdateProfile}
-                                >
-                                  <Input
-                                    endContent={
-                                      <UserRoundPen className="flex-shrink-0 text-2xl pointer-events-none text-default-400" />
-                                    }
-                                    name="name"
-                                    label="Name"
-                                    required
-                                    placeholder="Enter your name"
-                                    variant="bordered"
-                                    value={userProfileData?.name || ""}
-                                    onChange={(e) =>
-                                      setUserProfileData({
-                                        ...userProfileData,
-                                        name: e.target.value,
-                                      })
-                                    }
-                                  />
-                                  <Input
-                                    endContent={
-                                      <Phone className="flex-shrink-0 text-2xl pointer-events-none text-default-400" />
-                                    }
-                                    name="phone"
-                                    label="Phone"
-                                    placeholder="Enter your phone"
-                                    type="text"
-                                    required
-                                    variant="bordered"
-                                    value={userProfileData?.phone || ""}
-                                    onChange={(e) =>
-                                      setUserProfileData({
-                                        ...userProfileData,
-                                        phone: e.target.value,
-                                      })
-                                    }
-                                  />
-                                  <Input
-                                    endContent={
-                                      <MapPin className="flex-shrink-0 text-2xl pointer-events-none text-default-400" />
-                                    }
-                                    name="city"
-                                    required
-                                    label="City"
-                                    placeholder="Enter your city"
-                                    type="text"
-                                    variant="bordered"
-                                    value={userProfileData?.city || ""}
-                                    onChange={(e) =>
-                                      setUserProfileData({
-                                        ...userProfileData,
-                                        city: e.target.value,
-                                      })
-                                    }
-                                  />
-                                  <div className="flex items-center justify-end w-full gap-4 pr-5 mt-5">
-                                    <Button
-                                      color="primary"
-                                      variant="flat"
-                                      onPress={onClose}
-                                    >
-                                      Cancel
-                                    </Button>
-                                    <Button type="submit" color="danger">
-                                      Update
-                                    </Button>
-                                  </div>
-                                </Form>
-                              </ModalBody>
-                            </>
-                          )}
-                        </ModalContent>
-                      </Modal>
+                        <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
+                          <div>Name</div>
+
+                          <div>{userProfileData?.name}</div>
+                        </div>
+                        <Divider />
+                        <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
+                          <div>Email</div>
+                          <div>{userProfileData?.email}</div>
+                        </div>
+                        <Divider />
+                        <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
+                          <div>Phone</div>
+                          <div>{userProfileData?.phone}</div>
+                        </div>
+                        <Divider />
+                        <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
+                          <div>City</div>
+
+                          <div>{userProfileData?.city}</div>
+                        </div>
+                        <div className="flex items-center justify-center mt-4">
+                          <Button
+                            color="secondary"
+                            variant="flat"
+                            onPress={() => handleUpdateProfileModel(!isOpen)}
+                          >
+                            Update Profile
+                          </Button>
+                        </div>
+                        <Modal
+                          isOpen={isOpen}
+                          placement="top-center"
+                          onOpenChange={handleUpdateProfileModel}
+                          className="w-full"
+                        >
+                          <ModalContent>
+                            {(onClose) => (
+                              <>
+                                <ModalHeader className="flex flex-col gap-1">
+                                  Update Profile
+                                </ModalHeader>
+                                <ModalBody>
+                                  <Form
+                                    className="w-full "
+                                    validationBehavior="native"
+                                    onSubmit={handleUpdateProfile}
+                                  >
+                                    <Input
+                                      endContent={
+                                        <UserRoundPen className="flex-shrink-0 text-2xl pointer-events-none text-default-400" />
+                                      }
+                                      name="name"
+                                      label="Name"
+                                      required
+                                      placeholder="Enter your name"
+                                      variant="bordered"
+                                      value={userProfileData?.name || ""}
+                                      onChange={(e) =>
+                                        setUserProfileData({
+                                          ...userProfileData,
+                                          name: e.target.value,
+                                        })
+                                      }
+                                    />
+                                    <Input
+                                      endContent={
+                                        <Phone className="flex-shrink-0 text-2xl pointer-events-none text-default-400" />
+                                      }
+                                      name="phone"
+                                      label="Phone"
+                                      placeholder="Enter your phone"
+                                      type="text"
+                                      required
+                                      variant="bordered"
+                                      value={userProfileData?.phone || ""}
+                                      onChange={(e) =>
+                                        setUserProfileData({
+                                          ...userProfileData,
+                                          phone: e.target.value,
+                                        })
+                                      }
+                                    />
+                                    <Input
+                                      endContent={
+                                        <MapPin className="flex-shrink-0 text-2xl pointer-events-none text-default-400" />
+                                      }
+                                      name="city"
+                                      required
+                                      label="City"
+                                      placeholder="Enter your city"
+                                      type="text"
+                                      variant="bordered"
+                                      value={userProfileData?.city || ""}
+                                      onChange={(e) =>
+                                        setUserProfileData({
+                                          ...userProfileData,
+                                          city: e.target.value,
+                                        })
+                                      }
+                                    />
+                                    <div className="flex items-center justify-end w-full gap-4 pr-5 mt-5">
+                                      <Button
+                                        color="primary"
+                                        variant="flat"
+                                        onPress={onClose}
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button type="submit" color="danger">
+                                        Update
+                                      </Button>
+                                    </div>
+                                  </Form>
+                                </ModalBody>
+                              </>
+                            )}
+                          </ModalContent>
+                        </Modal>
+                      </motion.div>
                     </>
                   ) : (
                     <div className="flex items-center justify-center h-20">
-                      <Loader2 className="w-6 h-6 text-gray-500 animate-spin" />
+                      <Bars color="#fbc531" height={50} width={50} />
                     </div>
                   )
                 ) : (
@@ -275,7 +283,7 @@ const Page = () => {
             <Tab key="myAds" title="myAds">
               {loading ? (
                 <div className="flex items-center justify-center h-20">
-                  <Loader2 className="w-6 h-6 text-gray-500 animate-spin" />
+                  <Bars color="#fbc531" height={50} width={50} />
                 </div>
               ) : cars.length > 0 ? (
                 <CarList cars={cars} loading={loading} error={error} />

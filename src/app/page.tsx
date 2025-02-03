@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "../UserContext";
 import toast from "react-hot-toast";
 import WelcomeComponent from "../components/WelcomeComponent";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const { user, loading } = useUser();
@@ -71,9 +72,15 @@ export default function Home() {
       </div>
 
       <WelcomeComponent />
-      <SmallAdsRow topic="Trending Toyota Cars" make="Toyota" type="Cars" />
-      <SmallAdsRow topic="Trending Honda Cars" make="Honda" type="Cars" />
-      <SmallAdsRow topic="Trending Suzuki Cars" make="Suzuki" type="Cars" />
+      <motion.div
+        initial={{ x: 20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ ease: "easeOut", duration: 2 }}
+      >
+        <SmallAdsRow topic="Trending Toyota Cars" make="Toyota" type="Cars" />
+        <SmallAdsRow topic="Trending Honda Cars" make="Honda" type="Cars" />
+        <SmallAdsRow topic="Trending Suzuki Cars" make="Suzuki" type="Cars" />
+      </motion.div>
     </section>
   );
 }

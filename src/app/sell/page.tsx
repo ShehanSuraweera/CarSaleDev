@@ -62,16 +62,21 @@ const formatNumber = (num: number): string => {
 export default function Page() {
   const [user, setUser] = useState<User | null>(null);
   const [isPending, startTransition] = useTransition();
-
   const [yearOfRegistration, setYearOfRegistration] = useState<
     { key: string; label: string }[]
   >([]);
   const [isBrandNew, setIsBrandNew] = useState(false);
-
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
   const thumbsSwiperRef = useRef<SwiperClass | null>(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+  const [formattedPrice, setFormattedPrice] = useState("");
+  const [displayPrice, setDisplayPrice] = useState("yes");
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: string]: string;
+  }>({});
   // Ensure thumbsSwiper is set properly when Swiper initializes
   useEffect(() => {
     if (isOpen) {
@@ -83,16 +88,6 @@ export default function Page() {
     }
   }, [isOpen]);
 
-  const [formattedPrice, setFormattedPrice] = useState("");
-  const [displayPrice, setDisplayPrice] = useState("yes");
-
-  const [isRegistered, setIsRegistered] = useState(false);
-
-  const router = useRouter();
-  const [validationErrors, setValidationErrors] = useState<{
-    [key: string]: string;
-  }>({});
-
   const inputRefs = {
     owner_display_name: useRef<HTMLInputElement | null>(null),
     owner_contact: useRef<HTMLInputElement | null>(null),
@@ -100,7 +95,6 @@ export default function Page() {
     vehicle_type: useRef<HTMLDivElement | null>(null),
     make: useRef<HTMLInputElement | null>(null),
     model: useRef<HTMLInputElement | null>(null),
-
     build_year: useRef<HTMLInputElement | null>(null),
     transmission: useRef<HTMLInputElement | null>(null),
     body_type: useRef<HTMLInputElement | null>(null),
@@ -289,11 +283,9 @@ export default function Page() {
 
   useEffect(() => {
     const { auth } = createSupabaseClient();
-
     const { data: authListener } = auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
     });
-
     return () => {
       authListener?.subscription.unsubscribe();
     };
@@ -305,7 +297,6 @@ export default function Page() {
       startTransition(async () => {
         try {
           const fetchUserProfile = await getUserProfileData(user.id as string);
-
           setAdData((prevData) => ({
             ...prevData,
             owner_display_name: fetchUserProfile[0].name || "",
@@ -365,16 +356,15 @@ export default function Page() {
       toast.error("Please Input valid details!");
       return;
     }
-
     if (imageUrls.length === 0) {
       toast.error("Please upload at least one image");
       return;
     }
-
     onOpen();
   };
 
   const handlePostAd = async () => {
+    setIsLoading(true);
     startTransition(async () => {
       Object.entries(adData).forEach(([key, value]) => {
         if (key === "is_negotiable") {
@@ -402,11 +392,13 @@ export default function Page() {
             duration: 5000,
           }
         );
+        setIsLoading(false);
         router.push("/profile");
       } else {
         toast.error(result);
         console.error("Failed to post ad:", result);
       }
+      setIsLoading(false);
     });
 
     onOpen();
@@ -1091,6 +1083,7 @@ export default function Page() {
                   color="warning"
                   className=" w-[50%] h-25 font-semibold"
                   type="submit"
+                  isLoading={isLoading}
                   onPress={handlePostAd}
                 >
                   Post Ad

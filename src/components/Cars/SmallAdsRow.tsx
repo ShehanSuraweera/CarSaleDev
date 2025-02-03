@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import { fetchTrendingAds } from "@/src/lib/api";
 import { Swiper as SwiperClass } from "swiper/types";
+import { motion } from "framer-motion";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -50,70 +51,76 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
   }, [swiperRef]);
 
   return (
-    <div className="pt-4 sm:pt-12">
-      <div>
-        {cars.length > 0 && (
-          <h1 className="mb-4 text-lg font-bold text-center sm:mb-2">
-            {topic}
-          </h1>
-        )}
+    <motion.div
+      initial={{ x: 20, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ ease: "easeOut", duration: 2 }}
+    >
+      <div className="pt-4 sm:pt-12">
+        <div>
+          {cars.length > 0 && (
+            <h1 className="mb-4 text-lg font-bold text-center sm:mb-2">
+              {topic}
+            </h1>
+          )}
+        </div>
+        <div>
+          <Swiper
+            style={
+              {
+                "--swiper-navigation-color": "#FDC221",
+                "--swiper-navigation-size": "20px",
+              } as React.CSSProperties
+            }
+            slidesPerView={2}
+            centeredSlides={true}
+            onSwiper={setSwiperRef}
+            spaceBetween={5}
+            loop={true}
+            navigation={{}}
+            autoplay={{
+              delay: 2500,
+              disableOnInteraction: false,
+            }}
+            breakpoints={{
+              320: {
+                slidesPerView: 2,
+                spaceBetween: 3,
+              },
+              575: {
+                slidesPerView: 3,
+              },
+              767: {
+                slidesPerView: 4,
+              },
+              991: {
+                slidesPerView: 4,
+              },
+              1199: {
+                slidesPerView: 5,
+              },
+            }}
+            modules={[Navigation, Pagination, Autoplay]}
+            className="w-full h-full "
+          >
+            {cars.map((car) => (
+              <SwiperSlide
+                key={car.ad_id}
+                className="!flex justify-center items-center  "
+              >
+                <SmallAd
+                  make={car.make}
+                  model={car.model}
+                  price={car.price}
+                  image={car.ad_images[0]?.image_url || "/images/no-image.png"}
+                  ad_id={car.ad_id}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
-      <div>
-        <Swiper
-          style={
-            {
-              "--swiper-navigation-color": "#FDC221",
-              "--swiper-navigation-size": "20px",
-            } as React.CSSProperties
-          }
-          slidesPerView={2}
-          centeredSlides={true}
-          onSwiper={setSwiperRef}
-          spaceBetween={5}
-          loop={true}
-          navigation={{}}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false,
-          }}
-          breakpoints={{
-            320: {
-              slidesPerView: 2,
-              spaceBetween: 3,
-            },
-            575: {
-              slidesPerView: 3,
-            },
-            767: {
-              slidesPerView: 4,
-            },
-            991: {
-              slidesPerView: 4,
-            },
-            1199: {
-              slidesPerView: 5,
-            },
-          }}
-          modules={[Navigation, Pagination, Autoplay]}
-          className="w-full h-full "
-        >
-          {cars.map((car) => (
-            <SwiperSlide
-              key={car.ad_id}
-              className="!flex justify-center items-center  "
-            >
-              <SmallAd
-                make={car.make}
-                model={car.model}
-                price={car.price}
-                image={car.ad_images[0]?.image_url || "/images/no-image.png"}
-                ad_id={car.ad_id}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 

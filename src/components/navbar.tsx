@@ -32,8 +32,7 @@ import { createSupabaseClient } from "../auth/client";
 import SignOut from "./SignOut";
 import { useUser } from "../UserContext";
 import { Loader2 } from "lucide-react";
-import toast, { Toaster } from "react-hot-toast";
-import { it } from "node:test";
+import toast from "react-hot-toast";
 
 export const Navbar = () => {
   //const [user, setUser] = useState<User | null>(null);

@@ -6,7 +6,6 @@ import React, { useState, useTransition } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { loginAction, signInWithGoogle } from "@/src/actions/users";
 import toast from "react-hot-toast";
-import { Loader2 } from "lucide-react";
 import { useUser } from "@/src/UserContext";
 import { Divider, Form } from "@heroui/react";
 import OneTapComponent from "@/src/components/OneTapComponent";
