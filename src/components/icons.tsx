@@ -320,7 +320,7 @@ export const GoogleIcon: React.FC<IconSvgProps> = () => {
     >
       <g
         id="SVGRepo_bgCarrier"
-        stroke-width="0"
+        strokeWidth="0"
         transform="translate(0,0), scale(1)"
       >
         <rect
@@ -335,10 +335,10 @@ export const GoogleIcon: React.FC<IconSvgProps> = () => {
       </g>
       <g
         id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         stroke="#CCCCCC"
-        stroke-width="0.524"
+        strokeWidth="0.524"
       ></g>
       <g id="SVGRepo_iconCarrier">
         <path
@@ -369,11 +369,11 @@ export const InputImagesIcon: React.FC<IconSvgProps> = (props) => {
       xmlns="http://www.w3.org/2000/svg"
       fill="#000000"
     >
-      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
       <g
         id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       ></g>
       <g id="SVGRepo_iconCarrier">
         <title>ionicons-v5-e</title>

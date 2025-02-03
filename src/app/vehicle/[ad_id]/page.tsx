@@ -7,10 +7,12 @@ interface PageProps {
   };
 }
 
-const page = ({ params }: PageProps) => {
+const page = async ({ params }: PageProps) => {
+  const { ad_id } = await params;
+
   return (
     <div>
-      <CarAd ad_id={params.ad_id} />
+      <CarAd ad_id={ad_id} />
     </div>
   );
 };
