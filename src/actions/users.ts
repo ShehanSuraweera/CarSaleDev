@@ -1,8 +1,7 @@
 "use server";
 
-import { createSupabaseClient, getUser, protectRoute } from "@/src/auth/server";
+import { createSupabaseClient, protectRoute } from "@/src/auth/server";
 import { getErrorMessage } from "../lib/utils";
-import { useUser } from "../UserContext";
 
 export async function createAccountAction(formData: FormData) {
   try {

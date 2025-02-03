@@ -5,8 +5,10 @@ import mileagepic from "../../assets/icons/mileage.svg";
 import bodytypepic from "../../assets/icons/bodytypepic.svg";
 import transmissionpic from "../../assets/icons/transmissionpic.svg";
 import fuelpic from "../../assets/icons/fuelpic.svg";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import TimeAgo from "../TimeAgo";
+import { Button } from "@heroui/button";
+import { Divider } from "@heroui/react";
 
 interface MediumAdProps {
   id: string;
@@ -39,6 +41,7 @@ const MediumAd = ({
   created_at,
 }: MediumAdProps) => {
   const router = useRouter();
+  const pathname = usePathname();
 
   const formatNumber = (num: number): string => {
     return new Intl.NumberFormat("en-US").format(num);
@@ -49,70 +52,90 @@ const MediumAd = ({
   };
 
   return (
-    <div className=" mb-7  shadow-md mt-2 sm:mt-10 w-full sm:w-[250px] overflow-hidden sm:h-[500px] md:w-[370px] md:h-[550px] h-[300px] lg:w-[400px] dark:bg-[#000B17]  rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  ">
-      <Image
-        className="w-[85%] rounded-md object-contain h-[60%]  mt-2 "
-        src={image || "/images/no-image.png"}
-        alt={make + modle}
-        width={500}
-        height={500}
-        onClick={handleAd}
-      ></Image>
-      <div className=" mt-1 font-semibold sm:text-lg   text-xs text-[#130F40]">
-        {make}
-      </div>
-      <div className=" font-medium sm:text-lg text-xs text-[#130F40]">
-        {modle + " " + manufacture}
-      </div>
-
-      <div className=" w-[100%] h-full bg-slate-50 dark:bg-[#000E1E]  mt-1  rounded-md py-2 items-center justify-center flex flex-col">
-        <div className=" text-xs sm:text-sm md:text-base lg:text-lg text-[#2980b9]  w-full text-center font-semibold">
-          {price === "negotiable"
-            ? price
-            : `Rs. ${formatNumber(Number(price))}`}
+    <>
+      <div className=" mb-7  shadow-md mt-2 sm:mt-10 w-full sm:w-[250px] overflow-hidden sm:h-[500px] md:w-[370px] md:h-[550px] h-[300px] lg:w-[400px] dark:bg-[#000B17]  rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  ">
+        <Image
+          className="w-[85%] rounded-md object-contain h-[60%]  mt-2 "
+          src={image || "/images/no-image.png"}
+          alt={make + modle}
+          width={500}
+          height={500}
+          onClick={handleAd}
+        ></Image>
+        <div className=" mt-1 font-semibold sm:text-lg   text-xs text-[#130F40]">
+          {make}
         </div>
-        <div className="  mt-2 md:mt-4  flex justify-between sm:justify-around   gap-y-1 sm:gap-y-2 md:gap-y-4  sm:gap-x-12 text-[#847E7E]   items-center  flex-wrap w-[95%]">
-          <div className="flex items-center gap-1 text-xs sm:text-sm float-start sm:gap-2">
-            <Image
-              src={mileagepic}
-              className="w-3 sm:w-5"
-              alt="mileage"
-            ></Image>
-            {mileage}
+        <div className=" font-medium sm:text-lg text-xs text-[#130F40]">
+          {modle + " " + manufacture}
+        </div>
+
+        <div className=" w-[100%] h-full bg-slate-50 dark:bg-[#000E1E]  mt-1  rounded-md py-2 items-center justify-center flex flex-col">
+          <div className=" text-xs sm:text-sm md:text-base lg:text-lg text-[#2980b9]  w-full text-center font-semibold">
+            {price === "negotiable"
+              ? price
+              : `Rs. ${formatNumber(Number(price))}`}
           </div>
-          <div className="flex items-center justify-start gap-1 text-xs sm:text-sm sm:gap-2">
-            <Image
-              src={bodytypepic}
-              alt="bodytype"
-              className="w-3 sm:w-5"
-            ></Image>
-            {bodyType}
-          </div>
-          <div className="flex items-center justify-start gap-1 text-xs sm:text-sm sm:gap-2">
-            <Image
-              src={transmissionpic}
-              alt="transmission"
-              className="w-3 sm:w-5 "
-            ></Image>
-            {transmission}
-          </div>
-          <div className="flex items-center justify-start gap-1 text-xs sm:text-sm sm:gap-2">
-            <Image src={fuelpic} alt="fueltype" className="w-3 sm:w-5"></Image>
-            {fuel}
-          </div>
-          <div className="items-center justify-start hidden gap-2 text-xs sm:text-sm sm:flex">
-            <Image src={enginepic} alt="engine" className="w-5"></Image>
-            {engine}
-          </div>
-          <div className="flex items-center  justify-between w-[100%] text-[#130F40] mt-2  sm:text-sm text-xs  ">
-            <div>{location}</div>
-            <div>
-              <TimeAgo createdAt={created_at || ""} />
+          <div className="  mt-2 md:mt-4  flex justify-between sm:justify-around   gap-y-1 sm:gap-y-2 md:gap-y-4  sm:gap-x-12 text-[#847E7E]   items-center  flex-wrap w-[95%]">
+            <div className="flex items-center gap-1 text-xs sm:text-sm float-start sm:gap-2">
+              <Image
+                src={mileagepic}
+                className="w-3 sm:w-5"
+                alt="mileage"
+              ></Image>
+              {mileage}
+            </div>
+            <div className="flex items-center justify-start gap-1 text-xs sm:text-sm sm:gap-2">
+              <Image
+                src={bodytypepic}
+                alt="bodytype"
+                className="w-3 sm:w-5"
+              ></Image>
+              {bodyType}
+            </div>
+            <div className="flex items-center justify-start gap-1 text-xs sm:text-sm sm:gap-2">
+              <Image
+                src={transmissionpic}
+                alt="transmission"
+                className="w-3 sm:w-5 "
+              ></Image>
+              {transmission}
+            </div>
+            <div className="flex items-center justify-start gap-1 text-xs sm:text-sm sm:gap-2">
+              <Image
+                src={fuelpic}
+                alt="fueltype"
+                className="w-3 sm:w-5"
+              ></Image>
+              {fuel}
+            </div>
+            <div className="items-center justify-start hidden gap-2 text-xs sm:text-sm sm:flex">
+              <Image src={enginepic} alt="engine" className="w-5"></Image>
+              {engine}
+            </div>
+            <div className="flex items-center  justify-between w-[100%] text-[#130F40] mt-2  sm:text-sm text-xs  ">
+              <div>{location}</div>
+              <div>
+                <TimeAgo createdAt={created_at || ""} />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      {pathname === "/profile" && (
+        <>
+          <div className="inset-0 flex items-center justify-center w-full gap-2 p-5 mb-2 rounded-md shadow-lg -mt-9 ">
+            <Button color="warning" variant="bordered">
+              Edit Ad
+            </Button>
+            <Button color="danger">Delete Ad</Button>
+          </div>
+          <Divider
+            orientation="horizontal"
+            className="h-1 shadow-sm rounded-full text-[#F5A524] bg-[#F5A524] mb-8"
+          />
+        </>
+      )}
+    </>
   );
 };
 

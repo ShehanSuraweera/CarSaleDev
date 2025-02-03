@@ -26,16 +26,8 @@ import {
 import CarList from "@/src/components/Cars/CarList";
 import SignOut from "@/src/components/SignOut";
 import { UserProfileData } from "@/src/types";
-import {
-  Loader2,
-  LockIcon,
-  MailIcon,
-  MapPin,
-  Phone,
-  UserRoundPen,
-} from "lucide-react";
+import { MapPin, Phone, UserRoundPen } from "lucide-react";
 import { useUser } from "@/src/UserContext";
-import Link from "next/link";
 import toast from "react-hot-toast";
 import { Bars } from "react-loader-spinner";
 
@@ -281,7 +273,7 @@ const Page = () => {
               </div>
             </Tab>
             <Tab key="myAds" title="myAds">
-              {loading ? (
+              {carsLoading ? (
                 <div className="flex items-center justify-center h-20">
                   <Bars color="#fbc531" height={50} width={50} />
                 </div>
