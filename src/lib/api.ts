@@ -1,16 +1,53 @@
 import apiClient from "@/src/services/api-client";
 import { convertAndUploadBlobs } from "../config/uploadBlobs";
 
-export const fetchAds = async () => {
+export const fetchAds = async (
+  searchParams: {
+    query?: string;
+    make?: string;
+    model?: string;
+    type?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    maxMileage?: string;
+    buildYear?: string;
+    bodyType?: string;
+    transmission?: string;
+    location?: string;
+  } = {}
+) => {
   try {
-    const response = await apiClient.get("/uploads/ads");
+    const queryParams = new URLSearchParams();
+
+    if (searchParams.query) queryParams.append("query", searchParams.query);
+    if (searchParams.make) queryParams.append("make", searchParams.make);
+    if (searchParams.model) queryParams.append("model", searchParams.model);
+    if (searchParams.type) queryParams.append("type", searchParams.type);
+    if (searchParams.minPrice)
+      queryParams.append("minPrice", searchParams.minPrice.toString());
+    if (searchParams.maxPrice)
+      queryParams.append("maxPrice", searchParams.maxPrice.toString());
+    if (searchParams.maxMileage)
+      queryParams.append("maxMileage", searchParams.maxMileage.toString());
+    if (searchParams.buildYear)
+      queryParams.append("buildYear", searchParams.buildYear.toString());
+    if (searchParams.bodyType)
+      queryParams.append("bodyType", searchParams.bodyType);
+    if (searchParams.transmission)
+      queryParams.append("transmission", searchParams.transmission);
+    if (searchParams.location)
+      queryParams.append("location", searchParams.location);
+
+    const response = await apiClient.get(
+      `/uploads/ads?${queryParams.toString()}`
+    );
     if (response.status !== 200) {
       throw new Error("Failed to fetch ads");
     }
     return response.data.ads;
   } catch (error: any) {
-    console.error("Error fetching  ads:", error.message || error);
-    throw new Error(error.response?.data?.message || "Failed to fetch  ads");
+    console.error("Error fetching ads:", error.message || error);
+    throw new Error(error.response?.data?.message || "Failed to fetch ads");
   }
 };
 

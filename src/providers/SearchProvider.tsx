@@ -1,0 +1,53 @@
+"use client";
+
+import { createContext, useContext, useState } from "react";
+
+interface SearchContextProps {
+  query: string;
+  filters: {
+    make: string;
+    model: string;
+    type: string;
+    minPrice: string;
+    maxPrice: string;
+    bodyType: string;
+    transmission: string;
+    location: string;
+    maxMileage: string;
+    buildYear: string;
+  };
+  setQuery: (query: string) => void;
+  setFilters: (filters: any) => void;
+}
+
+const SearchContext = createContext<SearchContextProps | undefined>(undefined);
+
+export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
+  const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState({
+    make: "",
+    model: "",
+    type: "",
+    minPrice: "",
+    maxPrice: "",
+    bodyType: "",
+    transmission: "",
+    location: "",
+    maxMileage: "",
+    buildYear: "",
+  });
+
+  return (
+    <SearchContext.Provider value={{ query, setQuery, filters, setFilters }}>
+      {children}
+    </SearchContext.Provider>
+  );
+};
+
+export const useSearch = () => {
+  const context = useContext(SearchContext);
+  if (!context) {
+    throw new Error("useSearch must be used within a SearchProvider");
+  }
+  return context;
+};

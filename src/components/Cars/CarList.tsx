@@ -21,9 +21,9 @@ const CarList: React.FC<{
 
   return (
     <motion.div
-      initial={{ y: 20, opacity: 0 }}
+      initial={{ y: 0, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ ease: "easeOut", duration: 2 }}
+      transition={{ ease: "easeOut", duration: 1 }}
     >
       <div className="flex flex-wrap items-center justify-center w-full sm:gap-x-6 gap-x-2">
         {cars.map((car) => (

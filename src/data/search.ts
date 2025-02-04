@@ -54,7 +54,6 @@ export const carMakes = [
 ];
 
 export const toyotaModels = [
-  { key: "All models", label: "All models", count: 1262 },
   { key: "Vitz", label: "Vitz", count: 161 },
   { key: "Axio", label: "Axio", count: 132 },
   { key: "Aqua", label: "Aqua", count: 111 },
@@ -263,13 +262,12 @@ export const transmissionTypes = [
 ];
 
 export const priceOptions = [
-  { value: "", label: "None" },
-  { value: "11", label: "Rs. 2,500,000" },
-  { value: "12", label: "Rs. 5,000,000" },
-  { value: "13", label: "Rs. 10,000,000" },
-  { value: "14", label: "Rs. 15,000,000" },
-  { value: "15", label: "Rs. 20,000,000" },
-  { value: "16", label: "Rs. 25,000,000" },
+  { value: "2500000", label: "Rs.2,500,000" },
+  { value: "5000000", label: "Rs.5,000,000" },
+  { value: "7500000", label: "Rs.7,500,000" },
+  { value: "10000000", label: "Rs.10,000,000" },
+  { value: "20000000", label: "Rs.20,000,000" },
+  { value: "25000000", label: "Rs.25,000,000" },
 ];
 
 export const fuelTypes = [

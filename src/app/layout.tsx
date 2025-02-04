@@ -7,6 +7,7 @@ import { fontSans } from "@/src/config/fonts";
 import { Navbar } from "@/src/components/navbar";
 import { UserContextProvider } from "@/src/UserContext";
 import { Toaster } from "react-hot-toast";
+import { SearchProvider } from "../providers/SearchProvider";
 
 export const metadata: Metadata = {
   title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
@@ -74,35 +75,39 @@ export default function RootLayout({
         )}
       >
         <UserContextProvider>
-          <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-            <div className="relative flex flex-col h-screen">
-              <Navbar />
+          <SearchProvider>
+            <Providers
+              themeProps={{ attribute: "class", defaultTheme: "dark" }}
+            >
+              <div className="relative flex flex-col h-screen">
+                <Navbar />
 
-              <main className="container flex-grow px-6 mx-auto sm:pt-8 max-w-7xl">
-                {children}
-              </main>
+                <main className="container flex-grow px-6 mx-auto sm:pt-8 max-w-7xl">
+                  {children}
+                </main>
 
-              <footer className="flex items-center justify-center w-full py-3 mt-20">
-                <Link
-                  isExternal
-                  className="flex items-center gap-1 text-current"
-                  href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
-                  title="nextui.org homepage"
-                >
-                  <span className="text-default-600">Powered by</span>
-                  <p className="text-primary">NextUI</p>
-                </Link>
-              </footer>
-            </div>
-          </Providers>
+                <footer className="flex items-center justify-center w-full py-3 mt-20">
+                  <Link
+                    isExternal
+                    className="flex items-center gap-1 text-current"
+                    href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
+                    title="nextui.org homepage"
+                  >
+                    <span className="text-default-600">Powered by</span>
+                    <p className="text-primary">NextUI</p>
+                  </Link>
+                </footer>
+              </div>
+            </Providers>
 
-          <Toaster
-            toastOptions={{
-              style: {
-                textAlign: "center",
-              },
-            }}
-          />
+            <Toaster
+              toastOptions={{
+                style: {
+                  textAlign: "center",
+                },
+              }}
+            />
+          </SearchProvider>
         </UserContextProvider>
       </body>
     </html>

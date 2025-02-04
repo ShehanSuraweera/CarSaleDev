@@ -507,7 +507,7 @@ export default function Page() {
                 inputValue={adData.make}
                 defaultItems={carMakes}
                 defaultSelectedKey={adData.make}
-                onInputChange={(e) =>
+                onSelectionChange={(e) =>
                   handleInputChange(
                     {
                       target: { value: e },

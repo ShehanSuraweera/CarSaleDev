@@ -11,13 +11,13 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import hideSearch from "@/src/assets/icons/hide-arrow.png";
 import { SearchIcon } from "@/src/components/icons";
 import { useWindowSize } from "react-use";
+import { useSearch } from "@/src/providers/SearchProvider";
 
 export default function Page() {
-  const [cars, setCars] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null);
   const { width } = useWindowSize();
@@ -33,22 +33,37 @@ export default function Page() {
     setIsOpen(open);
   };
 
-  const getCarsFromBackend = async () => {
+  const { query, filters } = useSearch();
+  const [cars, setCars] = useState<any[]>([]);
+
+  const getCarsFromBackend = useCallback(async () => {
     try {
-      setLoading(true); // Start loading
-      const fetchedCars = await fetchAds(); // Fetch the data
-      setCars(fetchedCars); // Update state with the fetched cars
+      setLoading(true);
+      const fetchedCars = await fetchAds({
+        query,
+        make: filters.make,
+        model: filters.model,
+        type: filters.type,
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        maxMileage: filters.maxMileage,
+        buildYear: filters.buildYear,
+        bodyType: filters.bodyType,
+        transmission: filters.transmission,
+        location: filters.location,
+      });
+      setCars(fetchedCars);
     } catch (err: any) {
       console.error("Error fetching ads:", err);
       setError(err.message || "Failed to load ads");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
-  };
+  }, [query, filters]);
 
   useEffect(() => {
     getCarsFromBackend();
-  }, []);
+  }, [query, filters]);
 
   return (
     <div className="">
@@ -100,7 +115,19 @@ export default function Page() {
       <div className="justify-center hidden w-full sm:block">
         <Search />
       </div>
-      <CarList cars={cars} loading={loading} error={error} />
+      {!loading && cars.length === 0 ? (
+        <div className="flex flex-col items-center justify-center w-full h-full mt-10">
+          <SearchIcon width={150} height={150} />
+          <div className="text-xl font-semibold">
+            <p>Ooops! No cars found</p>{" "}
+          </div>
+          <div>
+            <p>Try adjusting your seacrh to find what you are looking for</p>{" "}
+          </div>
+        </div>
+      ) : (
+        <CarList cars={cars} loading={loading} error={error} />
+      )}
     </div>
   );
 }
