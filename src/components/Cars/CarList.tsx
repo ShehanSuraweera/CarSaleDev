@@ -13,7 +13,7 @@ const CarList: React.FC<{
 }> = ({ cars, loading, error }) => {
   if (loading) {
     return (
-      <div className="fixed z-50 flex items-center justify-center w-full h-full ">
+      <div className="z-50 flex items-center justify-center w-full h-screen p-20 sm:h-full">
         <Bars color="#fbc531" height={50} width={50} />
       </div>
     );
