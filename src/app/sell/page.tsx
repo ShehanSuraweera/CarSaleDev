@@ -393,6 +393,7 @@ export default function Page() {
           }
         );
         setIsLoading(false);
+        localStorage.removeItem("AdData");
         router.push("/profile");
       } else {
         toast.error(result);
@@ -423,6 +424,7 @@ export default function Page() {
                 value={adData.owner_display_name}
                 onChange={(e) => handleInputChange(e, "owner_display_name")}
                 description="This will display as owner name of the AD"
+                isInvalid={!!validationErrors.owner_display_name}
               />
 
               <Input
@@ -438,6 +440,7 @@ export default function Page() {
                 className="sm:max-w-96"
                 onChange={(e) => handleInputChange(e, "owner_contact")}
                 description="This will display as contact number of the AD"
+                isInvalid={!!validationErrors.owner_contact}
               />
               <Input
                 name="ad_location"
@@ -452,6 +455,7 @@ export default function Page() {
                 className="sm:max-w-96"
                 onChange={(e) => handleInputChange(e, "ad_location")}
                 description="This will display as Location"
+                isInvalid={!!validationErrors.ad_location}
               />
             </div>
           </div>
