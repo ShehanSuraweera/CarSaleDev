@@ -27,9 +27,6 @@ import {
   Tooltip,
 } from "@heroui/react";
 
-import { User } from "@supabase/supabase-js";
-import { createSupabaseClient } from "../auth/client";
-import SignOut from "./SignOut";
 import { useUser } from "../UserContext";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -177,56 +174,77 @@ export const Navbar = () => {
                   Ceylon Cars
                 </DrawerHeader>
                 <DrawerBody>
-                  <div className="flex flex-col gap-2 mx-4 mt-2">
-                    {siteConfig.navMenuItems.map((item) => (
-                      <NavbarMenuItem key={item.label} className="list-none ">
-                        <Link
-                          onPressEnd={() => {
-                            handleOpen(!isOpen);
-                          }}
-                          color={"foreground"}
-                          className={` ${
-                            item.href === pathName
-                              ? "  font-medium  text-[#FDC221] "
-                              : "text-black dark:text-white"
-                          }`}
-                          href={item.href}
-                          size="lg"
-                          onPress={handleMenuItemClick}
-                        >
-                          <div className="flex flex-col items-center justify-center w-full h-12">
-                            <div> {item.label}</div>
-                            <div className="w-screen">
-                              <Divider className="w-full my-2" />
+                  <div className="flex flex-col justify-between h-full">
+                    <div className="flex flex-col gap-2 mx-4 mt-2">
+                      {siteConfig.navMenuItems.map((item) => (
+                        <NavbarMenuItem key={item.label} className="list-none ">
+                          <Link
+                            onPressEnd={() => {
+                              handleOpen(!isOpen);
+                            }}
+                            color={"foreground"}
+                            className={` ${
+                              item.href === pathName
+                                ? "  font-medium  text-[#FDC221] "
+                                : "text-black dark:text-white"
+                            }`}
+                            href={item.href}
+                            size="lg"
+                            onPress={handleMenuItemClick}
+                          >
+                            <div className="flex flex-col items-center justify-center w-full h-12">
+                              <div> {item.label}</div>
+                              <div className="w-screen">
+                                <Divider className="w-full my-2" />
+                              </div>
                             </div>
-                          </div>
+                          </Link>
+                        </NavbarMenuItem>
+                      ))}
+                    </div>
+                    <div className="flex justify-end p-2">
+                      {!loading && user && (
+                        <Link
+                          href="/profile"
+                          className="flex hover:cursor-pointer"
+                        >
+                          <HeroUser
+                            avatarProps={{
+                              src: "",
+                              size: "sm",
+                            }}
+                            description=""
+                            name={user.email}
+                          />
                         </Link>
-                      </NavbarMenuItem>
-                    ))}
+                      )}
+                    </div>
                   </div>
                 </DrawerBody>
                 <DrawerFooter>
-                  <div className=" w-[100%] flex justify-center gap-2 mt-16"></div>
-                  <Button color="danger" variant="light" onPress={onClose}>
-                    Close
-                  </Button>
-                  {!loading && !user ? (
-                    <Button
-                      color="primary"
-                      variant="ghost"
-                      onPress={() => {
-                        router.push("/login");
-                      }}
-                    >
-                      {loading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        " Sign in"
-                      )}
+                  <div className=" w-[100%] flex justify-center h-full items-center gap-2 mt-1">
+                    <Button color="danger" variant="light" onPress={onClose}>
+                      Close
                     </Button>
-                  ) : (
-                    <SignOut />
-                  )}
+                    {!loading && !user ? (
+                      <Button
+                        color="primary"
+                        variant="ghost"
+                        onPress={() => {
+                          onClose();
+                          router.push("/login");
+                        }}
+                      >
+                        {loading ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          " Sign in"
+                        )}
+                      </Button>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
                 </DrawerFooter>
               </>
             )}
