@@ -15,7 +15,6 @@ import { useEffect, useState } from "react";
 import hideSearch from "@/src/assets/icons/hide-arrow.png";
 import { SearchIcon } from "@/src/components/icons";
 import { useWindowSize } from "react-use";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Page() {
   const [cars, setCars] = useState<any[]>([]);
@@ -33,29 +32,6 @@ export default function Page() {
     onOpen();
     setIsOpen(open);
   };
-  const pathname = usePathname(); // Identify the current page
-  const searchParams = useSearchParams(); // Include query parameters if needed
-
-  useEffect(() => {
-    const scrolly = window.scrollY;
-    console.log("testing", scrolly);
-    const saveScrollPosition = () => {
-      sessionStorage.setItem("scrollPosition", window.scrollY.toString());
-    };
-
-    window.addEventListener("beforeunload", saveScrollPosition);
-    return () => {
-      window.removeEventListener("beforeunload", saveScrollPosition);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Restore the scroll position when the user navigates back
-    const savedPosition = sessionStorage.getItem("scrollPosition");
-    if (savedPosition) {
-      setTimeout(() => window.scrollTo(0, parseInt(savedPosition, 10)), 0);
-    }
-  }, [pathname, searchParams]);
 
   const getCarsFromBackend = async () => {
     try {

@@ -31,7 +31,6 @@ const OneTapComponent = () => {
   const initializeGoogleOneTap = async () => {
     console.log("Initializing Google One Tap");
     const [nonce, hashedNonce] = await generateNonce();
-    console.log("Nonce: ", nonce, hashedNonce);
 
     // check if there's already an existing session before initializing the one-tap UI
     const { data, error } = await supabaseBrowserClient.auth.getSession();
@@ -57,8 +56,6 @@ const OneTapComponent = () => {
             });
 
           if (error) throw error;
-          console.log("Session data: ", data);
-          console.log("Successfully logged in with Google One Tap");
 
           // redirect to protected page
           router.push("/");
