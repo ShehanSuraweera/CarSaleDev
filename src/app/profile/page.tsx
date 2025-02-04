@@ -30,6 +30,7 @@ import { MapPin, Phone, UserRoundPen } from "lucide-react";
 import { useUser } from "@/src/UserContext";
 import toast from "react-hot-toast";
 import { Bars } from "react-loader-spinner";
+import { set } from "date-fns";
 
 const Page = () => {
   const router = useRouter();
@@ -47,7 +48,7 @@ const Page = () => {
     if (userProfileData?.name === null) {
       setIsOpen(true);
     }
-  }, []);
+  }, [setIsOpen, userProfileData]);
 
   const { user, loading } = useUser();
 

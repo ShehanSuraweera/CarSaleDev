@@ -112,7 +112,7 @@ export const Navbar = () => {
                 <Tooltip content={user?.email || ""} color="primary">
                   <HeroUser
                     avatarProps={{
-                      src: "",
+                      src: `${user?.user_metadata.avatar_url || ""}`,
                       size: "sm",
                     }}
                     description=""
