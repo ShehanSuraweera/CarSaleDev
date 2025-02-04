@@ -45,7 +45,7 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="flex items-center justify-center w-full h-screen ">
         <Bars color="#fbc531" height={50} width={50} />
       </div>
     );

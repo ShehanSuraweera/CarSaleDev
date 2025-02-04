@@ -20,6 +20,7 @@ import { useUser } from "../UserContext";
 import toast from "react-hot-toast";
 import WelcomeComponent from "../components/WelcomeComponent";
 import { motion } from "framer-motion";
+import OneTapComponent from "../components/OneTapComponent";
 
 export default function Home() {
   const { user, loading } = useUser();
@@ -81,6 +82,7 @@ export default function Home() {
         <SmallAdsRow topic="Trending Honda Cars" make="Honda" type="Cars" />
         <SmallAdsRow topic="Trending Suzuki Cars" make="Suzuki" type="Cars" />
       </motion.div>
+      {!loading && !user && <OneTapComponent />}
     </section>
   );
 }

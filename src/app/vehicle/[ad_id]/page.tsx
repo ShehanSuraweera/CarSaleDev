@@ -7,16 +7,6 @@ interface PageProps {
   };
 }
 
-// const Page = async ({ params }: PageProps) => {
-//   const { ad_id } = params;
-
-//   return (
-//     <div>
-//       <CarAd ad_id={ad_id} />
-//     </div>
-//   );
-// };
-
 export default async function Page({
   params,
 }: {

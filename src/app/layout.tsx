@@ -3,20 +3,51 @@ import { Metadata, Viewport } from "next";
 import { Link } from "@heroui/link";
 import clsx from "clsx";
 import { Providers } from "@/src/providers/providers";
-import { siteConfig } from "@/src/config/site";
 import { fontSans } from "@/src/config/fonts";
 import { Navbar } from "@/src/components/navbar";
 import { UserContextProvider } from "@/src/UserContext";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
+  title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
+  description:
+    "Buy and sell vehicles in Sri Lanka easily. Find the best deals on cars, SUVs, and motorbikes.",
+  keywords:
+    "buy cars Sri Lanka, sell vehicles, second-hand cars, new cars, car marketplace",
+  authors: [{ name: "Ceylon Cars Team", url: "https://ceyloncars.lk" }],
   icons: {
     icon: "/favicon.ico",
+  },
+  // 🔹 Open Graph for Facebook, WhatsApp, Instagram, TikTok
+  openGraph: {
+    title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
+    description:
+      "Find the best deals on new and used cars in Sri Lanka. List your vehicle for free and connect with buyers easily.",
+    url: "https://ceyloncars.lk",
+    siteName: "Ceylon Cars",
+    type: "website",
+    images: [
+      {
+        url: "https://ceyloncars.lk/og-image.jpg", // Replace with actual OG image URL
+        width: 1200,
+        height: 630,
+        alt: "Ceylon Cars - Sri Lanka's No.1 Vehicle Marketplace",
+      },
+    ],
+  },
+  // 🔹 Twitter Card for Twitter sharing
+  twitter: {
+    card: "summary_large_image",
+    title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
+    description:
+      "Buy and sell vehicles easily with Ceylon Cars. Find the best deals on cars, SUVs, and motorbikes in Sri Lanka.",
+    images: ["https://ceyloncars.lk/og-image.jpg"], // Replace with actual image URL
+  },
+
+  // 🔹 Additional meta tags for best sharing experience
+  metadataBase: new URL("https://ceyloncars.lk"),
+  alternates: {
+    canonical: "https://ceyloncars.lk",
   },
 };
 
