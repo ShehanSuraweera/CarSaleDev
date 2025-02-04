@@ -7,8 +7,6 @@ import { siteConfig } from "@/src/config/site";
 import { fontSans } from "@/src/config/fonts";
 import { Navbar } from "@/src/components/navbar";
 import { UserContextProvider } from "@/src/UserContext";
-import { Button } from "@heroui/button";
-import SeconderyNavBar from "@/src/components/SeconderyNavBar";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {

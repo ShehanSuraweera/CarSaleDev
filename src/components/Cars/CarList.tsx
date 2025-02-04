@@ -1,10 +1,10 @@
 "use client";
-import { Loader2 } from "lucide-react";
+
 import MediumAd from "./MediumAd";
 import { motion } from "framer-motion";
 
 import { Car } from "@/src/types"; // Assuming you have a Car type defined
-import { Bars, ThreeCircles } from "react-loader-spinner";
+import { Bars } from "react-loader-spinner";
 
 const CarList: React.FC<{
   cars: Car[];

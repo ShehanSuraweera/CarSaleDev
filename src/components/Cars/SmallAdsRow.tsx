@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SmallAd from "./SmallAd";
 import { fetchTrendingAds } from "@/src/lib/api";
 import { motion } from "framer-motion";

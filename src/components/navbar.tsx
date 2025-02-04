@@ -181,6 +181,9 @@ export const Navbar = () => {
                     {siteConfig.navMenuItems.map((item) => (
                       <NavbarMenuItem key={item.label} className="list-none ">
                         <Link
+                          onPressEnd={() => {
+                            handleOpen(!isOpen);
+                          }}
                           color={"foreground"}
                           className={` ${
                             item.href === pathName
