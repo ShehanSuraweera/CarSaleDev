@@ -8,6 +8,7 @@ import { Navbar } from "@/src/components/navbar";
 import { UserContextProvider } from "@/src/UserContext";
 import { Toaster } from "react-hot-toast";
 import { SearchProvider } from "../providers/SearchProvider";
+import Footer from "../components/Footer";
 
 export const metadata: Metadata = {
   title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
@@ -88,17 +89,7 @@ export default function RootLayout({
                   {children}
                 </main>
 
-                <footer className="flex items-center justify-center w-full py-3 mt-20">
-                  <Link
-                    isExternal
-                    className="flex items-center gap-1 text-current"
-                    href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
-                    title="nextui.org homepage"
-                  >
-                    <span className="text-default-600">Powered by</span>
-                    <p className="text-primary">NextUI</p>
-                  </Link>
-                </footer>
+                <Footer />
               </div>
             </Providers>
 

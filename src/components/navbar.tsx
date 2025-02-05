@@ -25,6 +25,7 @@ import {
   useDisclosure,
   User as HeroUser,
   Tooltip,
+  Avatar,
 } from "@heroui/react";
 
 import { useUser } from "../UserContext";
@@ -101,7 +102,7 @@ export const Navbar = () => {
         </NavbarContent>
 
         <NavbarContent className="flex basis-1/5 sm:basis-full" justify="end">
-          <NavbarItem className="flex sm:gap-2">
+          <NavbarItem className="flex sm:gap-8">
             <ThemeSwitch />
 
             {!loading && user ? (
@@ -110,17 +111,13 @@ export const Navbar = () => {
                 className="hidden text-white sm:flex hover:cursor-pointer"
               >
                 <Tooltip content={user?.email || ""} color="primary">
-                  <HeroUser
-                    avatarProps={{
-                      src: `${user?.user_metadata.avatar_url || ""}`,
-                      size: "sm",
-                    }}
-                    description=""
-                    name={
-                      user.email && user.email?.length > 10
-                        ? user.email?.slice(0, 10) + "..."
-                        : user.email
-                    }
+                  <Avatar
+                    isBordered
+                    color="primary"
+                    src={`${user?.user_metadata.avatar_url}`}
+                    size="sm"
+                    showFallback={true}
+                    name={user?.email}
                   />
                 </Tooltip>
               </Link>
@@ -169,9 +166,28 @@ export const Navbar = () => {
           <DrawerContent>
             {(onClose) => (
               <>
-                <DrawerHeader className="flex flex-col gap-1">
-                  <Logo />
-                  Ceylon Cars
+                <DrawerHeader className="flex flex-row items-center justify-between gap-1 mt-5">
+                  <div className="flex flex-col gap-1">
+                    <Logo />
+                    <div>Ceylon Cars</div>
+                  </div>
+                  <div className="flex justify-end p-2 mt-5 mr-5">
+                    {!loading && user && (
+                      <Link
+                        href="/profile"
+                        className="flex hover:cursor-pointer"
+                      >
+                        <Avatar
+                          isBordered
+                          color="primary"
+                          src={`${user?.user_metadata.avatar_url}`}
+                          size="sm"
+                          showFallback={true}
+                          name={user?.email}
+                        />
+                      </Link>
+                    )}
+                  </div>
                 </DrawerHeader>
                 <DrawerBody>
                   <div className="flex flex-col justify-between h-full">
@@ -201,23 +217,6 @@ export const Navbar = () => {
                           </Link>
                         </NavbarMenuItem>
                       ))}
-                    </div>
-                    <div className="flex justify-end p-2">
-                      {!loading && user && (
-                        <Link
-                          href="/profile"
-                          className="flex hover:cursor-pointer"
-                        >
-                          <HeroUser
-                            avatarProps={{
-                              src: "",
-                              size: "sm",
-                            }}
-                            description=""
-                            name={user.email}
-                          />
-                        </Link>
-                      )}
                     </div>
                   </div>
                 </DrawerBody>
