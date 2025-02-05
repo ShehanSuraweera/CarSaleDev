@@ -95,13 +95,13 @@ const Search = () => {
             <div className="flex flex-col justify-end min-w-44    flex-wrap   w-[50%] sm:w-[25%] lg:w-[20%]  mt-2">
               <div className="w-1/2"></div>
 
-              <Button
+              {/* <Button
                 radius="md"
                 className="text-black font-medium bg-[#FDC221] "
                 disabled={true}
               >
                 Search
-              </Button>
+              </Button> */}
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 gap-x-8 sm:mt-8 sm:gap-4">

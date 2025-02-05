@@ -6,7 +6,7 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 
 export interface Car {
   ad_id: string;
-
+  frame_code: string;
   ad_images: { image_url: string }[];
 
   body_type: string;

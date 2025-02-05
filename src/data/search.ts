@@ -1,6 +1,4 @@
-import React from "react";
 export const carMakes = [
-  { key: "Allmakes", label: "All makes", count: 1262 },
   { key: "Toyota", label: "Toyota", count: 1262 },
   { key: "Suzuki", label: "Suzuki", count: 737 },
   { key: "Honda", label: "Honda", count: 344 },

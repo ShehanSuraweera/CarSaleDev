@@ -31,6 +31,7 @@ const CarList: React.FC<{
             <MediumAd
               image={car.ad_images[0]?.image_url || "/images/no-image.png"}
               bodyType={car.body_type}
+              frame_code={car.frame_code}
               make={car.make}
               modle={car.model}
               manufacture={car.build_year}

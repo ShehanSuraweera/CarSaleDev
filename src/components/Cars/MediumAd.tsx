@@ -24,8 +24,10 @@ interface MediumAdProps {
   manufacture: string;
   location: string;
   created_at: string;
+  frame_code: string;
 }
 const MediumAd = ({
+  frame_code,
   make,
   modle,
   mileage,
@@ -66,7 +68,7 @@ const MediumAd = ({
           {make}
         </div>
         <div className=" font-medium sm:text-lg text-xs text-[#130F40]">
-          {modle + " " + manufacture}
+          {modle + " " + frame_code + " " + manufacture}
         </div>
 
         <div className=" w-[100%] h-full bg-slate-50 dark:bg-[#000E1E]  mt-1  rounded-md py-2 items-center justify-center flex flex-col">

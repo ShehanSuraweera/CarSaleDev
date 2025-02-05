@@ -71,7 +71,7 @@ export default function Page() {
         isOpen={isOpen}
         placement={placement}
         onOpenChange={handleOpen}
-        size="lg"
+        size="xs"
         defaultOpen={false}
         radius="md"
         className="block sm:hidden"

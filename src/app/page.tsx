@@ -68,9 +68,9 @@ export default function Home() {
           <div>Sell Vehicles</div>
         </div>
       </Button>
-      <div className="justify-center hidden w-full sm:block">
+      {/* <div className="justify-center hidden w-full sm:block">
         <Search />
-      </div>
+      </div> */}
 
       <WelcomeComponent />
       <motion.div
