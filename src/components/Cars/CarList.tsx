@@ -11,7 +11,7 @@ const CarList: React.FC<{
   loading: boolean;
   error: string | null;
 }> = ({ cars, loading, error }) => {
-  if (true) {
+  if (loading) {
     return (
       <div className="z-50 flex items-center justify-center w-full p-20 h-[60%] sm:h-full">
         <Bars color="#fbc531" height={50} width={50} />
