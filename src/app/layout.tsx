@@ -15,7 +15,9 @@ export const metadata: Metadata = {
     "Buy and sell vehicles in Sri Lanka easily. Find the best deals on cars, SUVs, and motorbikes.",
   keywords:
     "buy cars Sri Lanka, sell vehicles, second-hand cars, new cars, car marketplace",
-  authors: [{ name: "Ceylon Cars Team", url: "https://ceyloncars.lk" }],
+  authors: [
+    { name: "Ceylon Cars Team", url: "https://car-sale-dev.vercel.app" },
+  ],
   icons: {
     icon: "/favicon.ico",
   },
@@ -24,12 +26,12 @@ export const metadata: Metadata = {
     title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
     description:
       "Find the best deals on new and used cars in Sri Lanka. List your vehicle for free and connect with buyers easily.",
-    url: "https://ceyloncars.lk",
+    url: "https://car-sale-dev.vercel.app",
     siteName: "Ceylon Cars",
     type: "website",
     images: [
       {
-        url: "https://ceyloncars.lk/og-image.jpg", // Replace with actual OG image URL
+        url: "https://car-sale-dev.vercel.app/og-image.jpg", // Replace with actual OG image URL
         width: 1200,
         height: 630,
         alt: "Ceylon Cars - Sri Lanka's No.1 Vehicle Marketplace",
@@ -42,13 +44,13 @@ export const metadata: Metadata = {
     title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
     description:
       "Buy and sell vehicles easily with Ceylon Cars. Find the best deals on cars, SUVs, and motorbikes in Sri Lanka.",
-    images: ["https://ceyloncars.lk/og-image.jpg"], // Replace with actual image URL
+    images: ["https://car-sale-dev.vercel.app/og-image.jpg"], // Replace with actual image URL
   },
 
   // 🔹 Additional meta tags for best sharing experience
-  metadataBase: new URL("https://ceyloncars.lk"),
+  metadataBase: new URL("https://car-sale-dev.vercel.app"),
   alternates: {
-    canonical: "https://ceyloncars.lk",
+    canonical: "https://car-sale-dev.vercel.app",
   },
 };
 
