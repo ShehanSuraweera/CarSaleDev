@@ -349,6 +349,12 @@ export default function Page() {
   };
   const handleDisplayPriceChange = (value: string) => {
     setDisplayPrice(value);
+    if (value === "no") {
+      setAdData((prevData) => ({
+        ...prevData,
+        price: "",
+      }));
+    }
   };
   const formData = new FormData();
   const handlAdPreview = () => {
@@ -1017,25 +1023,41 @@ export default function Page() {
                             </div>
                           </div>
                           <div className="flex flex-col w-1/2 p-2 mb-2 text-lg font-semibold text-center shadow-md bg-slate-500 rounded-xl">
-                            {adData.price === "negotiable"
-                              ? adData.price
+                            {adData.price === "" || !adData.price
+                              ? "Negotiable"
                               : `Rs. ${formatNumber(Number(adData.price))}`}
                             <div className="text-xs font-light ">
-                              {adData.is_negotiable && "(Negotiable)"}
+                              {adData.price &&
+                                adData.is_negotiable &&
+                                "(Negotiable)"}
                             </div>
                           </div>
                         </div>
 
                         <div className="flex flex-col justify-between gap-1 mt-4 text-sm md:text-base gap-x-4">
                           <p className="mb-1">
-                            <strong>Odometer : </strong> {adData.mileage} km
+                            <strong>Make : </strong> {adData.make}
                           </p>
+                          <p className="mb-1">
+                            <strong>Model : </strong>
+                            {adData.model + " " + adData.frame_code}
+                          </p>
+
+                          {adData.mileage && (
+                            <p className="mb-1">
+                              <strong>Odometer : </strong> {adData.mileage} km
+                            </p>
+                          )}
+
                           <p className="mb-1">
                             <strong>Body type : </strong> {adData.body_type}
                           </p>
-                          <p className="mb-1">
-                            <strong>Engine : </strong> {adData.engine}
-                          </p>
+                          {adData.engine && (
+                            <p className="mb-1">
+                              <strong>Engine : </strong> {adData.engine}
+                            </p>
+                          )}
+
                           <p className="mb-1">
                             <strong>Transmission : </strong>{" "}
                             {adData.transmission}
@@ -1052,16 +1074,12 @@ export default function Page() {
                               ? adData.reg_year
                               : "Not Registered"}
                           </p>
-                          <p className="mb-1">
-                            <strong>Make : </strong> {adData.make}
-                          </p>
-                          <p className="mb-1">
-                            <strong>Model : </strong>
-                            {adData.model + " " + adData.frame_code}
-                          </p>
-                          <p className="mb-1">
-                            <strong>Colour : </strong> {adData.colour}
-                          </p>
+
+                          {adData.colour && (
+                            <p className="mb-1">
+                              <strong>Colour : </strong> {adData.colour}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
