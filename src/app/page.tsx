@@ -1,5 +1,5 @@
 "use client";
-import Search from "@/src/components/Search";
+
 import SmallAdsRow from "@/src/components/Cars/SmallAdsRow";
 import {
   Button,
@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import WelcomeComponent from "../components/WelcomeComponent";
 import { motion } from "framer-motion";
 import OneTapComponent from "../components/OneTapComponent";
+import Search from "../components/Search";
 
 export default function Home() {
   const { user, loading } = useUser();
@@ -39,9 +40,10 @@ export default function Home() {
 
   return (
     <section className="">
-      <Button
+      <Search />
+      {/* <Button
         color="warning"
-        className="block w-full mt-2 capitalize sm:hidden "
+        className="block w-full mt-2 capitalize "
         onPress={() => handleSearchButton()}
       >
         <div className="flex items-center justify-center gap-2">
@@ -50,8 +52,8 @@ export default function Home() {
           </div>
           <div>search vehicles</div>
         </div>
-      </Button>
-      <Button
+      </Button> */}
+      {/* <Button
         color="success"
         className="block w-full mt-2 capitalize sm:hidden "
         onPress={() => handleSellVehicleButton()}
@@ -67,7 +69,7 @@ export default function Home() {
           </div>
           <div>Sell Vehicles</div>
         </div>
-      </Button>
+      </Button> */}
       {/* <div className="justify-center hidden w-full sm:block">
         <Search />
       </div> */}

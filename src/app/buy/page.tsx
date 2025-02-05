@@ -1,13 +1,14 @@
 "use client";
 import CarList from "@/src/components/Cars/CarList";
-import Search from "@/src/components/Search";
 import { fetchAds } from "@/src/lib/api";
 import {
   Button,
+  Chip,
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerFooter,
+  DrawerHeader,
   useDisclosure,
 } from "@heroui/react";
 import Image from "next/image";
@@ -16,24 +17,22 @@ import hideSearch from "@/src/assets/icons/hide-arrow.png";
 import { SearchIcon } from "@/src/components/icons";
 import { useWindowSize } from "react-use";
 import { useSearch } from "@/src/providers/SearchProvider";
+import Search from "@/src/components/Search";
+import Filter from "@/src/components/Filter";
+import { ArrowBigDown, ArrowDown, DropletIcon } from "lucide-react";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null);
   const { width } = useWindowSize();
 
-  const { onOpen } = useDisclosure();
-  const [isOpen, setIsOpen] = useState(width < 640 && true);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const [placement, setPlacement] = useState<
     "top" | "right" | "bottom" | "left"
   >("top");
 
-  const handleOpen = (open: boolean) => {
-    onOpen();
-    setIsOpen(open);
-  };
-
-  const { query, filters } = useSearch();
+  const { query, filters, setFilters } = useSearch();
   const [cars, setCars] = useState<any[]>([]);
 
   const getCarsFromBackend = useCallback(async () => {
@@ -65,13 +64,28 @@ export default function Page() {
     getCarsFromBackend();
   }, [query, filters]);
 
+  const handleChipClose = (filterToRemove: string) => {
+    setFilters((prevFilters: any) => {
+      const updatedFilters = { ...prevFilters };
+
+      // Find and reset the corresponding filter key
+      Object.keys(updatedFilters).forEach((key) => {
+        if (updatedFilters[key] === filterToRemove) {
+          updatedFilters[key] = ""; // Reset field for text inputs or dropdowns
+        }
+      });
+
+      return updatedFilters;
+    });
+  };
+
   return (
     <div className="">
       <Drawer
         isOpen={isOpen}
         placement={placement}
-        onOpenChange={handleOpen}
-        size="xs"
+        onOpenChange={onOpenChange}
+        size="sm"
         defaultOpen={false}
         radius="md"
         className="block sm:hidden"
@@ -79,11 +93,11 @@ export default function Page() {
         <DrawerContent className="block bg-white sm:hidden">
           {(onClose) => (
             <>
-              {/* <DrawerHeader className="flex flex-col gap-1">
-                Drawer Title
-              </DrawerHeader> */}
+              <DrawerHeader className="flex justify-center">
+                Search Filters
+              </DrawerHeader>
               <DrawerBody>
-                <Search />
+                <Filter />
               </DrawerBody>
               <DrawerFooter>
                 <div className="flex justify-center w-full">
@@ -100,21 +114,42 @@ export default function Page() {
           )}
         </DrawerContent>
       </Drawer>
-      <Button
-        color="warning"
-        className="block w-full mt-2 capitalize sm:hidden "
-        onPress={() => handleOpen(!isOpen)}
-      >
-        <div className="flex items-center justify-center gap-2">
-          <div>
-            <SearchIcon />
-          </div>
-          <div>search vehicles</div>
-        </div>
-      </Button>
-      <div className="justify-center hidden w-full sm:block">
-        <Search />
+
+      <Search />
+      <div className="flex justify-center w-full mt-2 sm:hidden">
+        <Button
+          color="primary"
+          variant="flat"
+          className="w-full "
+          onPress={onOpen}
+        >
+          Filters <ArrowDown />
+        </Button>
       </div>
+      <div className="justify-center hidden w-full sm:block">
+        <Filter />
+      </div>
+      <div className="flex flex-wrap items-center justify-between w-full gap-2 mt-8 mb-5 sm:justify-center sm:flex-nowrap sm:flex-row">
+        {Object.values(filters).map((filter, index) =>
+          filter === "" || filter == undefined ? null : (
+            <div
+              key={index}
+              className="flex flex-wrap items-center justify-center gap-2 sm:w-full"
+            >
+              <Chip
+                size="sm"
+                variant="solid"
+                color="primary"
+                className="flex"
+                onClose={() => handleChipClose(filter)}
+              >
+                {filter}
+              </Chip>
+            </div>
+          )
+        )}
+      </div>
+
       {!loading && cars.length === 0 ? (
         <div className="flex flex-col items-center justify-center w-full h-full mt-10">
           <SearchIcon width={150} height={150} />

@@ -158,11 +158,11 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
                 </div>
               </div>
               <div className="flex flex-col w-1/2 p-2 mb-2 text-lg font-semibold text-center shadow-md bg-slate-500 rounded-xl">
-                {car?.price === "negotiable"
-                  ? car?.price
+                {car?.price === "" || !car?.price
+                  ? "Negotiable"
                   : `Rs. ${formatNumber(Number(car?.price))}`}
                 <div className="text-xs font-light ">
-                  {car?.is_negotiable && "(Negotiable)"}
+                  {car?.is_negotiable && car?.price && "(Negotiable)"}
                 </div>
               </div>
             </div>
