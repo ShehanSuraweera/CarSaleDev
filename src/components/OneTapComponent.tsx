@@ -4,6 +4,7 @@ import { CredentialResponse } from "google-one-tap";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import { useUser } from "../UserContext";
+import toast from "react-hot-toast";
 
 // Declare google as a global variable
 declare const google: any;
@@ -57,6 +58,7 @@ const OneTapComponent = () => {
 
           if (error) throw error;
 
+          toast.success("Successfully logged in with Google One Tap");
           // redirect to protected page
           router.push("/");
         } catch (error) {
