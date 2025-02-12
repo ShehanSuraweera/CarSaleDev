@@ -1,5 +1,6 @@
 import apiClient from "@/src/services/api-client";
 import { convertAndUploadBlobs } from "../config/uploadBlobs";
+import exp from "constants";
 
 export const fetchAds = async (
   searchParams: {
@@ -14,6 +15,8 @@ export const fetchAds = async (
     bodyType?: string;
     transmission?: string;
     location?: string;
+    district_id?: string;
+    city_id?: string;
   } = {}
 ) => {
   try {
@@ -37,6 +40,10 @@ export const fetchAds = async (
       queryParams.append("transmission", searchParams.transmission);
     if (searchParams.location)
       queryParams.append("location", searchParams.location);
+    if (searchParams.district_id)
+      queryParams.append("district_id", searchParams.district_id.toString());
+    if (searchParams.city_id)
+      queryParams.append("city_id", searchParams.city_id.toString());
 
     const response = await apiClient.get(
       `/uploads/ads?${queryParams.toString()}`
@@ -158,16 +165,11 @@ export const createAd = async (
       return response.data?.message || "Failed to post ad";
     }
 
-    const adId = response.data.adId;
+    const adId = response.data.adId.toString();
     const bucketName = "ad_pics"; // Supabase storage bucket name
 
     try {
-      const result = await convertAndUploadBlobs(
-        imageUrls,
-        adId.toString(),
-        bucketName
-      ); // Upload images to Supabase storage
-      console.log("result", result);
+      const result = await convertAndUploadBlobs(imageUrls, adId, bucketName); // Upload images to Supabase storage
 
       return "Adposted";
     } catch (error) {
@@ -197,5 +199,77 @@ export const updateUserProfile = async (formData: FormData) => {
   } catch (error) {
     console.error("Error updating profile:", error);
     return "Error";
+  }
+};
+
+export const getAllDistricts = async () => {
+  try {
+    const response = await apiClient.get("/info/districts");
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching districts:", error.message || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch districts"
+    );
+  }
+};
+
+export const getCitiesByDistrict = async (districtId: number) => {
+  try {
+    const response = await apiClient.get(`/info/cities/${districtId}`);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching cities:", error.message || error);
+    throw new Error(error.response?.data?.message || "Failed to fetch cities");
+  }
+};
+
+export const getAllCities = async () => {
+  try {
+    const response = await apiClient.get(`/info/allcities`);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching cities:", error.message || error);
+    throw new Error(error.response?.data?.message || "Failed to fetch cities");
+  }
+};
+
+export const getVehicleTypes = async () => {
+  try {
+    const response = await apiClient.get("/info/vehicle-types");
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching vehicle types:", error.message || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch vehicle types"
+    );
+  }
+};
+
+export const getMakeByVehicleType = async (vehicle_type_id: number) => {
+  try {
+    const response = await apiClient.get(
+      `/info/vehicle-makes/${vehicle_type_id}`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching makes:", error.message || error);
+    throw new Error(error.response?.data?.message || "Failed to fetch makes");
+  }
+};
+
+export const getModelsByMake = async (
+  make_id: number,
+  vehicle_type_id: number
+) => {
+  try {
+    const response = await apiClient.post("/info/vehicle-models", {
+      make_id,
+      vehicle_type_id,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching models:", error.message || error);
+    throw new Error(error.response?.data?.message || "Failed to fetch makes");
   }
 };

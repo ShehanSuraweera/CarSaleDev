@@ -65,8 +65,6 @@ const signInwith = (provider: any) => async () => {
     options: { redirectTo: auth_callbacl_url },
   });
 
-  console.log(data);
-
   if (error) {
     console.error("Error logging in with Google", error);
   }

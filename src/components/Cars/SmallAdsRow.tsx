@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SmallAd from "./SmallAd";
 import { fetchTrendingAds } from "@/src/lib/api";
 import { motion } from "framer-motion";
@@ -22,7 +22,7 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
 
-  const getCarsFromBackend = async () => {
+  const getCarsFromBackend = useCallback(async () => {
     try {
       setLoading(true); // Start loading
       const fetchedCars = await fetchTrendingAds(make, type); // Fetch the data
@@ -33,10 +33,11 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
     } finally {
       setLoading(false); // Stop loading
     }
-  };
+  }, [make, type]);
+
   useEffect(() => {
     getCarsFromBackend();
-  }, [make]);
+  }, [getCarsFromBackend]);
 
   return (
     <motion.div

@@ -3,11 +3,11 @@
 import MediumAd from "./MediumAd";
 import { motion } from "framer-motion";
 
-import { Car } from "@/src/types"; // Assuming you have a Car type defined
+import { AdData } from "@/src/types"; // Assuming you have a Car type defined
 import { Bars } from "react-loader-spinner";
 
 const CarList: React.FC<{
-  cars: Car[];
+  cars: AdData[];
   loading: boolean;
   error: string | null;
 }> = ({ cars, loading, error }) => {
@@ -41,7 +41,7 @@ const CarList: React.FC<{
               engine={car.engine}
               transmission={car.transmission}
               id={car.ad_id}
-              location={car.ad_location}
+              location={car.cities?.name}
               created_at={car.created_at}
             />
           </div>

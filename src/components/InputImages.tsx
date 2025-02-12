@@ -1,25 +1,32 @@
 import { Input } from "@heroui/react";
 import Image from "next/image";
-import React, { useState, ChangeEvent, useRef } from "react";
+import React, { ChangeEvent, useRef } from "react";
 import { InputImagesIcon } from "./icons";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import {
+  updateField,
+  updateImageUrls,
+} from "@/src/redux/features/ad/adFormSlice";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "react-beautiful-dnd";
 
-// Define types for the images state
-type ImageQueue = string[]; // Array of image URLs
-
-interface InputImagesProps {
-  onImagesChange: (images: ImageQueue) => void; // Callback to send images to the parent
-}
-
-const InputImages: React.FC<InputImagesProps> = ({ onImagesChange }) => {
-  const [images, setImages] = useState<ImageQueue>([]); // State to hold image URLs
+const InputImages = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null); // Ref for the input element
+
+  const dispatch = useDispatch();
+  const { adFormData } = useSelector((state: RootState) => state.adForm);
 
   // Handle file input change (image selection)
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
-      // Prevent exceeding 5 images
-      if (files.length + images.length > 6) {
+      // Prevent exceeding 6 images
+      if (files.length + adFormData.imageUrls.length > 6) {
         alert("You can upload up to 6 images.");
         return;
       }
@@ -28,12 +35,9 @@ const InputImages: React.FC<InputImagesProps> = ({ onImagesChange }) => {
       const imageFiles = Array.from(files);
       const imagePreviews = imageFiles.map((file) => URL.createObjectURL(file));
 
-      // Update state with new images
-      const updatedImages = [...images, ...imagePreviews];
-      setImages(updatedImages);
-
-      // Notify the parent component
-      onImagesChange(updatedImages);
+      // Update Redux store with new images
+      const updatedImages = [...adFormData.imageUrls, ...imagePreviews];
+      dispatch(updateImageUrls(updatedImages));
 
       // Clear the file input
       if (fileInputRef.current) {
@@ -44,17 +48,27 @@ const InputImages: React.FC<InputImagesProps> = ({ onImagesChange }) => {
 
   // Handle removal of an image (close button click)
   const removeImage = (index: number) => {
-    const updatedImages = images.filter((_, i) => i !== index); // Remove the image at the given index
-    setImages(updatedImages);
+    const updatedImages = adFormData.imageUrls.filter((_, i) => i !== index); // Remove the image at the given index
+    dispatch(updateImageUrls(updatedImages));
+  };
 
-    // Notify the parent component
-    onImagesChange(updatedImages);
+  // Handle drag-and-drop reordering
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return; // Dropped outside the list
+
+    const items = Array.from(adFormData.imageUrls);
+    const [reorderedItem] = items.splice(result.source.index, 1); // Remove the dragged item
+    items.splice(result.destination.index, 0, reorderedItem); // Insert the dragged item at the new position
+
+    dispatch(updateImageUrls(items));
   };
 
   return (
     <div
       className={`sm:w-[90%] shadow-md w-full p-8 ${
-        images.length === 0 ? "border-2 border-solid border-red-300" : ""
+        adFormData.imageUrls.length === 0
+          ? "border-2 border-solid border-red-300"
+          : ""
       }`}
     >
       <label className="flex text-sm font-medium text-gray-700 hover:cursor-pointer">
@@ -77,31 +91,57 @@ const InputImages: React.FC<InputImagesProps> = ({ onImagesChange }) => {
         ></Input>
       </label>
 
-      <div className="mt-8">
-        {images.length > 0 && (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-            {images.map((image, index) => (
-              <div
-                key={index}
-                className="relative w-full h-48 overflow-hidden border rounded-md"
-              >
-                <Image
-                  src={image}
-                  alt={`Preview ${index + 1}`}
-                  width={500}
-                  height={500}
-                  className="object-contain w-full h-full "
-                />
-                {/* Close button */}
-                <button
-                  onClick={() => removeImage(index)}
-                  className="absolute px-1 text-sm text-white bg-red-400 rounded-sm top-2 right-2"
+      <div className="w-full mt-8 ">
+        {adFormData.imageUrls.length > 0 && (
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable
+              droppableId="images"
+              direction="horizontal"
+              isDropDisabled={false}
+              isCombineEnabled={false}
+              ignoreContainerClipping={false}
+            >
+              {(provided: any, snapshot: any) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className="relative grid grid-cols-1 gap-6 overflow-hidden sm:grid-cols-2 md:grid-cols-3"
                 >
-                  X
-                </button>
-              </div>
-            ))}
-          </div>
+                  {adFormData.imageUrls.map((image, index) => (
+                    <Draggable
+                      key={index}
+                      draggableId={`image-${index}`}
+                      index={index}
+                    >
+                      {(provided: any, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className="relative w-full h-48 overflow-hidden border rounded-md shadow-md "
+                        >
+                          <Image
+                            src={image}
+                            alt={`Preview ${index + 1}`}
+                            className="object-cover w-full h-full"
+                          />
+
+                          {/* Close button */}
+                          <button
+                            onClick={() => removeImage(index)}
+                            className="absolute px-1 text-sm text-white bg-red-400 rounded-sm top-2 right-2"
+                          >
+                            X
+                          </button>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         )}
       </div>
     </div>

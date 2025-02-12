@@ -15,23 +15,15 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import hideSearch from "@/src/assets/icons/hide-arrow.png";
 import { SearchIcon } from "@/src/components/icons";
-import { useWindowSize } from "react-use";
 import { useSearch } from "@/src/providers/SearchProvider";
 import Search from "@/src/components/Search";
 import Filter from "@/src/components/Filter";
-import { ArrowBigDown, ArrowDown, DropletIcon } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null);
-  const { width } = useWindowSize();
-
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
-  const [placement, setPlacement] = useState<
-    "top" | "right" | "bottom" | "left"
-  >("top");
-
   const { query, filters, setFilters } = useSearch();
   const [cars, setCars] = useState<any[]>([]);
 
@@ -50,6 +42,8 @@ export default function Page() {
         bodyType: filters.bodyType,
         transmission: filters.transmission,
         location: filters.location,
+        district_id: filters.district_id,
+        city_id: filters.city_id,
       });
       setCars(fetchedCars);
     } catch (err: any) {
@@ -62,7 +56,7 @@ export default function Page() {
 
   useEffect(() => {
     getCarsFromBackend();
-  }, [query, filters]);
+  }, [getCarsFromBackend]);
 
   const handleChipClose = (filterToRemove: string) => {
     setFilters((prevFilters: any) => {
@@ -83,7 +77,7 @@ export default function Page() {
     <div className="">
       <Drawer
         isOpen={isOpen}
-        placement={placement}
+        placement="top"
         onOpenChange={onOpenChange}
         size="sm"
         defaultOpen={false}
@@ -129,12 +123,12 @@ export default function Page() {
       <div className="justify-center hidden w-full sm:block">
         <Filter />
       </div>
-      <div className="flex flex-wrap items-center justify-between w-full gap-2 mt-8 mb-5 sm:justify-center sm:flex-nowrap sm:flex-row">
+      <div className="flex flex-wrap items-center justify-center w-full gap-2 mt-8 mb-5 sm:justify-center sm:gap-5 sm:flex-nowrap sm:flex-row">
         {Object.values(filters).map((filter, index) =>
           filter === "" || filter == undefined ? null : (
             <div
               key={index}
-              className="flex flex-wrap items-center justify-center gap-2 sm:w-full"
+              className="flex flex-wrap items-center justify-center gap-2 sm:gap-5 "
             >
               <Chip
                 size="sm"

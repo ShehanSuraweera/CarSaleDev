@@ -4,6 +4,8 @@ import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
+  Autocomplete,
+  AutocompleteItem,
   Checkbox,
   Chip,
   Divider,
@@ -20,6 +22,8 @@ import {
 } from "@heroui/react";
 import {
   fetchUserAds,
+  getAllDistricts,
+  getCitiesByDistrict,
   getUserProfileData,
   updateUserProfile,
 } from "@/src/lib/api";
@@ -44,6 +48,10 @@ const Page = () => {
   const { onOpen } = useDisclosure();
   const [isOpen, setIsOpen] = useState(false);
 
+  const [districts, setDistricts] = useState();
+  const [cities, setCities] = useState();
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
+
   useEffect(() => {
     if (userProfileData?.name === null) {
       setIsOpen(true);
@@ -51,6 +59,34 @@ const Page = () => {
   }, [setIsOpen, userProfileData]);
 
   const { user, loading } = useUser();
+
+  // Fetch districts on mount
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      try {
+        const data = await getAllDistricts();
+        setDistricts(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchDistricts();
+  }, []);
+
+  // Fetch cities when district changes
+  useEffect(() => {
+    if (selectedDistrict) {
+      const fetchCities = async () => {
+        try {
+          const data = await getCitiesByDistrict(Number(selectedDistrict));
+          setCities(data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      fetchCities();
+    }
+  }, [selectedDistrict]);
 
   const handleUpdateProfileModel = (open: boolean) => {
     onOpen();
@@ -70,8 +106,6 @@ const Page = () => {
     try {
       const response = await updateUserProfile(formData);
 
-      console.log(response);
-
       toast.success("Profile updated successfully");
       handleUpdateProfileModel(!isOpen); // Close modal on success
     } catch (error) {
@@ -86,7 +120,7 @@ const Page = () => {
       (async () => {
         try {
           const fetchUserProfile = await getUserProfileData(user.id as string);
-          setUserProfileData(fetchUserProfile[0]); // Ensure profile data is set correctly
+          setUserProfileData(fetchUserProfile); // Ensure profile data is set correctly
         } catch (error) {
           console.error("Error fetching user profile:", error);
         }
@@ -114,6 +148,22 @@ const Page = () => {
       getCarsFromBackend();
     }
   }, [selected, user]); // Ensure `user` is in the dependency array
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    field: string
+  ) => {
+    if (field === "district_id") {
+      setSelectedDistrict(e.target.value);
+    }
+    setUserProfileData((prevData) => {
+      if (!prevData) return null;
+      return {
+        ...prevData,
+        [field]: e.target.value,
+      };
+    });
+  };
 
   return (
     <div className="flex flex-col items-center justify-between w-full h-full p-5 bg-slate-50">
@@ -158,10 +208,17 @@ const Page = () => {
                           <div>{userProfileData?.phone}</div>
                         </div>
                         <Divider />
+
+                        <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
+                          <div>District</div>
+
+                          <div>{userProfileData?.cities?.districts?.name}</div>
+                        </div>
+                        <Divider />
                         <div className="flex items-center p-4 space-x-4 text-base rounded-md shadow-md">
                           <div>City</div>
 
-                          <div>{userProfileData?.city}</div>
+                          <div>{userProfileData?.cities?.name}</div>
                         </div>
                         <div className="flex items-center justify-center mt-4">
                           <Button
@@ -243,6 +300,64 @@ const Page = () => {
                                         })
                                       }
                                     />
+                                    <Autocomplete
+                                      isRequired={true}
+                                      labelPlacement="outside"
+                                      label="District"
+                                      name="district"
+                                      defaultItems={districts}
+                                      onSelectionChange={(e) =>
+                                        handleInputChange(
+                                          {
+                                            target: { value: e },
+                                          } as React.ChangeEvent<HTMLInputElement>,
+                                          "district_id"
+                                        )
+                                      }
+                                      className="w-full text-black sm:max-w-96"
+                                      placeholder="e.g  Colombo, Kandy, Galle"
+                                    >
+                                      {(district: {
+                                        id: string;
+                                        name: string;
+                                      }) => (
+                                        <AutocompleteItem
+                                          key={district.id}
+                                          value={district.id}
+                                        >
+                                          {district.name}
+                                        </AutocompleteItem>
+                                      )}
+                                    </Autocomplete>
+                                    {/* <Autocomplete
+                                      isRequired={true}
+                                      labelPlacement="outside"
+                                      label="City"
+                                      name="city"
+                                      isDisabled={!selectedDistrict}
+                                      defaultItems={cities}
+                                      //selectedKey={userProfileData?.cities?.id}
+                                      onSelectionChange={(e) =>
+                                        handleInputChange(
+                                          {
+                                            target: { value: e },
+                                          } as React.ChangeEvent<HTMLSelectElement>,
+                                          "city_id"
+                                        )
+                                      }
+                                      className="w-full text-black sm:max-w-96"
+                                      placeholder="e.g  Nugegoda, Peradeniya, Hikkaduwa,..."
+                                      description="This will display as Location"
+                                    >
+                                      {(city: { id: string; name: string }) => (
+                                        <AutocompleteItem
+                                          key={city.id}
+                                          value={city.id}
+                                        >
+                                          {city.name}
+                                        </AutocompleteItem>
+                                      )}
+                                    </Autocomplete> */}
                                     <div className="flex items-center justify-end w-full gap-4 pr-5 mt-5">
                                       <Button
                                         color="primary"

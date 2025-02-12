@@ -1,165 +1,162 @@
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Input,
+  Select,
+  SelectItem,
+} from "@heroui/react";
 import React, { useEffect, useState } from "react";
-import { Input, Select, SelectItem } from "@heroui/react";
+import { conditions, fuelTypes } from "../data/search";
+import { RootState } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { updateField } from "../redux/features/ad/adFormSlice";
+import { getYear } from "date-fns";
 
-// Define the type for the props
-type VehicleBackgroundProps = {
-  condition: { key: string; label: string }[];
-  yor: { key: string; label: string }[];
-  engine: { key: string; label: string }[];
-  fuel: { key: string; label: string }[];
-  setVehicleBackground: (details: {
-    condition: string;
-    yor: string;
-    milage: string;
-    engine: string;
-    colour: string;
-    fuelType: string;
-  }) => void;
-};
+function VehicleBackground() {
+  const dispatch = useDispatch();
+  const { adFormData, errors } = useSelector(
+    (state: RootState) => state.adForm
+  );
 
-const VehicleBackground: React.FC<VehicleBackgroundProps> = ({
-  condition,
-  yor,
-  engine,
-  fuel,
-  setVehicleBackground,
-}) => {
-  const [vehicleCondition, setVehicleCondition] = useState("");
-  const [vehicleYor, setVehicleYor] = useState("");
-  const [vehicleMilage, setVehicleMilage] = useState("");
-  const [vehicleEngine, setVehicleEngine] = useState("");
-  const [vehicleColour, setVehicleColour] = useState("");
-  const [vehicleFuelType, setVehicleFuelType] = useState("");
+  const [yearOfRegistration, setYearOfRegistration] = useState<
+    { key: string; label: string }[]
+  >([]);
   const [isRegistered, setIsRegistered] = useState(false);
+  const [isBrandNew, setIsBrandNew] = useState(false);
 
-  const updateVehicleBackground = () => {
-    setVehicleBackground({
-      condition: vehicleCondition,
-      yor: vehicleYor,
-      milage: vehicleMilage,
-      engine: vehicleEngine,
-      colour: vehicleColour,
-      fuelType: vehicleFuelType,
-    });
+  const currentYear = getYear(new Date());
+  const years = Array.from({ length: currentYear - 1980 + 1 }, (_, k) => ({
+    key: (currentYear - k).toString(),
+    label: (currentYear - k).toString(),
+  }));
+
+  const handleConditionChange = (value: string) => {
+    dispatch(updateField({ field: "vehicle_condition", value: value }));
+    // if (adFormData.vehicle_condition === "Brand new") {
+    //   updateField({ field: "mileage", value: adFormData.mileage });
+    // }
+
+    setIsRegistered(value == "Registered (Used)");
+    setIsBrandNew(value === "Brand new");
   };
 
   useEffect(() => {
-    updateVehicleBackground();
-  }, [
-    vehicleCondition,
-    vehicleYor,
-    vehicleMilage,
-    vehicleEngine,
-    vehicleColour,
-    vehicleFuelType,
-  ]);
-
-  const handleConditionChange = (value: string) => {
-    if (value === "registered") {
-      setIsRegistered(true);
-    } else {
-      setIsRegistered(false);
+    if (adFormData.build_year) {
+      const years = Array.from(
+        { length: currentYear - Number(adFormData.build_year) + 1 },
+        (_, k) => ({
+          key: (Number(adFormData.build_year) + k).toString(),
+          label: (Number(adFormData.build_year) + k).toString(),
+        })
+      );
+      setYearOfRegistration(years);
     }
-    setVehicleCondition(value);
-    updateVehicleBackground();
-  };
-
-  const handleYorChange = (value: string) => {
-    setVehicleYor(value);
-    updateVehicleBackground();
-  };
-
-  const handleMilageChange = (value: string) => {
-    setVehicleMilage(value);
-    updateVehicleBackground();
-  };
-
-  const handleEngineChange = (value: string) => {
-    setVehicleEngine(value);
-    updateVehicleBackground();
-  };
-
-  const handleColourChange = (value: string) => {
-    setVehicleColour(value);
-    updateVehicleBackground();
-  };
-
-  const handleFuelTypeChange = (value: string) => {
-    setVehicleFuelType(value);
-    updateVehicleBackground();
-  };
+  }, [adFormData.build_year, currentYear]);
 
   return (
-    <div className=" sm:w-[90%] shadow-md   p-8">
+    <div className=" sm:w-[90%] shadow-md  p-8">
       <h1 className="text-lg font-medium">
         Let's start finding your car's background
       </h1>
       <div className="flex flex-wrap justify-center gap-8 mt-5">
-        <Select
+        <Autocomplete
           isRequired={true}
           labelPlacement="outside"
           label="Condition"
           className="w-full text-black sm:max-w-96"
           placeholder="e.g  Registered, Unregistered, "
-          onChange={(e) => handleConditionChange(e.target.value)}
+          name="vehicle_condition"
+          inputValue={adFormData.vehicle_condition}
+          defaultItems={conditions}
+          onInputChange={(e) => {
+            if (e) handleConditionChange(e);
+          }}
+          onSelectionChange={(e) => {
+            if (e) handleConditionChange(e as string);
+          }}
         >
-          {condition.map((make) => (
-            <SelectItem key={make.key} value={make.key}>
-              {make.label}
-            </SelectItem>
-          ))}
-        </Select>
-        <Select
+          {(item) => (
+            <AutocompleteItem key={item.label} value={item.key}>
+              {item.label}
+            </AutocompleteItem>
+          )}
+        </Autocomplete>
+        <Autocomplete
           labelPlacement="outside"
           label="Year of Registration"
-          className="w-full text-black sm:max-w-96"
+          defaultItems={yearOfRegistration}
+          inputValue={adFormData.reg_year}
+          onInputChange={(e) =>
+            dispatch(updateField({ field: "reg_year", value: e }))
+          }
+          className={`w-full text-black sm:max-w-96 `}
           placeholder="e.g  2024, 2023, 2022"
-          onChange={(e) => handleYorChange(e.target.value)}
-          isDisabled={!isRegistered}
+          name="reg_year"
+          isDisabled={!isRegistered || !adFormData.build_year}
         >
-          {yor.map((item) => (
-            <SelectItem key={item.key} value={item.key}>
-              {item.label}
-            </SelectItem>
-          ))}
-        </Select>
+          {(item) => (
+            <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
+          )}
+        </Autocomplete>
 
         <Input
           type="string"
           label="Milage (km)"
+          value={adFormData.mileage}
+          onChange={(e) =>
+            dispatch(updateField({ field: "mileage", value: e.target.value }))
+          }
           labelPlacement="outside"
           className="w-full text-black sm:max-w-96"
           placeholder="e.g 60000, 150000 "
-          value={vehicleMilage}
-          onChange={(e) => handleMilageChange(e.target.value)}
+          name="mileage"
+          isDisabled={isBrandNew}
         />
 
-        <Input
+        <Autocomplete
           type="string"
           label="Engine"
+          value={adFormData.engine}
+          allowsCustomValue={true}
+          onInputChange={(e) =>
+            dispatch(updateField({ field: "engine", value: e }))
+          }
           labelPlacement="outside"
           className="w-full text-black sm:max-w-96"
           placeholder="e.g e.g VVTi 1.5L "
-          value={vehicleEngine}
-          onChange={(e) => handleEngineChange(e.target.value)}
-        />
-        <Input
+          name="engine"
+        >
+          <AutocompleteItem key="VVTi 1.5L">VVTi 1.5L</AutocompleteItem>
+        </Autocomplete>
+
+        <Autocomplete
           type="string"
+          allowsCustomValue={true}
           label="Colour"
+          inputValue={adFormData.colour}
+          onInputChange={(e) =>
+            dispatch(updateField({ field: "colour", value: e }))
+          }
           labelPlacement="outside"
           className="w-full text-black sm:max-w-96"
           placeholder="e.g Silver, White"
-          onChange={(e) => handleColourChange(e.target.value)}
-        />
+          name="colour"
+        >
+          <AutocompleteItem key="Silver">Silver</AutocompleteItem>
+        </Autocomplete>
         <Select
           isRequired={true}
+          value={adFormData.fuel_type}
+          onChange={(e) =>
+            dispatch(updateField({ field: "fuel_type", value: e.target.value }))
+          }
           labelPlacement="outside"
           label="Fuel Type"
           className="w-full text-black sm:max-w-96"
           placeholder="e.g Petrol, Diesel, Hybrid "
-          onChange={(e) => handleFuelTypeChange(e.target.value)}
+          name="fuel_type"
         >
-          {fuel.map((item) => (
+          {fuelTypes.map((item) => (
             <SelectItem key={item.key} value={item.key}>
               {item.label}
             </SelectItem>
@@ -168,6 +165,6 @@ const VehicleBackground: React.FC<VehicleBackgroundProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default VehicleBackground;

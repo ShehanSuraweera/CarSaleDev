@@ -1,14 +1,13 @@
 "use client";
 // import Button from "@mui/material/Button";
 // import TextField from "@mui/material/TextField";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 // import DropDown from "./DropDown";
 import { Select, SelectItem } from "@heroui/select";
 import {
   carMakes,
   toyotaModels,
   bodyTypes,
-  districts,
   yom,
   mileageOptions,
   transmissionTypes,
@@ -19,9 +18,23 @@ import { Button } from "@heroui/button";
 import { useSearch } from "../providers/SearchProvider";
 import { Autocomplete, AutocompleteItem, Chip, Slider } from "@heroui/react";
 import { getYear } from "date-fns";
+import { getAllDistricts } from "../lib/api";
 
 const Filter = () => {
-  const { query, setQuery, filters, setFilters } = useSearch();
+  const { filters, setFilters } = useSearch();
+  const [districts, setDistricts] = useState([]);
+
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      try {
+        const data = await getAllDistricts();
+        setDistricts(data);
+      } catch (error) {
+        console.error("Error fetching districts:", error);
+      }
+    };
+    fetchDistricts();
+  }, []);
 
   const currentYear = getYear(new Date());
   const years = Array.from({ length: currentYear - 1980 + 1 }, (_, k) => ({
@@ -108,14 +121,16 @@ const Filter = () => {
               variant="underlined"
               label="Location"
               className="sm:max-w-44"
-              onSelectionChange={(e) => setFilters({ ...filters, location: e })}
+              onSelectionChange={(e) =>
+                setFilters({ ...filters, district_id: e })
+              }
               defaultItems={districts}
-              selectedKey={filters.location}
+              selectedKey={filters.district_id}
               allowsCustomValue={true}
             >
-              {(district) => (
-                <AutocompleteItem key={district.key}>
-                  {district.label}
+              {(district: { id: string; name: string }) => (
+                <AutocompleteItem key={district.id}>
+                  {district.name}
                 </AutocompleteItem>
               )}
             </Autocomplete>

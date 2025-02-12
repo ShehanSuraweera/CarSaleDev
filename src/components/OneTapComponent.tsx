@@ -2,7 +2,7 @@
 
 import { CredentialResponse } from "google-one-tap";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useUser } from "../UserContext";
 
 // Declare google as a global variable
@@ -28,7 +28,7 @@ const OneTapComponent = () => {
     return [nonce, hashedNonce];
   };
 
-  const initializeGoogleOneTap = async () => {
+  const initializeGoogleOneTap = useCallback(async () => {
     console.log("Initializing Google One Tap");
     const [nonce, hashedNonce] = await generateNonce();
 
@@ -68,7 +68,7 @@ const OneTapComponent = () => {
       use_fedcm_for_prompt: true,
     });
     google.accounts.id.prompt(); // Display the One Tap UI
-  };
+  }, [supabaseBrowserClient.auth, router]);
 
   useEffect(() => {
     // Only trigger once when the script is loaded
@@ -85,7 +85,7 @@ const OneTapComponent = () => {
     return () => {
       document.body.removeChild(scriptElement); // Clean up the script when the component unmounts
     };
-  }, []);
+  }, [initializeGoogleOneTap]);
 
   return <div id="oneTap" className="fixed top-0 right-0 z-[100]" />;
 };

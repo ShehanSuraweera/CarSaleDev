@@ -15,6 +15,8 @@ interface SearchContextProps {
     location: string;
     maxMileage: string;
     buildYear: string;
+    district_id: string;
+    city_id: string;
   };
   setQuery: (query: string) => void;
   setFilters: (filters: any) => void;
@@ -35,6 +37,8 @@ export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
     location: "",
     maxMileage: "",
     buildYear: "",
+    district_id: "",
+    city_id: "",
   });
 
   return (
