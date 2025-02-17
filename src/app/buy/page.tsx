@@ -32,8 +32,8 @@ export default function Page() {
       setLoading(true);
       const fetchedCars = await fetchAds({
         query,
-        make: filters.make,
-        model: filters.model,
+        make_id: filters.make_id,
+        model_id: filters.model_id,
         type: filters.type,
         minPrice: filters.minPrice,
         maxPrice: filters.maxPrice,

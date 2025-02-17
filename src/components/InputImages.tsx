@@ -26,7 +26,7 @@ const InputImages = () => {
     const files = event.target.files;
     if (files) {
       // Prevent exceeding 6 images
-      if (files.length + adFormData.imageUrls.length > 6) {
+      if (files.length + adFormData?.images?.length > 6) {
         alert("You can upload up to 6 images.");
         return;
       }
@@ -36,7 +36,7 @@ const InputImages = () => {
       const imagePreviews = imageFiles.map((file) => URL.createObjectURL(file));
 
       // Update Redux store with new images
-      const updatedImages = [...adFormData.imageUrls, ...imagePreviews];
+      const updatedImages = [...adFormData.images, ...imagePreviews];
       dispatch(updateImageUrls(updatedImages));
 
       // Clear the file input
@@ -48,7 +48,7 @@ const InputImages = () => {
 
   // Handle removal of an image (close button click)
   const removeImage = (index: number) => {
-    const updatedImages = adFormData.imageUrls.filter((_, i) => i !== index); // Remove the image at the given index
+    const updatedImages = adFormData.images.filter((_, i) => i !== index); // Remove the image at the given index
     dispatch(updateImageUrls(updatedImages));
   };
 
@@ -56,7 +56,7 @@ const InputImages = () => {
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return; // Dropped outside the list
 
-    const items = Array.from(adFormData.imageUrls);
+    const items = Array.from(adFormData.images);
     const [reorderedItem] = items.splice(result.source.index, 1); // Remove the dragged item
     items.splice(result.destination.index, 0, reorderedItem); // Insert the dragged item at the new position
 
@@ -66,7 +66,7 @@ const InputImages = () => {
   return (
     <div
       className={`sm:w-[90%] shadow-md w-full p-8 ${
-        adFormData.imageUrls.length === 0
+        adFormData?.images?.length === 0
           ? "border-2 border-solid border-red-300"
           : ""
       }`}
@@ -92,7 +92,7 @@ const InputImages = () => {
       </label>
 
       <div className="w-full mt-8 ">
-        {adFormData.imageUrls.length > 0 && (
+        {adFormData?.images?.length > 0 && (
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable
               droppableId="images"
@@ -107,7 +107,7 @@ const InputImages = () => {
                   ref={provided.innerRef}
                   className="relative grid grid-cols-1 gap-6 overflow-hidden sm:grid-cols-2 md:grid-cols-3"
                 >
-                  {adFormData.imageUrls.map((image, index) => (
+                  {adFormData.images.map((image, index) => (
                     <Draggable
                       key={index}
                       draggableId={`image-${index}`}
@@ -124,6 +124,8 @@ const InputImages = () => {
                             src={image}
                             alt={`Preview ${index + 1}`}
                             className="object-cover w-full h-full"
+                            width={500}
+                            height={500}
                           />
 
                           {/* Close button */}

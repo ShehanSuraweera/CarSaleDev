@@ -10,14 +10,16 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Marquee from "react-fast-marquee";
 import { Bars } from "react-loader-spinner";
+import { Button } from "@heroui/button";
+import { Link, Link2Off } from "lucide-react";
 
 interface SmallAdsRowProps {
   topic: string;
-  make: string;
-  type: string;
+  make_id: string;
+  vehicle_type_id: string;
 }
 
-const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
+const SmallAdsRow = ({ topic, make_id, vehicle_type_id }: SmallAdsRowProps) => {
   const [cars, setCars] = useState<any[]>([]); // Holds the fetched car ads
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
@@ -25,7 +27,7 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
   const getCarsFromBackend = useCallback(async () => {
     try {
       setLoading(true); // Start loading
-      const fetchedCars = await fetchTrendingAds(make, type); // Fetch the data
+      const fetchedCars = await fetchTrendingAds(make_id, vehicle_type_id); // Fetch the data
       setCars(fetchedCars); // Update state with the fetched cars
     } catch (err: any) {
       console.error("Error fetching ads:", err);
@@ -33,11 +35,13 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
     } finally {
       setLoading(false); // Stop loading
     }
-  }, [make, type]);
+  }, [make_id, vehicle_type_id]);
 
   useEffect(() => {
     getCarsFromBackend();
   }, [getCarsFromBackend]);
+
+  const handleLinkClick = () => {};
 
   return (
     <motion.div
@@ -49,7 +53,15 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
         <div>
           {cars.length > 0 && (
             <h1 className="mb-4 text-lg font-bold text-center sm:mb-2">
-              {topic}
+              <Button
+                variant="light"
+                color="primary"
+                className="text-lg font-bold"
+                onPress={handleLinkClick}
+              >
+                {topic}
+                <Link />
+              </Button>
             </h1>
           )}
         </div>
@@ -68,8 +80,8 @@ const SmallAdsRow = ({ topic, make, type }: SmallAdsRowProps) => {
                   className="!flex justify-center items-center w-40 h-70 md:w-52 md:h-80 lg:w-60 lg:h-96"
                 >
                   <SmallAd
-                    make={car.make}
-                    model={car.model}
+                    make={car.models.makes.name}
+                    model={car.models.name}
                     price={car.price}
                     image={
                       car.ad_images[0]?.image_url || "/images/no-image.png"

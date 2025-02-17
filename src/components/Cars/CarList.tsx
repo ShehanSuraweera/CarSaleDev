@@ -29,19 +29,19 @@ const CarList: React.FC<{
         {cars.map((car) => (
           <div key={car.ad_id}>
             <MediumAd
-              image={car.ad_images[0]?.image_url || "/images/no-image.png"}
+              image={car.images?.[0] || "/images/no-image.png"}
               bodyType={car.body_type}
               frame_code={car.frame_code}
-              make={car.make}
-              modle={car.model}
+              make={car.make?.name}
+              modle={car.model?.name}
               manufacture={car.build_year}
               mileage={car.mileage}
               fuel={car.fuel_type}
-              price={car.price}
+              price={car?.price?.toString()}
               engine={car.engine}
               transmission={car.transmission}
               id={car.ad_id}
-              location={car.cities?.name}
+              location={car?.city?.name}
               created_at={car.created_at}
             />
           </div>

@@ -1,43 +1,53 @@
-import { AdFormData } from "@/src/types";
-import { useUser } from "@/src/UserContext";
+import { AdData } from "@/src/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// Define the shape of the ad form state
 interface AdFormState {
-  adFormData: AdFormData;
-  errors: Partial<Record<keyof AdFormData, string>>;
+  adFormData: AdData;
+  errors: Partial<Record<keyof AdData, string>>;
 }
 
-let savedData;
-if (typeof window !== "undefined" && window.localStorage) {
-  savedData = JSON.parse(localStorage.getItem("AdData") || "{}");
-}
-
-// const { user } = useUser();
-
+// Default initial state for the form
 const initialState: AdFormState = {
   adFormData: {
     user_id: "",
-    make: savedData?.make || "",
-    model: savedData?.model || "",
-    frame_code: savedData?.frame_code || "",
-    build_year: savedData?.build_year || "",
-    transmission: savedData?.transmission || "",
-    body_type: savedData?.body_type || "",
-    vehicle_condition: savedData?.vehicle_condition || "",
-    reg_year: savedData?.reg_year || "",
-    mileage: savedData?.mileage || "",
-    engine: savedData?.engine || "",
-    colour: savedData?.colour || "",
-    fuel_type: savedData?.fuel_type || "",
-    price: savedData?.price || "",
-    owner_comments: savedData?.owner_comments || "",
-    owner_contact: savedData?.owner_contact || "",
-    owner_display_name: savedData?.owner_display_name || "",
+    frame_code: "",
+    build_year: "",
+    transmission: "",
+    body_type: "",
+    vehicle_condition: "",
+    reg_year: "",
+    mileage: "",
+    engine: "",
+    colour: "",
+    fuel_type: "",
+    owner_comments: "",
+    owner_contact: "",
+    owner_display_name: "",
     is_negotiable: false,
-    vehicle_type: savedData?.vehicle_type || "",
-    district_id: savedData?.district_id || "",
-    city_id: savedData?.city_id || "",
-    imageUrls: savedData?.imageUrls || [],
+    vehicle_type_id: "",
+    images: [],
+    ad_id: "",
+    city: {
+      id: 0,
+      name: "",
+    },
+    created_at: "",
+    district: {
+      id: 0,
+      name: "",
+    },
+    make: {
+      id: 0,
+      name: "",
+    },
+    model: {
+      id: 0,
+      name: "",
+    },
+    price: 0,
+    title: "",
+    views: 0,
   },
   errors: {},
 };
@@ -46,28 +56,43 @@ const adFormSlice = createSlice({
   name: "adForm",
   initialState,
   reducers: {
-    updateField: (
-      state,
-      action: PayloadAction<{ field: keyof AdFormData; value: any }>
+    // Update a specific field in the ad form with correct type inference
+    updateField: <K extends keyof AdData>(
+      state: AdFormState,
+      action: PayloadAction<{ field: K; value: AdData[K] }>
     ) => {
-      (state.adFormData[action.payload.field] as any) = action.payload.value;
+      state.adFormData[action.payload.field] = action.payload.value;
       // Clear error when the user starts typing
       delete state.errors[action.payload.field];
     },
+
+    // Set an error message for a specific field
     setError: (
       state,
-      action: PayloadAction<{ field: keyof AdFormData; message: string }>
+      action: PayloadAction<{ field: keyof AdData; message: string }>
     ) => {
       state.errors[action.payload.field] = action.payload.message;
     },
-    resetForm: () => initialState,
 
+    // Set the entire ad form data
+    setAdData: (state, action: PayloadAction<AdData>) => {
+      state.adFormData = action.payload;
+    },
+
+    // Reset the form data while preserving the structure
+    resetForm: (state) => {
+      state.adFormData = { ...initialState.adFormData };
+      state.errors = {};
+    },
+
+    // Update the images array
     updateImageUrls: (state, action: PayloadAction<string[]>) => {
-      state.adFormData.imageUrls = action.payload;
+      state.adFormData.images = action.payload;
     },
   },
 });
 
-export const { updateField, setError, resetForm, updateImageUrls } =
+// Export actions and reducer
+export const { updateField, setError, resetForm, updateImageUrls, setAdData } =
   adFormSlice.actions;
 export default adFormSlice.reducer;

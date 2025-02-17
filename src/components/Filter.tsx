@@ -1,8 +1,6 @@
 "use client";
-// import Button from "@mui/material/Button";
-// import TextField from "@mui/material/TextField";
+
 import React, { use, useEffect, useState } from "react";
-// import DropDown from "./DropDown";
 import { Select, SelectItem } from "@heroui/select";
 import {
   carMakes,
@@ -13,10 +11,8 @@ import {
   transmissionTypes,
   priceOptions,
 } from "@/src/data/search";
-import { Input } from "@heroui/input";
-import { Button } from "@heroui/button";
 import { useSearch } from "../providers/SearchProvider";
-import { Autocomplete, AutocompleteItem, Chip, Slider } from "@heroui/react";
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { getYear } from "date-fns";
 import { getAllDistricts } from "../lib/api";
 
@@ -53,7 +49,7 @@ const Filter = () => {
               className="w-full text-black sm:max-w-44"
               placeholder="All makes"
               defaultItems={carMakes}
-              selectedKey={filters.make || undefined}
+              selectedKey={filters.make_id || undefined}
               onSelectionChange={(e) => setFilters({ ...filters, make: e })}
             >
               {(make) => (
@@ -66,7 +62,7 @@ const Filter = () => {
               className="w-full sm:max-w-44"
               placeholder="All Models"
               defaultItems={toyotaModels}
-              selectedKey={filters.model}
+              selectedKey={filters.model_id}
               onSelectionChange={(e) => setFilters({ ...filters, model: e })}
             >
               {(models) => (
@@ -103,18 +99,6 @@ const Filter = () => {
             >
               {(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
             </Autocomplete>
-
-            {/* <div className="flex flex-col justify-end min-w-44     flex-wrap   w-[50%] sm:w-[25%] lg:w-[20%]  ">
-              <div className="w-1/2"></div>
-
-              <Button
-                radius="md"
-                className="text-black font-medium bg-[#FDC221] "
-                disabled={true}
-              >
-                Search
-              </Button>
-            </div> */}
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 gap-x-8 sm:mt-8 sm:gap-12">
             <Autocomplete

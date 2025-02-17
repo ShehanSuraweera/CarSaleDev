@@ -1,12 +1,11 @@
 import apiClient from "@/src/services/api-client";
 import { convertAndUploadBlobs } from "../config/uploadBlobs";
-import exp from "constants";
 
 export const fetchAds = async (
   searchParams: {
     query?: string;
-    make?: string;
-    model?: string;
+    make_id?: string;
+    model_id?: string;
     type?: string;
     minPrice?: string;
     maxPrice?: string;
@@ -23,8 +22,10 @@ export const fetchAds = async (
     const queryParams = new URLSearchParams();
 
     if (searchParams.query) queryParams.append("query", searchParams.query);
-    if (searchParams.make) queryParams.append("make", searchParams.make);
-    if (searchParams.model) queryParams.append("model", searchParams.model);
+    if (searchParams.make_id)
+      queryParams.append("make_id", searchParams.make_id);
+    if (searchParams.model_id)
+      queryParams.append("model_id", searchParams.model_id);
     if (searchParams.type) queryParams.append("type", searchParams.type);
     if (searchParams.minPrice)
       queryParams.append("minPrice", searchParams.minPrice.toString());
@@ -58,11 +59,14 @@ export const fetchAds = async (
   }
 };
 
-export const fetchTrendingAds = async (make: string, type: string) => {
+export const fetchTrendingAds = async (
+  make_id: string,
+  vehicle_type_id: string
+) => {
   try {
     const response = await apiClient.post("/uploads/trending-ads", {
-      make: make,
-      type: type,
+      make_id,
+      vehicle_type_id,
     });
 
     return response.data.ads;
@@ -271,5 +275,35 @@ export const getModelsByMake = async (
   } catch (error: any) {
     console.error("Error fetching models:", error.message || error);
     throw new Error(error.response?.data?.message || "Failed to fetch makes");
+  }
+};
+
+export const editAd = async (formData: FormData, imageUrls: string[]) => {
+  try {
+    const response = await apiClient.post("/uploads/edit-ad", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (response.status !== 200) {
+      console.error("Failed to edit ad:", response.status);
+      return response.data?.message || "Failed to edit ad";
+    }
+
+    const adId = response.data.data.ad_id.toString();
+    const bucketName = "ad_pics"; // Supabase storage bucket name
+
+    try {
+      const result = await convertAndUploadBlobs(imageUrls, adId, bucketName); // Upload images to Supabase storage
+
+      return "AdEdited";
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      return "Failed to upload images";
+    }
+  } catch (error: any) {
+    console.error("Error editing ad:", error);
+    return error.response?.data?.message || "Server error";
   }
 };

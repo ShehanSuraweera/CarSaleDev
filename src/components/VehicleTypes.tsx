@@ -35,7 +35,7 @@ const VehicleTypes = () => {
   useEffect(() => {
     dispatch(updateField({ field: "make", value: "" }));
     dispatch(updateField({ field: "model", value: "" }));
-  }, [adFormData.vehicle_type, dispatch]);
+  }, [adFormData.vehicle_type_id, dispatch]);
 
   return (
     <div className=" sm:w-[90%] shadow-md w-full p-8   ">
@@ -50,9 +50,9 @@ const VehicleTypes = () => {
             <RadioGroup
               name="vehicle_type"
               isRequired={true}
-              value={adFormData.vehicle_type}
+              value={adFormData.vehicle_type_id}
               onValueChange={(e) =>
-                dispatch(updateField({ field: "vehicle_type", value: e }))
+                dispatch(updateField({ field: "vehicle_type_id", value: e }))
               }
             >
               {vehicleTypes.map((item, index) => (

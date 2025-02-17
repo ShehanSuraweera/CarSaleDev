@@ -5,8 +5,8 @@ import { createContext, useContext, useState } from "react";
 interface SearchContextProps {
   query: string;
   filters: {
-    make: string;
-    model: string;
+    make_id: string;
+    model_id: string;
     type: string;
     minPrice: string;
     maxPrice: string;
@@ -27,8 +27,8 @@ const SearchContext = createContext<SearchContextProps | undefined>(undefined);
 export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({
-    make: "",
-    model: "",
+    make_id: "",
+    model_id: "",
     type: "",
     minPrice: "",
     maxPrice: "",

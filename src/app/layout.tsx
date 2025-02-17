@@ -10,7 +10,7 @@ import { Toaster } from "react-hot-toast";
 import { SearchProvider } from "../providers/SearchProvider";
 import Footer from "../components/Footer";
 import { Provider } from "react-redux";
-import StoreProvider from "./StoreProvider";
+import StoreProvider from "../providers/StoreProvider";
 export const metadata: Metadata = {
   title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
   description:

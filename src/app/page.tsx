@@ -80,9 +80,21 @@ export default function Home() {
         animate={{ x: 0, opacity: 1 }}
         transition={{ ease: "easeOut", duration: 2 }}
       >
-        <SmallAdsRow topic="Trending Toyota Cars" make="Toyota" type="Cars" />
-        <SmallAdsRow topic="Trending Honda Cars" make="Honda" type="Cars" />
-        <SmallAdsRow topic="Trending Suzuki Cars" make="Suzuki" type="Cars" />
+        <SmallAdsRow
+          topic="Trending Toyota Cars"
+          make_id="1"
+          vehicle_type_id="1"
+        />
+        <SmallAdsRow
+          topic="Trending Honda Cars"
+          make_id="3"
+          vehicle_type_id="1"
+        />
+        <SmallAdsRow
+          topic="Trending Suzuki Cars"
+          make_id="2"
+          vehicle_type_id="1"
+        />
       </motion.div>
       {!loading && !user && <OneTapComponent />}
     </section>

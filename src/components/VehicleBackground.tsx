@@ -66,7 +66,7 @@ function VehicleBackground() {
           className="w-full text-black sm:max-w-96"
           placeholder="e.g  Registered, Unregistered, "
           name="vehicle_condition"
-          inputValue={adFormData.vehicle_condition}
+          inputValue={adFormData.vehicle_condition ?? ""}
           defaultItems={conditions}
           onInputChange={(e) => {
             if (e) handleConditionChange(e);
@@ -102,7 +102,8 @@ function VehicleBackground() {
         <Input
           type="string"
           label="Milage (km)"
-          value={adFormData.mileage}
+          defaultValue={adFormData.mileage ?? ""}
+          value={adFormData.mileage ?? ""}
           onChange={(e) =>
             dispatch(updateField({ field: "mileage", value: e.target.value }))
           }
@@ -116,7 +117,7 @@ function VehicleBackground() {
         <Autocomplete
           type="string"
           label="Engine"
-          value={adFormData.engine}
+          inputValue={adFormData.engine ?? ""}
           allowsCustomValue={true}
           onInputChange={(e) =>
             dispatch(updateField({ field: "engine", value: e }))
@@ -133,7 +134,7 @@ function VehicleBackground() {
           type="string"
           allowsCustomValue={true}
           label="Colour"
-          inputValue={adFormData.colour}
+          inputValue={adFormData.colour ?? ""}
           onInputChange={(e) =>
             dispatch(updateField({ field: "colour", value: e }))
           }
@@ -144,11 +145,11 @@ function VehicleBackground() {
         >
           <AutocompleteItem key="Silver">Silver</AutocompleteItem>
         </Autocomplete>
-        <Select
+        <Autocomplete
           isRequired={true}
-          value={adFormData.fuel_type}
-          onChange={(e) =>
-            dispatch(updateField({ field: "fuel_type", value: e.target.value }))
+          inputValue={adFormData.fuel_type ?? ""}
+          onInputChange={(e) =>
+            dispatch(updateField({ field: "fuel_type", value: e }))
           }
           labelPlacement="outside"
           label="Fuel Type"
@@ -161,7 +162,7 @@ function VehicleBackground() {
               {item.label}
             </SelectItem>
           ))}
-        </Select>
+        </Autocomplete>
       </div>
     </div>
   );

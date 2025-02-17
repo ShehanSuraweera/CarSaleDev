@@ -42,7 +42,7 @@ const PriceHandle = () => {
       <RadioGroup
         label="Do you like to display price ?"
         orientation="horizontal"
-        value={displayPrice}
+        value={displayPrice ?? ""}
         onValueChange={handleDisplayPriceChange}
         className="mb-6"
         size="sm"
@@ -60,7 +60,7 @@ const PriceHandle = () => {
               labelPlacement="outside"
               className="w-full text-black sm:max-w-96"
               placeholder="e.g 6000000, 1500000 "
-              value={adFormData.price}
+              value={adFormData?.price?.toString() ?? ""}
               onChange={handlePriceChange}
               endContent={
                 <Checkbox

@@ -53,6 +53,10 @@ const MediumAd = ({
     router.push(`/vehicle/${id}`);
   };
 
+  const handleEditAdButtton = () => {
+    router.push(`/ad-edit/${id}`);
+  };
+
   return (
     <>
       <div className=" mb-7  shadow-md mt-2 sm:mt-10 w-full sm:w-[250px] overflow-hidden sm:h-[500px] md:w-[370px] md:h-[550px] h-[300px] lg:w-[400px] dark:bg-[#000B17]  rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  ">
@@ -126,7 +130,11 @@ const MediumAd = ({
       {pathname === "/profile" && (
         <>
           <div className="inset-0 flex items-center justify-center w-full gap-2 p-5 mb-2 rounded-md shadow-lg -mt-9 ">
-            <Button color="warning" variant="bordered">
+            <Button
+              color="warning"
+              variant="bordered"
+              onPress={handleEditAdButtton}
+            >
               Edit Ad
             </Button>
             <Button color="danger">Delete Ad</Button>

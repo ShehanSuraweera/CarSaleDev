@@ -1,7 +1,6 @@
 // components/CarAd.tsx
 "use client";
-import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
 // Import Swiper React components
@@ -14,9 +13,6 @@ import "swiper/css/thumbs";
 
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { Swiper as SwiperClass } from "swiper";
-import { fetchAd } from "@/src/lib/api";
-import { Loader2, LoaderPinwheel } from "lucide-react";
-import { Bars, ThreeCircles } from "react-loader-spinner";
 import { AdData } from "@/src/types";
 import TimeAgo from "./TimeAgo";
 
@@ -34,9 +30,9 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
       <h1 className="mb-2 text-2xl font-semibold">
         {adData?.build_year +
           " " +
-          adData?.make +
+          adData?.make?.name +
           " " +
-          adData?.model +
+          adData?.model?.name +
           " " +
           adData?.frame_code}
       </h1>
@@ -45,7 +41,7 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
         {adData?.owner_display_name + " - " + adData?.vehicle_condition}
       </p>
       <span className="text-sm text-gray-600">
-        {adData?.cities?.districts?.name} district - {adData?.cities.name}
+        {adData?.district?.name} district - {adData?.city.name}
       </span>
       <div className="flex justify-end mb-4 text-xs">
         <TimeAgo createdAt={adData?.created_at || ""} />
@@ -66,27 +62,21 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
             modules={[FreeMode, Navigation, Thumbs]}
             className="w-full h-auto "
           >
-            {adData?.ad_images.map(
-              (image: { image_url: string; created_at: string }) => (
-                <SwiperSlide
-                  key={image.created_at}
-                  className="flex items-center justify-center text-xl text-center"
-                >
-                  <Image
-                    id={image.created_at}
-                    src={
-                      image.image_url === "" || !image.image_url
-                        ? "/images/no-image.png"
-                        : image.image_url
-                    }
-                    alt={image.image_url}
-                    width={500}
-                    height={500}
-                    className="block w-full h-[250px]  sm:h-[300px] md:h-[350px] lg:h-[400px] xl:h-[500px] object-contain  rounded-xl   px-2 py-1 mb-2"
-                  />
-                </SwiperSlide>
-              )
-            )}
+            {adData?.images.map((image) => (
+              <SwiperSlide
+                key={image}
+                className="flex items-center justify-center text-xl text-center"
+              >
+                <Image
+                  id={image}
+                  src={image === "" || !image ? "/images/no-image.png" : image}
+                  alt={image}
+                  width={500}
+                  height={500}
+                  className="block w-full h-[250px]  sm:h-[300px] md:h-[350px] lg:h-[400px] xl:h-[500px] object-contain  rounded-xl   px-2 py-1 mb-2"
+                />
+              </SwiperSlide>
+            ))}
           </Swiper>
           <Swiper
             onSwiper={setThumbsSwiper}
@@ -98,27 +88,18 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
             modules={[FreeMode, Navigation, Thumbs]}
             className="w-full mt-4 h-auto md:mb-5 pb-2 xl:w-[85%]"
           >
-            {adData?.ad_images.map(
-              (image: { image_url: string; created_at: string }) => (
-                <SwiperSlide
-                  key={image.created_at}
-                  className=" swiper-slide-thumb-active"
-                >
-                  <Image
-                    id={image.created_at}
-                    src={
-                      image.image_url === "" || !image.image_url
-                        ? "/images/no-image.png"
-                        : image.image_url
-                    }
-                    alt={image.image_url}
-                    width={500}
-                    height={500}
-                    className="block w-full h-[60px] sm:h-[70px] lg:h-[90px] xl:h-[100px] object-contain hover:cursor-pointer mb-1   p-1 shadow-md rounded-md"
-                  />
-                </SwiperSlide>
-              )
-            )}
+            {adData?.images.map((image) => (
+              <SwiperSlide key={image} className=" swiper-slide-thumb-active">
+                <Image
+                  id={image}
+                  src={image === "" || !image ? "/images/no-image.png" : image}
+                  alt={image}
+                  width={500}
+                  height={500}
+                  className="block w-full h-[60px] sm:h-[70px] lg:h-[90px] xl:h-[100px] object-contain hover:cursor-pointer mb-1   p-1 shadow-md rounded-md"
+                />
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
         <div className="w-full mt-4 lg:mt-0 xl:px-10">
@@ -134,7 +115,7 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
               </div>
             </div>
             <div className="flex flex-col w-1/2 p-2 mb-2 text-lg font-semibold text-center shadow-md bg-slate-500 rounded-xl">
-              {adData?.price === "" || !adData?.price
+              {adData?.price === 0 || !adData?.price
                 ? "Negotiable"
                 : `Rs. ${formatNumber(Number(adData?.price))}`}
               <div className="text-xs font-light ">
@@ -144,6 +125,19 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
           </div>
 
           <div className="flex flex-col justify-between gap-1 mt-4 text-sm md:text-base gap-x-4">
+            <p className="mb-1">
+              <strong>Make : </strong> {adData?.make?.name}
+            </p>
+            <p className="mb-1">
+              <strong>Model : </strong>
+              {adData?.model?.name + " " + adData?.frame_code}
+            </p>
+            <p className="mb-1">
+              <strong>YOM : </strong> {adData?.build_year}
+            </p>
+            <p className="mb-1">
+              <strong>YOR : </strong> {adData?.reg_year}
+            </p>
             <p className="mb-1">
               <strong>Odometer : </strong> {adData?.mileage} km
             </p>
@@ -160,17 +154,7 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
               <strong>Fuel Type : </strong> {adData?.fuel_type}
             </p>
             <p className="mb-1">
-              <strong>YOM : </strong> {adData?.build_year}
-            </p>
-            <p className="mb-1">
-              <strong>YOR : </strong> {adData?.reg_year}
-            </p>
-            <p className="mb-1">
-              <strong>Make : </strong> {adData?.make}
-            </p>
-            <p className="mb-1">
-              <strong>Model : </strong>
-              {adData?.model + " " + adData?.frame_code}
+              <strong>Colour : </strong> {adData?.colour}
             </p>
           </div>
         </div>
