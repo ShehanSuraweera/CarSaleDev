@@ -44,11 +44,18 @@ const AdPreview = ({
         });
       } else if (typeof value === "boolean") {
         formData.append(key, value ? "true" : "false");
+      } else if (
+        key === "make" ||
+        key === "model" ||
+        key === "city" ||
+        key === "district"
+      ) {
       } else {
         formData.append(key, value.toString());
       }
     });
 
+    formData.append("city_id", adFormData.city.id.toString());
     formData.append("model_id", adFormData.model.id.toString());
 
     return formData;

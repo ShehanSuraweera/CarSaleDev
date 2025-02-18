@@ -2,6 +2,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { createBrowserClient } from "@supabase/ssr";
+import { UserProfileData } from "./types";
+import { getUserProfileData } from "./lib/api";
 
 // Type definitions for context
 interface UserContextType {
@@ -9,6 +11,8 @@ interface UserContextType {
   session: Session | null;
   supabaseBrowserClient: ReturnType<typeof createBrowserClient>;
   loading: boolean;
+  profile: UserProfileData | null;
+  refreshProfile: () => Promise<void>;
 }
 
 // Create Context
@@ -22,6 +26,7 @@ export const UserContextProvider = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Create Supabase client
@@ -30,6 +35,23 @@ export const UserContextProvider = ({
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
+  // Fetch user profile from Express API
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const profileData: UserProfileData = await getUserProfileData(userId);
+      setProfile(profileData);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      setProfile(null);
+    }
+  };
+
+  // Function to refresh profile after an update
+  const refreshProfile = async () => {
+    if (user) {
+      await fetchUserProfile(user.id);
+    }
+  };
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -50,7 +72,6 @@ export const UserContextProvider = ({
     const { data: authListener } = supabaseBrowserClient.auth.onAuthStateChange(
       (_event, session) => {
         setLoading(true);
-        //console.log("onAuthStateChange -> session", session?.user);
         setUser(session?.user ?? null);
         setSession(session);
         setLoading(false);
@@ -65,7 +86,14 @@ export const UserContextProvider = ({
 
   return (
     <UserContext.Provider
-      value={{ user, session, supabaseBrowserClient, loading }}
+      value={{
+        user,
+        session,
+        supabaseBrowserClient,
+        loading,
+        refreshProfile,
+        profile,
+      }}
     >
       {children}
     </UserContext.Provider>

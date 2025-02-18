@@ -101,7 +101,7 @@ const Page = () => {
         }
       })();
     }
-  }, [user, userProfileData]);
+  }, [user]);
 
   useEffect(() => {
     const getCarsFromBackend = async () => {
