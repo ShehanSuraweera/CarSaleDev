@@ -21,23 +21,24 @@ const Search = () => {
 
   return (
     <div>
-      <div className="flex justify-center ">
+      <div className="flex items-center justify-center gap-2 ">
         <Input
-          size="lg"
+          size="md"
           color="primary"
-          className="px-0 rounded-full w-[90%] sm:w-[50%] "
-          endContent={
-            <Button
-              variant="shadow"
-              color="primary"
-              className="px-0 text-black rounded-large "
-              onPress={handleSearchButton}
-            >
-              <SearchIcon className="pointer-events-none " />
-            </Button>
-          }
+          className="px-0 rounded-full w-[100%] sm:w-[100%] "
           placeholder="search your dream car"
           type="text"
+          endContent={
+            <Button
+              variant="light"
+              color="primary"
+              className="w-5 px-0 text-black rounded-medium min-w-8 "
+              onPress={handleSearchButton}
+              size="md"
+            >
+              <SearchIcon className="w-5 pointer-events-none " />
+            </Button>
+          }
           value={query}
           onChange={(e) => handleOnChange(e)}
         />

@@ -9,6 +9,7 @@ import {
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
+  DropdownSection,
   useDisclosure,
 } from "@heroui/react";
 import Image from "next/image";
@@ -18,7 +19,7 @@ import { SearchIcon } from "@/src/components/icons";
 import { useSearch } from "@/src/providers/SearchProvider";
 import Search from "@/src/components/Search";
 import Filter from "@/src/components/Filter";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, ArrowDownWideNarrow, FilterIcon } from "lucide-react";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(true); // Loading state
@@ -77,9 +78,9 @@ export default function Page() {
     <div className="">
       <Drawer
         isOpen={isOpen}
-        placement="top"
+        placement="left"
         onOpenChange={onOpenChange}
-        size="sm"
+        size="xs"
         defaultOpen={false}
         radius="md"
         className="block sm:hidden"
@@ -109,16 +110,18 @@ export default function Page() {
         </DrawerContent>
       </Drawer>
 
-      <Search />
-      <div className="flex justify-center w-full mt-2 sm:hidden">
+      <div className="flex items-center justify-center w-full gap-2 mt-2 ">
         <Button
           color="primary"
           variant="flat"
-          className="w-full "
+          className="sm:hidden"
           onPress={onOpen}
+          size="sm"
         >
-          Filters <ArrowDown />
+          <ArrowDownWideNarrow />
+          Filters
         </Button>
+        <Search />
       </div>
       <div className="justify-center hidden w-full sm:block">
         <Filter />

@@ -37,10 +37,10 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
           adData?.frame_code}
       </h1>
 
-      <p className="text-gray-600 ">
+      <p className="text-gray-600 dark:text-slate-300">
         {adData?.owner_display_name + " - " + adData?.vehicle_condition}
       </p>
-      <span className="text-sm text-gray-600">
+      <span className="text-sm text-gray-600 dark:text-slate-300">
         {adData?.district?.name} district - {adData?.city.name}
       </span>
       <div className="flex justify-end mb-4 text-xs">

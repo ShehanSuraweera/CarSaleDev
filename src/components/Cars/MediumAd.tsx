@@ -94,10 +94,10 @@ const MediumAd = ({
           height={500}
           onClick={handleAd}
         />
-        <div className=" mt-1 font-semibold md:text-lg   text-xs text-[#130F40]">
+        <div className=" mt-1 font-semibold md:text-lg   text-xs text-[#130F40] dark:text-[#FDC221]">
           {make}
         </div>
-        <div className=" font-medium md:text-lg text-xs text-[#130F40]">
+        <div className=" font-medium md:text-lg text-xs text-[#130F40] dark:text-[#FDC221]">
           {modle + " " + frame_code + " " + manufacture}
         </div>
 
@@ -145,7 +145,7 @@ const MediumAd = ({
               {engine}
             </div>
 
-            <div className="flex items-center  justify-between w-[100%] text-[#130F40] mt-2  md:text-sm text-xs  ">
+            <div className="flex items-center  justify-between w-[100%] text-[#130F40] mt-2  md:text-sm text-xs  dark:text-slate-500 ">
               <div>{location}</div>
               <div>
                 <TimeAgo createdAt={created_at || ""} />
