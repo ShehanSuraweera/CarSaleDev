@@ -307,3 +307,12 @@ export const editAd = async (formData: FormData, imageUrls: string[]) => {
     return error.response?.data?.message || "Server error";
   }
 };
+
+export const deleteAd = async (ad_id: string) => {
+  try {
+    const result = await apiClient.post("/uploads/delete-ad", { ad_id });
+    return "ad_deleted";
+  } catch (error) {
+    console.log("failed to delete ad", error);
+  }
+};

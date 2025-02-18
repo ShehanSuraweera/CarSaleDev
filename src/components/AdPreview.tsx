@@ -55,8 +55,8 @@ const AdPreview = ({
       }
     });
 
-    formData.append("city_id", adFormData.city.id.toString());
-    formData.append("model_id", adFormData.model.id.toString());
+    formData.append("city_id", adFormData?.city?.id?.toString());
+    formData.append("model_id", adFormData?.model.id.toString());
 
     return formData;
   };

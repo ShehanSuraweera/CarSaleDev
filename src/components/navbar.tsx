@@ -95,7 +95,7 @@ export const Navbar = () => {
                 </NextLink>
               </NavbarItem>
             ))}
-            <Button color="warning" onPress={handleSellButton}>
+            <Button color="warning" onPress={handleSellButton} size="sm">
               POST FREE
             </Button>
           </ul>
