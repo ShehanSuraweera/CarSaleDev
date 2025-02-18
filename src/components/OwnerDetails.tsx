@@ -23,17 +23,27 @@ import { useUser } from "../UserContext";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
+// Define district and city types
+interface District {
+  id: number;
+  name: string;
+}
+
+interface City {
+  id: number;
+  name: string;
+}
+
 const OwnerDetails = () => {
   const dispatch = useDispatch();
-  const { adFormData, errors } = useSelector(
-    (state: RootState) => state.adForm
-  );
+  const { adFormData } = useSelector((state: RootState) => state.adForm);
+
   const [isCityDisabled, setIsCityDisabled] = useState(true);
-  const [districts, setDistricts] = useState([]);
-  const [allCities, setAllCities] = useState([]);
-  const [citiesByDistrict, setCitiesByDistrict] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
+  const [districts, setDistricts] = useState<District[]>([]);
+  const [allCities, setAllCities] = useState<City[]>([]);
+  const [citiesByDistrict, setCitiesByDistrict] = useState<City[]>([]);
+  const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const { user } = useUser();
   const [isPending, startTransition] = useTransition();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -42,10 +52,10 @@ const OwnerDetails = () => {
   useEffect(() => {
     const fetchAllCities = async () => {
       try {
-        const allCities = await getAllCities();
-        setAllCities(allCities);
+        const cities = await getAllCities();
+        setAllCities(cities);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching cities:", error);
       }
     };
     fetchAllCities();
@@ -56,32 +66,43 @@ const OwnerDetails = () => {
     if (user) {
       startTransition(async () => {
         try {
-          const fetchUserProfile = await getUserProfileData(user.id as string);
+          const userProfile = await getUserProfileData(user.id as string);
 
           dispatch(
             updateField({
               field: "owner_display_name",
-              value: fetchUserProfile.name || "",
+              value: userProfile.name || "",
             })
           );
           dispatch(
             updateField({
               field: "owner_contact",
-              value: fetchUserProfile.phone || "",
+              value: userProfile.phone || "",
             })
           );
           dispatch(
             updateField({
-              field: "city_id",
-              value: fetchUserProfile?.cities?.id || "",
+              field: "city",
+              value: {
+                id: Number(userProfile?.city?.id),
+                name: userProfile?.city?.name,
+              },
             })
           );
           dispatch(
             updateField({
-              field: "district_id",
-              value: fetchUserProfile?.cities?.districts?.id || "",
+              field: "district",
+              value: {
+                id: Number(userProfile?.disrict?.id),
+                name: userProfile?.district?.name,
+              },
             })
           );
+
+          setSelectedDistrict(
+            userProfile?.cities?.districts?.id?.toString() ?? null
+          );
+          setSelectedCity(userProfile?.cities?.id?.toString() ?? null);
         } catch (error) {
           console.error("Error fetching user profile:", error);
         }
@@ -89,31 +110,25 @@ const OwnerDetails = () => {
     }
   }, [user, dispatch]);
 
-  const getDistrictName = (districtId: number) => {
-    const district = districts.find(
-      (d: { id: number; name: string }) => d.id === districtId
-    ) as { id: number; name: string } | undefined;
+  const getDistrictName = (districtId: number | null) => {
+    if (!districtId) return "";
+    const district = districts.find((d) => d.id === districtId);
     return district ? district.name : "";
   };
 
-  const getCityName = (cityId: number) => {
-    const city = allCities.find(
-      (c: { id: number; name: string }) => c.id === cityId
-    ) as { id: number; name: string } | undefined;
+  const getCityName = (cityId: number | null) => {
+    if (!cityId) return "";
+    const city = allCities.find((c) => c.id === cityId);
     return city ? city.name : "";
   };
 
-  const cityDisabelManage = useCallback(() => {
-    if (selectedDistrict === "" || selectedDistrict == null) {
-      setIsCityDisabled(true);
-    } else {
-      setIsCityDisabled(false);
-    }
+  const handleCityDisableState = useCallback(() => {
+    setIsCityDisabled(!selectedDistrict);
   }, [selectedDistrict]);
 
   useEffect(() => {
-    cityDisabelManage();
-  }, [cityDisabelManage]);
+    handleCityDisableState();
+  }, [handleCityDisableState]);
 
   // Fetch cities when district changes
   useEffect(() => {
@@ -124,14 +139,14 @@ const OwnerDetails = () => {
           const data = await getCitiesByDistrict(Number(selectedDistrict));
           setCitiesByDistrict(data);
         } catch (error) {
-          console.error(error);
+          console.error("Error fetching cities by district:", error);
         } finally {
           setIsLoading(false);
         }
       };
       fetchCities();
     }
-  }, [selectedDistrict, setSelectedDistrict]);
+  }, [selectedDistrict]);
 
   // Fetch districts on mount
   useEffect(() => {
@@ -141,7 +156,7 @@ const OwnerDetails = () => {
         const data = await getAllDistricts();
         setDistricts(data);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching districts:", error);
       } finally {
         setIsLoading(false);
       }
@@ -151,15 +166,31 @@ const OwnerDetails = () => {
 
   const handleDistrictChange = (e: string) => {
     setSelectedDistrict(e);
-    // dispatch(updateField({ field: "city_id", value: null }));
+    setSelectedCity(null); // Reset city selection when district changes
   };
 
   const handleLocationUpdateButton = () => {
-    if (selectedCity === "" || selectedCity == null) {
+    if (!selectedCity) {
       toast.error("Please select a city");
     } else {
-      dispatch(updateField({ field: "district_id", value: selectedDistrict }));
-      dispatch(updateField({ field: "city_id", value: selectedCity }));
+      dispatch(
+        updateField({
+          field: "district",
+          value: {
+            id: Number(selectedDistrict),
+            name: getDistrictName(Number(selectedDistrict)),
+          },
+        })
+      );
+      dispatch(
+        updateField({
+          field: "city",
+          value: {
+            id: Number(selectedCity),
+            name: getCityName(Number(selectedCity)),
+          },
+        })
+      );
       onOpenChange();
     }
   };
@@ -173,14 +204,15 @@ const OwnerDetails = () => {
       ) : (
         <div className="sm:w-[90%] shadow-md w-full p-8">
           <h2>Owner Details</h2>
-          <div className="flex flex-col items-start justify-start gap-8 mt-4">
+          <div className="flex flex-col items-start gap-8 mt-4">
             <Input
               name="owner_display_name"
-              isRequired={true}
-              type="string"
+              isRequired
+              type="text"
               label="Name"
               labelPlacement="outside"
               className="sm:max-w-96"
+              description="This will display as owner name of the AD"
               value={adFormData?.owner_display_name || ""}
               onChange={(e) =>
                 dispatch(
@@ -190,113 +222,92 @@ const OwnerDetails = () => {
                   })
                 )
               }
-              description="This will display as owner name of the AD"
             />
-
             <Input
               name="owner_contact"
-              isRequired={true}
-              type="string"
+              isRequired
+              type="text"
               label="Contact"
-              value={adFormData?.owner_contact || ""}
               labelPlacement="outside"
               className="sm:max-w-96"
+              description="This will display as contact number of the AD"
+              value={adFormData?.owner_contact || ""}
               onChange={(e) =>
                 dispatch(
-                  updateField({
-                    field: "owner_contact",
-                    value: e.target.value,
-                  })
+                  updateField({ field: "owner_contact", value: e.target.value })
                 )
               }
-              description="This will display as contact number of the AD"
             />
             <div>
-              <h3>Ad Location</h3>
+              <h3>
+                Ad Location <span className="text-red-500 ">*</span>
+              </h3>
 
               <div className="flex items-center justify-center gap-5">
-                <div className="flex items-center gap-4"></div>
-                <p className="text-sm text-gray-500">
-                  {` ${getDistrictName(Number(adFormData.district_id))}
-                District,  `}
+                {adFormData.city.id && (
+                  <p className="text-sm text-gray-500">
+                    {adFormData.district.name} District, {adFormData.city.name}
+                  </p>
+                )}
 
-                  {adFormData && getCityName(Number(adFormData.city_id))}
-                </p>
-
-                <>
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    color="secondary"
-                    onPress={onOpen}
-                  >
-                    Edit
-                  </Button>
-                </>
+                <Button
+                  size="sm"
+                  variant="flat"
+                  color="secondary"
+                  onPress={onOpen}
+                >
+                  Edit
+                </Button>
               </div>
               <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent>
-                  {(onClose) => (
-                    <>
-                      <ModalBody>
-                        <div className="flex flex-col w-full gap-4 mt-3">
-                          <Autocomplete
-                            isRequired={true}
-                            labelPlacement="outside"
-                            label="District"
-                            name="district"
-                            defaultItems={districts}
-                            onSelectionChange={(e) =>
-                              handleDistrictChange(e as string)
-                            }
-                            className="w-full text-black sm:max-w-96"
-                            placeholder="e.g Colombo, Kandy, Galle"
+                  <ModalBody>
+                    <div className="flex flex-col w-full gap-4 mt-3">
+                      <Autocomplete
+                        label="District"
+                        defaultItems={districts}
+                        onSelectionChange={(e) =>
+                          handleDistrictChange(e as string)
+                        }
+                        className="w-full text-black sm:max-w-96"
+                        placeholder="e.g Colombo, Kandy, Galle"
+                      >
+                        {(district) => (
+                          <AutocompleteItem
+                            key={district.id}
+                            value={district.id}
                           >
-                            {(district: { id: string; name: string }) => (
-                              <AutocompleteItem
-                                key={district.id}
-                                value={district.id}
-                              >
-                                {district.name}
-                              </AutocompleteItem>
-                            )}
-                          </Autocomplete>
-
-                          <Autocomplete
-                            isRequired={true}
-                            labelPlacement="outside"
-                            label="City"
-                            name="city"
-                            isLoading={isLoading}
-                            isDisabled={isCityDisabled || isLoading}
-                            defaultItems={citiesByDistrict}
-                            onSelectionChange={(e) =>
-                              setSelectedCity(e as string)
-                            }
-                            className="w-full text-black sm:max-w-96"
-                            placeholder="e.g Nugegoda, Peradeniya, Hikkaduwa,..."
-                            description="This will display as Location"
-                          >
-                            {(city: { id: string; name: string }) => (
-                              <AutocompleteItem key={city.id} value={city.id}>
-                                {city.name}
-                              </AutocompleteItem>
-                            )}
-                          </Autocomplete>
-                        </div>
-                      </ModalBody>
-                      <ModalFooter>
-                        <Button
-                          color="primary"
-                          variant="flat"
-                          onPress={handleLocationUpdateButton}
-                          isLoading={isLoading}
-                        >
-                          Update
-                        </Button>
-                      </ModalFooter>
-                    </>
-                  )}
+                            {district.name}
+                          </AutocompleteItem>
+                        )}
+                      </Autocomplete>
+                      <Autocomplete
+                        label="City"
+                        defaultItems={citiesByDistrict}
+                        onSelectionChange={(e) => setSelectedCity(e as string)}
+                        isDisabled={isCityDisabled || isLoading}
+                        className="w-full text-black sm:max-w-96"
+                        placeholder="e.g Nugegoda, Peradeniya,..."
+                        description="This will display as Location"
+                      >
+                        {(city) => (
+                          <AutocompleteItem key={city.id} value={city.id}>
+                            {city.name}
+                          </AutocompleteItem>
+                        )}
+                      </Autocomplete>
+                    </div>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      color="primary"
+                      variant="flat"
+                      onPress={handleLocationUpdateButton}
+                      isLoading={isLoading}
+                    >
+                      Update
+                    </Button>
+                  </ModalFooter>
                 </ModalContent>
               </Modal>
             </div>

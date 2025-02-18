@@ -42,7 +42,7 @@ export interface UserProfileData {
   name: string;
   email: string;
   phone: string;
-  city: string;
   avatar_url: string;
-  cities: { id: number; name: string; districts: { id: number; name: string } };
+  city: { name: string; id: number };
+  district: { id: number; name: string };
 }
