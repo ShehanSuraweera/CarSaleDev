@@ -1,23 +1,19 @@
 import apiClient from "@/src/services/api-client";
 import { convertAndUploadBlobs } from "../config/uploadBlobs";
 
-export const fetchAds = async (
-  searchParams: {
-    query?: string;
-    make_id?: string;
-    model_id?: string;
-    type?: string;
-    minPrice?: string;
-    maxPrice?: string;
-    maxMileage?: string;
-    buildYear?: string;
-    bodyType?: string;
-    transmission?: string;
-    location?: string;
-    district_id?: string;
-    city_id?: string;
-  } = {}
-) => {
+export const fetchAds = async (searchParams: {
+  query?: string;
+  make_id?: string;
+  model_id?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  maxMileage?: string;
+  buildYear?: string;
+  transmission_type_id?: string;
+  district_id?: string;
+  city_id?: string;
+  body_type_id?: string;
+}) => {
   try {
     const queryParams = new URLSearchParams();
 
@@ -26,7 +22,6 @@ export const fetchAds = async (
       queryParams.append("make_id", searchParams.make_id);
     if (searchParams.model_id)
       queryParams.append("model_id", searchParams.model_id);
-    if (searchParams.type) queryParams.append("type", searchParams.type);
     if (searchParams.minPrice)
       queryParams.append("minPrice", searchParams.minPrice.toString());
     if (searchParams.maxPrice)
@@ -35,12 +30,13 @@ export const fetchAds = async (
       queryParams.append("maxMileage", searchParams.maxMileage.toString());
     if (searchParams.buildYear)
       queryParams.append("buildYear", searchParams.buildYear.toString());
-    if (searchParams.bodyType)
-      queryParams.append("bodyType", searchParams.bodyType);
-    if (searchParams.transmission)
-      queryParams.append("transmission", searchParams.transmission);
-    if (searchParams.location)
-      queryParams.append("location", searchParams.location);
+    if (searchParams.body_type_id)
+      queryParams.append("body_type_id", searchParams.body_type_id);
+    if (searchParams.transmission_type_id)
+      queryParams.append(
+        "transmission_type_id",
+        searchParams.transmission_type_id
+      );
     if (searchParams.district_id)
       queryParams.append("district_id", searchParams.district_id.toString());
     if (searchParams.city_id)
@@ -52,6 +48,7 @@ export const fetchAds = async (
     if (response.status !== 200) {
       throw new Error("Failed to fetch ads");
     }
+    console.log(response.data.ads);
     return response.data.ads;
   } catch (error: any) {
     console.error("Error fetching ads:", error.message || error);
@@ -314,5 +311,56 @@ export const deleteAd = async (ad_id: string) => {
     return "ad_deleted";
   } catch (error) {
     console.log("failed to delete ad", error);
+  }
+};
+
+export const getAllMakes = async () => {
+  try {
+    const response = await apiClient.get("/info/vehicle-makes");
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching makes:", error.message || error);
+    throw new Error(error.response?.data?.message || "Failed to fetch makes");
+  }
+};
+
+export const fetchModels = async (searchParams: { make_id?: string }) => {
+  try {
+    const queryParams = new URLSearchParams();
+
+    if (searchParams.make_id)
+      queryParams.append("make_id", searchParams.make_id);
+
+    const response = await apiClient.get(
+      `/info/models?${queryParams.toString()}`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching makes:", error.message || error);
+    throw new Error(error.response?.data?.message || "Failed to fetch makes");
+  }
+};
+
+export const getBodyTypes = async () => {
+  try {
+    const response = await apiClient.get("/info/body-types");
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching body types:", error.message || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch body types"
+    );
+  }
+};
+
+export const getTransmissionTypes = async () => {
+  try {
+    const response = await apiClient.get("/info/transmission-types");
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching transmission types:", error.message || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch transmission types"
+    );
   }
 };

@@ -35,14 +35,12 @@ export default function Page() {
         query,
         make_id: filters.make_id,
         model_id: filters.model_id,
-        type: filters.type,
         minPrice: filters.minPrice,
         maxPrice: filters.maxPrice,
         maxMileage: filters.maxMileage,
         buildYear: filters.buildYear,
-        bodyType: filters.bodyType,
-        transmission: filters.transmission,
-        location: filters.location,
+        body_type_id: filters.body_type_id,
+        transmission_type_id: filters.transmission_type_id,
         district_id: filters.district_id,
         city_id: filters.city_id,
       });
@@ -110,7 +108,7 @@ export default function Page() {
         </DrawerContent>
       </Drawer>
 
-      <div className="flex items-center justify-center w-full gap-2 mt-2 ">
+      <div className="flex items-center justify-center w-full gap-2 mt-2 mb-4 ">
         <Button
           color="primary"
           variant="flat"
@@ -123,6 +121,7 @@ export default function Page() {
         </Button>
         <Search />
       </div>
+
       <div className="justify-center hidden w-full sm:block">
         <Filter />
       </div>

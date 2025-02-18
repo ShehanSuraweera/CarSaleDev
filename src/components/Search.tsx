@@ -21,7 +21,7 @@ const Search = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-center gap-2 ">
+      <div className="flex items-center justify-center w-full gap-2">
         <Input
           size="md"
           color="primary"

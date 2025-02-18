@@ -7,12 +7,10 @@ interface SearchContextProps {
   filters: {
     make_id: string;
     model_id: string;
-    type: string;
     minPrice: string;
     maxPrice: string;
-    bodyType: string;
-    transmission: string;
-    location: string;
+    body_type_id: string;
+    transmission_type_id: string;
     maxMileage: string;
     buildYear: string;
     district_id: string;
@@ -29,12 +27,10 @@ export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
   const [filters, setFilters] = useState({
     make_id: "",
     model_id: "",
-    type: "",
     minPrice: "",
     maxPrice: "",
-    bodyType: "",
-    transmission: "",
-    location: "",
+    body_type_id: "",
+    transmission_type_id: "",
     maxMileage: "",
     buildYear: "",
     district_id: "",

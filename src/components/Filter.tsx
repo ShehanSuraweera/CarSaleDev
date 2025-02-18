@@ -1,35 +1,102 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
-import { Select, SelectItem } from "@heroui/select";
-import {
-  carMakes,
-  toyotaModels,
-  bodyTypes,
-  yom,
-  mileageOptions,
-  transmissionTypes,
-  priceOptions,
-} from "@/src/data/search";
+import React, { useEffect, useState } from "react";
+import { SelectItem } from "@heroui/select";
+import { mileageOptions, priceOptions } from "@/src/data/search";
 import { useSearch } from "../providers/SearchProvider";
 import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { getYear } from "date-fns";
-import { getAllDistricts } from "../lib/api";
+import {
+  fetchModels,
+  getAllDistricts,
+  getAllMakes,
+  getBodyTypes,
+  getTransmissionTypes,
+} from "../lib/api";
 
 const Filter = () => {
   const { filters, setFilters } = useSearch();
   const [districts, setDistricts] = useState([]);
+  const [makes, setMakes] = useState([]);
+  const [models, setModels] = useState([]);
+  const [bodyTypes, setBodyTypes] = useState([]);
+  const [transmissionTypes, setTransmissionTypes] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchDistricts = async () => {
       try {
         const data = await getAllDistricts();
         setDistricts(data);
       } catch (error) {
         console.error("Error fetching districts:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchDistricts();
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchBodyTypes = async () => {
+      try {
+        const data = await getBodyTypes();
+        setBodyTypes(data);
+      } catch (error) {
+        console.error("Error fetching districts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchBodyTypes();
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchAllMakes = async () => {
+      try {
+        const data = await getAllMakes();
+        setMakes(data);
+      } catch (error) {
+        console.error("Error fetching makes:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAllMakes();
+  }, []);
+  useEffect(() => {
+    setIsLoading(true);
+    const getModels = async () => {
+      try {
+        const data = await fetchModels({
+          make_id: filters.make_id,
+        });
+        setModels(data);
+      } catch (error) {
+        console.error("Error fetching makes:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getModels();
+  }, [filters.make_id]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchTransmissionTypes = async () => {
+      try {
+        const data = await getTransmissionTypes();
+        setTransmissionTypes(data);
+      } catch (error) {
+        console.error("Error fetching makes:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTransmissionTypes();
   }, []);
 
   const currentYear = getYear(new Date());
@@ -48,12 +115,13 @@ const Filter = () => {
               label="Make"
               className="w-full text-black sm:max-w-44"
               placeholder="All makes"
-              defaultItems={carMakes}
-              selectedKey={filters.make_id || undefined}
-              onSelectionChange={(e) => setFilters({ ...filters, make: e })}
+              defaultItems={makes}
+              selectedKey={filters.make_id}
+              onSelectionChange={(e) => setFilters({ ...filters, make_id: e })}
+              isLoading={isLoading}
             >
-              {(make) => (
-                <AutocompleteItem key={make.key}>{make.label}</AutocompleteItem>
+              {(make: { id: string; name: string }) => (
+                <AutocompleteItem key={make.id}>{make.name}</AutocompleteItem>
               )}
             </Autocomplete>
             <Autocomplete
@@ -61,13 +129,14 @@ const Filter = () => {
               label="models"
               className="w-full sm:max-w-44"
               placeholder="All Models"
-              defaultItems={toyotaModels}
+              defaultItems={models}
               selectedKey={filters.model_id}
-              onSelectionChange={(e) => setFilters({ ...filters, model: e })}
+              onSelectionChange={(e) => setFilters({ ...filters, model_id: e })}
+              isLoading={isLoading}
             >
-              {(models) => (
-                <AutocompleteItem key={models.key}>
-                  {models.label}
+              {(models: { id: string; name: string }) => (
+                <AutocompleteItem key={models.id}>
+                  {models.name}
                 </AutocompleteItem>
               )}
             </Autocomplete>
@@ -76,14 +145,15 @@ const Filter = () => {
               label="Body type"
               className="w-full sm:max-w-44"
               placeholder="All types"
-              selectedKey={filters.type}
+              selectedKey={filters.body_type_id}
               defaultItems={bodyTypes}
-              onSelectionChange={(e) => setFilters({ ...filters, type: e })}
+              onSelectionChange={(e) =>
+                setFilters({ ...filters, body_type_id: e })
+              }
+              isLoading={isLoading}
             >
-              {(body) => (
-                <AutocompleteItem key={body.label}>
-                  {body.label}
-                </AutocompleteItem>
+              {(body: { id: string; name: string }) => (
+                <AutocompleteItem key={body.id}>{body.name}</AutocompleteItem>
               )}
             </Autocomplete>
             <Autocomplete
@@ -92,18 +162,21 @@ const Filter = () => {
               placeholder="All types"
               className="sm:max-w-44"
               onSelectionChange={(e) =>
-                setFilters({ ...filters, transmission: e })
+                setFilters({ ...filters, transmission_type_id: e })
               }
               defaultItems={transmissionTypes}
-              selectedKey={filters.transmission}
+              selectedKey={filters.transmission_type_id}
+              isLoading={isLoading}
             >
-              {(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
+              {(item: { id: string; name: string }) => (
+                <SelectItem key={item.id}>{item.name}</SelectItem>
+              )}
             </Autocomplete>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 gap-x-8 sm:mt-8 sm:gap-12">
             <Autocomplete
               variant="underlined"
-              label="Location"
+              label="District"
               className="sm:max-w-44"
               onSelectionChange={(e) =>
                 setFilters({ ...filters, district_id: e })
@@ -111,6 +184,7 @@ const Filter = () => {
               defaultItems={districts}
               selectedKey={filters.district_id}
               allowsCustomValue={true}
+              isLoading={isLoading}
             >
               {(district: { id: string; name: string }) => (
                 <AutocompleteItem key={district.id}>
@@ -128,9 +202,10 @@ const Filter = () => {
               }}
               defaultItems={priceOptions}
               selectedKey={filters.maxPrice}
+              isLoading={isLoading}
             >
               {(item) => (
-                <AutocompleteItem key={item.label}>
+                <AutocompleteItem key={item.value}>
                   {item.label}
                 </AutocompleteItem>
               )}
@@ -145,9 +220,10 @@ const Filter = () => {
                 setFilters({ ...filters, maxMileage: e });
               }}
               selectedKey={filters.maxMileage}
+              isLoading={isLoading}
             >
               {mileageOptions.map((item) => (
-                <AutocompleteItem key={item.label}>
+                <AutocompleteItem key={item.value}>
                   {item.label}
                 </AutocompleteItem>
               ))}
@@ -162,6 +238,7 @@ const Filter = () => {
               }}
               selectedKey={filters.buildYear}
               defaultItems={years}
+              isLoading={isLoading}
             >
               {(item) => (
                 <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
