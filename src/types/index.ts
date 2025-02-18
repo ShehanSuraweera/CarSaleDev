@@ -1,3 +1,4 @@
+import { StaticImageData } from "next/image";
 import { SVGProps } from "react";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -34,8 +35,20 @@ export interface AdData {
 }
 
 export interface MediumAdProps {
-  ad_id: string;
-  body_type: string;
+  id: string;
+  make: string;
+  modle: string;
+  mileage: string;
+  engine: string;
+  fuel: string;
+  transmission: string;
+  bodyType: string;
+  price: string;
+  image: string | StaticImageData;
+  manufacture: string;
+  location: string;
+  created_at: string;
+  frame_code: string;
 }
 
 export interface UserProfileData {
