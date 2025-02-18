@@ -1,45 +1,38 @@
-// src/redux/store.ts
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import userReducer from "./features/user/userSlice";
 import adFormReducer from "./features/ad/adFormSlice";
 
-// Define persist config for user
+// ✅ Persist only user slice (avoiding global persist)
 const userPersistConfig = {
   key: "user",
   storage,
-  whitelist: ["user", "profile"], // Persist only necessary data
+  whitelist: ["user", "profile"], // Persist user & profile only
 };
 
-// Combine reducers
+// ✅ Combine reducers
 const rootReducer = combineReducers({
-  user: persistReducer(userPersistConfig, userReducer),
-  adForm: adFormReducer,
+  user: persistReducer(userPersistConfig, userReducer), // Persist user slice
+  adForm: adFormReducer, // Not persisted
 });
 
-// Persist entire store
-const persistConfig = {
-  key: "root",
-  storage,
-  blacklist: ["adForm"], // Prevent persisting unnecessary state
-};
-
-// Create persisted reducer
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-// ✅ Use a single store instance
+// ✅ Create store
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
+  devTools: process.env.NODE_ENV !== "production", // Enable Redux DevTools in dev
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST"], // Ignore persist actions
+        ignoredPaths: ["user.session"], // Ignore session since it's non-serializable
+      },
     }),
 });
 
-// ✅ Use a single persistor instance
+// ✅ Persistor
 export const persistor = persistStore(store);
 
-// Type exports
+// ✅ Export Types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
