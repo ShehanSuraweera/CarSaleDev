@@ -29,7 +29,7 @@ const CarList: React.FC<{
           <div key={car.ad_id}>
             <MediumAd
               image={car.images?.[0] || "/images/no-image.png"}
-              bodyType={car.body_type.name}
+              bodyType={car.body_type?.name}
               frame_code={car.frame_code}
               make={car.make?.name}
               modle={car.model?.name}

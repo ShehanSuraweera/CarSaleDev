@@ -67,6 +67,11 @@ const MediumAd = ({
     }
   };
 
+  function extractTextInsideParentheses(input: string): string | null {
+    const match = input.match(/\(([^)]+)\)/);
+    return match ? match[1] : null;
+  }
+
   return (
     <>
       <div className=" mb-7 relative   shadow-md mt-2 sm:mt-2 w-[325px] sm:w-[280px] overflow-hidden sm:h-[300px] md:w-[370px] md:h-[340px] h-[250px] lg:w-[400px] dark:bg-[#000B17]  rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  ">
@@ -130,7 +135,7 @@ const MediumAd = ({
                 alt="transmission"
                 className="w-3 sm:w-5 "
               ></Image>
-              {transmission}
+              {extractTextInsideParentheses(transmission)}
             </div>
             <div className="flex items-center justify-start gap-1 text-xs md:text-sm sm:gap-2">
               <Image
