@@ -23,7 +23,7 @@ export default function Page() {
     setLoading(true);
     try {
       const vehicleAd = await fetchAd(ad_id as string);
-      console.log("vehicle ad data", vehicleAd);
+
       if (vehicleAd) {
         dispatch(setAdData(vehicleAd));
       }

@@ -13,8 +13,14 @@ const initialState: AdFormState = {
     user_id: "",
     frame_code: "",
     build_year: "",
-    transmission: "",
-    body_type: "",
+    transmission_type: {
+      id: 0,
+      name: "",
+    },
+    body_type: {
+      id: 0,
+      name: "",
+    },
     vehicle_condition: "",
     reg_year: "",
     mileage: "",
@@ -25,7 +31,10 @@ const initialState: AdFormState = {
     owner_contact: "",
     owner_display_name: "",
     is_negotiable: false,
-    vehicle_type_id: "",
+    vehicle_type: {
+      id: 0,
+      name: "",
+    },
     images: [],
     ad_id: "",
     city: {

@@ -30,7 +30,6 @@ const OneTapComponent = () => {
   };
 
   const initializeGoogleOneTap = useCallback(async () => {
-    console.log("Initializing Google One Tap");
     const [nonce, hashedNonce] = await generateNonce();
 
     // check if there's already an existing session before initializing the one-tap UI

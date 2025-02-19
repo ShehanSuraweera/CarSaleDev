@@ -10,7 +10,6 @@ const AdPreviewButton = () => {
   const pathname = usePathname();
 
   const validateForm = () => {
-    console.log(pathname);
     return true;
   };
   const handlAdPreview = () => {

@@ -3,9 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
 import { updateField } from "../redux/features/ad/adFormSlice";
-import { bodyTypes, transmissionTypes } from "../data/search";
 import { getYear } from "date-fns";
-import { getMakeByVehicleType, getModelsByMake } from "../lib/api";
+import {
+  getBodyTypes,
+  getMakeByVehicleType,
+  getModelsByMake,
+  getTransmissionTypes,
+} from "../lib/api";
 
 const VehicleAbout = () => {
   const dispatch = useDispatch();
@@ -16,6 +20,12 @@ const VehicleAbout = () => {
 
   const [makes, setMakes] = useState<{ id: string; name: string }[]>([]);
   const [models, setModels] = useState<{ id: string; name: string }[]>([]);
+  const [bodyTypes, setBodyTypes] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [transmissionTypes, setTransmissionTypes] = useState<
+    { id: string; name: string }[]
+  >([]);
 
   const currentYear = getYear(new Date());
   const years = Array.from({ length: currentYear - 1980 + 1 }, (_, k) => ({
@@ -23,14 +33,46 @@ const VehicleAbout = () => {
     label: (currentYear - k).toString(),
   }));
 
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchTransmissionTypes = async () => {
+      try {
+        const data = await getTransmissionTypes();
+        setTransmissionTypes(data);
+      } catch (error) {
+        console.error("Error fetching transmission types:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTransmissionTypes();
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchBodyTypes = async () => {
+      try {
+        const data = await getBodyTypes({
+          vehicle_type_id: adFormData.vehicle_type.id.toString(),
+        });
+        setBodyTypes(data);
+      } catch (error) {
+        console.error("Error fetching districts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchBodyTypes();
+  }, [adFormData.vehicle_type.id]);
+
   // Fetch makes based on vehicle type
   useEffect(() => {
-    if (!adFormData.vehicle_type_id) return;
+    if (!adFormData.vehicle_type.id) return;
     setIsLoading(true);
     const fetchMakes = async () => {
       try {
         const res = await getMakeByVehicleType(
-          Number(adFormData.vehicle_type_id)
+          Number(adFormData.vehicle_type.id)
         );
         setMakes(res);
       } catch (error) {
@@ -40,7 +82,7 @@ const VehicleAbout = () => {
       }
     };
     fetchMakes();
-  }, [adFormData.vehicle_type_id]);
+  }, [adFormData.vehicle_type.id]);
 
   // Fetch models based on make
   useEffect(() => {
@@ -53,7 +95,7 @@ const VehicleAbout = () => {
       try {
         const res = await getModelsByMake(
           Number(adFormData.make.id),
-          Number(adFormData.vehicle_type_id)
+          Number(adFormData.vehicle_type.id)
         );
         setModels(res);
       } catch (error) {
@@ -67,7 +109,7 @@ const VehicleAbout = () => {
 
   return (
     <>
-      {adFormData.vehicle_type_id && (
+      {adFormData.vehicle_type.id && (
         <div className="sm:w-[90%] shadow-md p-8">
           <h1 className="text-lg font-medium">
             {`Let's start finding by your vehicle's make`}
@@ -80,7 +122,7 @@ const VehicleAbout = () => {
               labelPlacement="outside"
               label="Make"
               defaultItems={makes}
-              selectedKey={adFormData.make?.id?.toString() || undefined}
+              selectedKey={adFormData.make?.id?.toString() || ""}
               onSelectionChange={(key) => {
                 if (key) {
                   dispatch(
@@ -186,19 +228,27 @@ const VehicleAbout = () => {
               labelPlacement="outside"
               label="Transmission"
               defaultItems={transmissionTypes}
-              selectedKey={adFormData.transmission ?? undefined}
+              selectedKey={
+                adFormData?.transmission_type?.id?.toString() ?? undefined
+              }
               onSelectionChange={(key) => {
                 if (key) {
-                  dispatch(updateField({ field: "transmission", value: key }));
-                } else {
-                  dispatch(updateField({ field: "transmission", value: "" }));
+                  dispatch(
+                    updateField({
+                      field: "transmission_type",
+                      value: {
+                        id: Number(key),
+                        name: bodyTypes.find((m) => m.id == key)?.name || "",
+                      },
+                    })
+                  );
                 }
               }}
               className="w-full text-black sm:max-w-96"
               placeholder="e.g Automatic, Manual,..."
             >
               {(item) => (
-                <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
+                <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>
               )}
             </Autocomplete>
 
@@ -208,19 +258,28 @@ const VehicleAbout = () => {
               labelPlacement="outside"
               label="Body Type"
               defaultItems={bodyTypes}
-              selectedKey={adFormData.body_type ?? undefined}
+              selectedKey={adFormData?.body_type?.id?.toString() ?? undefined}
               onSelectionChange={(key) => {
                 if (key) {
-                  dispatch(updateField({ field: "body_type", value: key }));
+                  dispatch(
+                    updateField({
+                      field: "body_type",
+                      value: {
+                        id: Number(key),
+                        name: bodyTypes.find((m) => m.id == key)?.name || "",
+                      },
+                    })
+                  );
                 } else {
                   dispatch(updateField({ field: "body_type", value: "" }));
                 }
               }}
               className="w-full text-black sm:max-w-96"
               placeholder="e.g Sedan, SUV, Hatchback, ..."
+              isLoading={isLoading}
             >
               {(item) => (
-                <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
+                <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>
               )}
             </Autocomplete>
           </div>

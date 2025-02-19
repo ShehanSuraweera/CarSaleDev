@@ -1,9 +1,8 @@
 import { Radio, RadioGroup } from "@heroui/react";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
-import { resetForm, updateField } from "../redux/features/ad/adFormSlice";
+import { updateField } from "../redux/features/ad/adFormSlice";
 import { getVehicleTypes } from "../lib/api";
 import { Loader2 } from "lucide-react";
 
@@ -12,51 +11,74 @@ const VehicleTypes = () => {
     { id: string; name: string }[]
   >([]);
   const dispatch = useDispatch();
-  const { adFormData, errors } = useSelector(
-    (state: RootState) => state.adForm
-  );
+  const { adFormData } = useSelector((state: RootState) => state.adForm);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
-    const getAllVehicleTypes = async () => {
+    const fetchVehicleTypes = async () => {
       try {
-        const res = await getVehicleTypes(); // Assuming fetchVehicleTypes is the correct function
-        setVehicleTypes(res);
+        const res = await getVehicleTypes();
+        // Ensure all IDs are strings (Hero UI expects string values)
+        setVehicleTypes(
+          res.map((item: { id: number; name: string }) => ({
+            id: String(item.id),
+            name: item.name,
+          }))
+        );
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching vehicle types:", error);
       } finally {
         setIsLoading(false);
       }
     };
-    getAllVehicleTypes();
+    fetchVehicleTypes();
   }, []);
 
   useEffect(() => {
-    dispatch(updateField({ field: "make", value: "" }));
-    dispatch(updateField({ field: "model", value: "" }));
-  }, [adFormData.vehicle_type_id, dispatch]);
+    if (adFormData?.vehicle_type?.id) {
+      dispatch(updateField({ field: "make", value: "" }));
+      dispatch(updateField({ field: "model", value: "" }));
+    }
+  }, [adFormData.vehicle_type?.id, dispatch]);
 
   return (
-    <div className=" sm:w-[90%] shadow-md w-full p-8   ">
+    <div className="sm:w-[90%] shadow-md w-full p-8">
       {isLoading ? (
-        <Loader2 />
+        <Loader2 className="animate-spin" />
       ) : (
         <>
           <h1 className="mb-4 text-lg font-medium">
             Let's start finding your vehicle's type
           </h1>
-          <div className="flex flex-col gap-3 ">
+          <div className="flex flex-col gap-3">
             <RadioGroup
               name="vehicle_type"
-              isRequired={true}
-              value={adFormData.vehicle_type_id}
-              onValueChange={(e) =>
-                dispatch(updateField({ field: "vehicle_type_id", value: e }))
+              isRequired
+              value={
+                adFormData.vehicle_type?.id
+                  ? String(adFormData.vehicle_type.id)
+                  : ""
               }
+              onValueChange={(selectedId: string) => {
+                const selectedType = vehicleTypes.find(
+                  (m) => m.id === selectedId
+                );
+                if (selectedType) {
+                  dispatch(
+                    updateField({
+                      field: "vehicle_type",
+                      value: {
+                        id: Number(selectedType.id), // Ensure it's a string
+                        name: selectedType.name,
+                      },
+                    })
+                  );
+                }
+              }}
             >
-              {vehicleTypes.map((item, index) => (
-                <Radio key={index} value={item.id}>
+              {vehicleTypes.map((item) => (
+                <Radio key={item.id} value={item.id}>
                   {item.name}
                 </Radio>
               ))}

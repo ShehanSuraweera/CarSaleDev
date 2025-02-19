@@ -7,7 +7,7 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 
 export interface AdData {
   ad_id: string;
-  body_type: string;
+  body_type: { id: number; name: string };
   build_year: string;
   city: { id: number; name: string };
   colour: string;
@@ -27,10 +27,10 @@ export interface AdData {
   price: number;
   reg_year: string;
   title: string;
-  transmission: string;
+  transmission_type: { id: number; name: string };
   user_id: string;
   vehicle_condition: "";
-  vehicle_type_id: "";
+  vehicle_type: { id: number; name: string };
   views: number;
 }
 

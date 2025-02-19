@@ -24,9 +24,10 @@ export default function Page() {
         <div className="flex flex-col items-center justify-center w-full gap-3 sm:px-5 sm:gap-8 sm:p-4">
           <OwnerDetails />
           <VehicleTypes />
-          {adFormData.vehicle_type_id !== "" && <VehicleAbout />}
+          {adFormData.vehicle_type.id !== 0 && <VehicleAbout />}
 
-          {adFormData.make.name !== "" && <VehicleBackground />}
+          {adFormData.make.name !== "" ||
+            (adFormData.vehicle_type.id !== 0 && <VehicleBackground />)}
 
           {adFormData.vehicle_condition !== "" && <PriceHandle />}
 

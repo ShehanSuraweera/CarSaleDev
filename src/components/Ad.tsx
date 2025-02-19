@@ -142,13 +142,13 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
               <strong>Odometer : </strong> {adData?.mileage} km
             </p>
             <p className="mb-1">
-              <strong>Body type : </strong> {adData?.body_type}
+              <strong>Body type : </strong> {adData?.body_type?.name}
             </p>
             <p className="mb-1">
               <strong>Engine : </strong> {adData?.engine}
             </p>
             <p className="mb-1">
-              <strong>Transmission : </strong> {adData?.transmission}
+              <strong>Transmission : </strong> {adData?.transmission_type.name}
             </p>
             <p className="mb-1">
               <strong>Fuel Type : </strong> {adData?.fuel_type}

@@ -33,16 +33,16 @@ export default function Page() {
       setLoading(true);
       const fetchedCars = await fetchAds({
         query,
-        make_id: filters.make_id,
-        model_id: filters.model_id,
-        minPrice: filters.minPrice,
-        maxPrice: filters.maxPrice,
-        maxMileage: filters.maxMileage,
-        buildYear: filters.buildYear,
-        body_type_id: filters.body_type_id,
-        transmission_type_id: filters.transmission_type_id,
-        district_id: filters.district_id,
-        city_id: filters.city_id,
+        make_id: filters.make.id,
+        model_id: filters.model.id,
+        minPrice: filters.minPrice.id,
+        maxPrice: filters.maxPrice.id,
+        maxMileage: filters.maxMileage.id,
+        buildYear: filters.buildYear.id,
+        body_type_id: filters.body_type.id,
+        transmission_type_id: filters.transmission_type.id,
+        district_id: filters.district.id,
+        city_id: filters.city.id,
       });
       setCars(fetchedCars);
     } catch (err: any) {
@@ -58,18 +58,10 @@ export default function Page() {
   }, [getCarsFromBackend]);
 
   const handleChipClose = (filterToRemove: string) => {
-    setFilters((prevFilters: any) => {
-      const updatedFilters = { ...prevFilters };
-
-      // Find and reset the corresponding filter key
-      Object.keys(updatedFilters).forEach((key) => {
-        if (updatedFilters[key] === filterToRemove) {
-          updatedFilters[key] = ""; // Reset field for text inputs or dropdowns
-        }
-      });
-
-      return updatedFilters;
-    });
+    setFilters((prevFilters: any) => ({
+      ...prevFilters,
+      [filterToRemove]: { id: "", name: "" }, // Reset the specific filter
+    }));
   };
 
   return (
@@ -126,23 +118,18 @@ export default function Page() {
         <Filter />
       </div>
       <div className="flex flex-wrap items-center justify-center w-full gap-2 mt-8 mb-5 sm:justify-center sm:gap-5 sm:flex-nowrap sm:flex-row">
-        {Object.values(filters).map((filter, index) =>
-          filter === "" || filter == undefined ? null : (
-            <div
-              key={index}
-              className="flex flex-wrap items-center justify-center gap-2 sm:gap-5 "
+        {Object.entries(filters).map(([key, value]) =>
+          value.id ? (
+            <Chip
+              key={key}
+              size="sm"
+              variant="solid"
+              color="primary"
+              onClose={() => handleChipClose(key)}
             >
-              <Chip
-                size="sm"
-                variant="solid"
-                color="primary"
-                className="flex"
-                onClose={() => handleChipClose(filter)}
-              >
-                {filter}
-              </Chip>
-            </div>
-          )
+              {value.name}
+            </Chip>
+          ) : null
         )}
       </div>
 

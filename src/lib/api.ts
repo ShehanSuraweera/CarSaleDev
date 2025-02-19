@@ -48,7 +48,6 @@ export const fetchAds = async (searchParams: {
     if (response.status !== 200) {
       throw new Error("Failed to fetch ads");
     }
-    console.log(response.data.ads);
     return response.data.ads;
   } catch (error: any) {
     console.error("Error fetching ads:", error.message || error);
@@ -341,9 +340,17 @@ export const fetchModels = async (searchParams: { make_id?: string }) => {
   }
 };
 
-export const getBodyTypes = async () => {
+export const getBodyTypes = async (searchParams: {
+  vehicle_type_id?: string;
+}) => {
   try {
-    const response = await apiClient.get("/info/body-types");
+    const queryParams = new URLSearchParams();
+    if (searchParams.vehicle_type_id)
+      queryParams.append("vehicle_type_id", searchParams.vehicle_type_id);
+
+    const response = await apiClient.get(
+      `/info/body-types?${queryParams.toString()}`
+    );
     return response.data;
   } catch (error: any) {
     console.error("Error fetching body types:", error.message || error);

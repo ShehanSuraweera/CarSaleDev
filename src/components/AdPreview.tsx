@@ -48,7 +48,10 @@ const AdPreview = ({
         key === "make" ||
         key === "model" ||
         key === "city" ||
-        key === "district"
+        key === "district" ||
+        key === "transmission_type" ||
+        key === "body_type" ||
+        key === "vehicle_type"
       ) {
       } else {
         formData.append(key, value.toString());
@@ -56,7 +59,12 @@ const AdPreview = ({
     });
 
     formData.append("city_id", adFormData?.city?.id?.toString());
-    formData.append("model_id", adFormData?.model.id.toString());
+    formData.append("model_id", adFormData?.model?.id?.toString());
+    formData.append(
+      "transmission_type_id",
+      adFormData?.transmission_type.id.toString()
+    );
+    formData.append("body_type_id", adFormData?.body_type?.id?.toString());
 
     return formData;
   };

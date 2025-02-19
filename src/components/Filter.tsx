@@ -16,11 +16,25 @@ import {
 
 const Filter = () => {
   const { filters, setFilters } = useSearch();
-  const [districts, setDistricts] = useState([]);
-  const [makes, setMakes] = useState([]);
-  const [models, setModels] = useState([]);
-  const [bodyTypes, setBodyTypes] = useState([]);
-  const [transmissionTypes, setTransmissionTypes] = useState([]);
+  const [districts, setDistricts] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [makes, setMakes] = useState<{ id: string; name: string }[]>([]);
+  const [models, setModels] = useState<{ id: string; name: string }[]>([]);
+  const [bodyTypes, setBodyTypes] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [transmissionTypes, setTransmissionTypes] = useState<
+    { id: string; name: string }[]
+  >([]);
+  const [maxPrice, setMaxPrice] =
+    useState<{ id: string; name: string }[]>(priceOptions);
+  const [maxMileage, setMaxMileage] =
+    useState<{ id: string; name: string }[]>(mileageOptions);
+  const [manufactureAfter, setManufactureAfter] = useState<
+    { id: string; name: string }[]
+  >([]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -42,7 +56,7 @@ const Filter = () => {
     setIsLoading(true);
     const fetchBodyTypes = async () => {
       try {
-        const data = await getBodyTypes();
+        const data = await getBodyTypes({});
         setBodyTypes(data);
       } catch (error) {
         console.error("Error fetching districts:", error);
@@ -72,7 +86,7 @@ const Filter = () => {
     const getModels = async () => {
       try {
         const data = await fetchModels({
-          make_id: filters.make_id,
+          make_id: filters.make.id,
         });
         setModels(data);
       } catch (error) {
@@ -82,7 +96,7 @@ const Filter = () => {
       }
     };
     getModels();
-  }, [filters.make_id]);
+  }, [filters.make.id]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -101,9 +115,13 @@ const Filter = () => {
 
   const currentYear = getYear(new Date());
   const years = Array.from({ length: currentYear - 1980 + 1 }, (_, k) => ({
-    key: (currentYear - k).toString(),
-    label: (currentYear - k).toString(),
+    id: (currentYear - k).toString(),
+    name: (currentYear - k).toString(),
   }));
+
+  useEffect(() => {
+    setManufactureAfter(years);
+  }, []);
 
   return (
     <>
@@ -116,8 +134,16 @@ const Filter = () => {
               className="w-full text-black sm:max-w-44"
               placeholder="All makes"
               defaultItems={makes}
-              selectedKey={filters.make_id}
-              onSelectionChange={(e) => setFilters({ ...filters, make_id: e })}
+              selectedKey={filters.make.id}
+              onSelectionChange={(e) =>
+                setFilters({
+                  ...filters,
+                  make: {
+                    id: e,
+                    name: makes.find((m) => m.id == e)?.name || "",
+                  },
+                })
+              }
               isLoading={isLoading}
             >
               {(make: { id: string; name: string }) => (
@@ -130,8 +156,16 @@ const Filter = () => {
               className="w-full sm:max-w-44"
               placeholder="All Models"
               defaultItems={models}
-              selectedKey={filters.model_id}
-              onSelectionChange={(e) => setFilters({ ...filters, model_id: e })}
+              selectedKey={filters.model.id}
+              onSelectionChange={(e) =>
+                setFilters({
+                  ...filters,
+                  model: {
+                    id: e,
+                    name: models.find((m) => m.id == e)?.name || "",
+                  },
+                })
+              }
               isLoading={isLoading}
             >
               {(models: { id: string; name: string }) => (
@@ -145,10 +179,16 @@ const Filter = () => {
               label="Body type"
               className="w-full sm:max-w-44"
               placeholder="All types"
-              selectedKey={filters.body_type_id}
+              selectedKey={filters.body_type.id}
               defaultItems={bodyTypes}
               onSelectionChange={(e) =>
-                setFilters({ ...filters, body_type_id: e })
+                setFilters({
+                  ...filters,
+                  body_type: {
+                    id: e,
+                    name: bodyTypes.find((m) => m.id == e)?.name || "",
+                  },
+                })
               }
               isLoading={isLoading}
             >
@@ -162,10 +202,16 @@ const Filter = () => {
               placeholder="All types"
               className="sm:max-w-44"
               onSelectionChange={(e) =>
-                setFilters({ ...filters, transmission_type_id: e })
+                setFilters({
+                  ...filters,
+                  transmission_type: {
+                    id: e,
+                    name: transmissionTypes.find((m) => m.id == e)?.name || "",
+                  },
+                })
               }
               defaultItems={transmissionTypes}
-              selectedKey={filters.transmission_type_id}
+              selectedKey={filters.transmission_type.id}
               isLoading={isLoading}
             >
               {(item: { id: string; name: string }) => (
@@ -179,10 +225,16 @@ const Filter = () => {
               label="District"
               className="sm:max-w-44"
               onSelectionChange={(e) =>
-                setFilters({ ...filters, district_id: e })
+                setFilters({
+                  ...filters,
+                  district: {
+                    id: e,
+                    name: districts.find((m) => m.id == e)?.name || "",
+                  },
+                })
               }
               defaultItems={districts}
-              selectedKey={filters.district_id}
+              selectedKey={filters.district.id}
               allowsCustomValue={true}
               isLoading={isLoading}
             >
@@ -198,16 +250,20 @@ const Filter = () => {
               label="Max price"
               className="sm:max-w-44"
               onSelectionChange={(e) => {
-                setFilters({ ...filters, maxPrice: e });
+                setFilters({
+                  ...filters,
+                  maxPrice: {
+                    id: e,
+                    name: maxPrice.find((m) => m.id == e)?.name || "",
+                  },
+                });
               }}
-              defaultItems={priceOptions}
-              selectedKey={filters.maxPrice}
+              defaultItems={maxPrice}
+              selectedKey={filters.maxPrice.id}
               isLoading={isLoading}
             >
               {(item) => (
-                <AutocompleteItem key={item.value}>
-                  {item.label}
-                </AutocompleteItem>
+                <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>
               )}
             </Autocomplete>
 
@@ -215,17 +271,21 @@ const Filter = () => {
               variant="underlined"
               label="Max Mileage"
               className="sm:max-w-44"
-              defaultItems={mileageOptions}
+              defaultItems={maxMileage}
               onSelectionChange={(e) => {
-                setFilters({ ...filters, maxMileage: e });
+                setFilters({
+                  ...filters,
+                  maxMileage: {
+                    id: e,
+                    name: maxMileage.find((m) => m.id == e)?.name || "",
+                  },
+                });
               }}
-              selectedKey={filters.maxMileage}
+              selectedKey={filters.maxMileage.id}
               isLoading={isLoading}
             >
               {mileageOptions.map((item) => (
-                <AutocompleteItem key={item.value}>
-                  {item.label}
-                </AutocompleteItem>
+                <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>
               ))}
             </Autocomplete>
 
@@ -234,14 +294,20 @@ const Filter = () => {
               label="Manufacture After"
               className="sm:max-w-44"
               onSelectionChange={(e) => {
-                setFilters({ ...filters, buildYear: e });
+                setFilters({
+                  ...filters,
+                  buildYear: {
+                    id: e,
+                    name: manufactureAfter.find((m) => m.id == e)?.name || "",
+                  },
+                });
               }}
-              selectedKey={filters.buildYear}
-              defaultItems={years}
+              selectedKey={filters.buildYear.id}
+              defaultItems={manufactureAfter}
               isLoading={isLoading}
             >
               {(item) => (
-                <AutocompleteItem key={item.key}>{item.label}</AutocompleteItem>
+                <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>
               )}
             </Autocomplete>
           </div>

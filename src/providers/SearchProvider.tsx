@@ -5,16 +5,16 @@ import { createContext, useContext, useState } from "react";
 interface SearchContextProps {
   query: string;
   filters: {
-    make_id: string;
-    model_id: string;
-    minPrice: string;
-    maxPrice: string;
-    body_type_id: string;
-    transmission_type_id: string;
-    maxMileage: string;
-    buildYear: string;
-    district_id: string;
-    city_id: string;
+    make: { id: string; name: string };
+    model: { id: string; name: string };
+    minPrice: { id: string; name: string };
+    maxPrice: { id: string; name: string };
+    body_type: { id: string; name: string };
+    transmission_type: { id: string; name: string };
+    maxMileage: { id: string; name: string };
+    buildYear: { id: string; name: string };
+    district: { id: string; name: string };
+    city: { id: string; name: string };
   };
   setQuery: (query: string) => void;
   setFilters: (filters: any) => void;
@@ -25,16 +25,16 @@ const SearchContext = createContext<SearchContextProps | undefined>(undefined);
 export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState({
-    make_id: "",
-    model_id: "",
-    minPrice: "",
-    maxPrice: "",
-    body_type_id: "",
-    transmission_type_id: "",
-    maxMileage: "",
-    buildYear: "",
-    district_id: "",
-    city_id: "",
+    make: { id: "", name: "" },
+    model: { id: "", name: "" },
+    minPrice: { id: "", name: "" },
+    maxPrice: { id: "", name: "" },
+    body_type: { id: "", name: "" },
+    transmission_type: { id: "", name: "" },
+    maxMileage: { id: "", name: "" },
+    buildYear: { id: "", name: "" },
+    district: { id: "", name: "" },
+    city: { id: "", name: "" },
   });
 
   return (
