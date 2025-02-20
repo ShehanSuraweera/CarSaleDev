@@ -95,7 +95,7 @@ const AdPreview = ({
             "Your ad has been uploaded successfully. We'll notify you when updates are available.",
             { duration: 5000 }
           );
-
+          onOpenChange();
           dispatch(resetForm()); // ✅ Clear Redux form data first
           setTimeout(() => persistor.purge(), 100); // ✅ Delay purge slightly for safety
 
@@ -125,6 +125,7 @@ const AdPreview = ({
             "Your ad has been edited successfully. We'll notify you when updates are available.",
             { duration: 5000 }
           );
+          onOpenChange();
           dispatch(resetForm()); // ✅ Clear Redux form data first
           setTimeout(() => persistor.purge(), 100); // ✅ Delay purge slightly for safety
 

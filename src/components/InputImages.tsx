@@ -26,7 +26,7 @@ const InputImages = () => {
     const files = event.target.files;
     if (files) {
       // Prevent exceeding 6 images
-      if (files.length + adFormData?.images?.length > 6) {
+      if (files?.length + adFormData?.images?.length > 6) {
         alert("You can upload up to 6 images.");
         return;
       }

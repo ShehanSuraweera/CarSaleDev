@@ -110,7 +110,7 @@ function VehicleBackground() {
           className="w-full text-black sm:max-w-96"
           placeholder="e.g  Registered, Unregistered, "
           name="vehicle_condition"
-          selectedKey={adFormData.vehicle_condition.id}
+          selectedKey={adFormData.vehicle_condition.id?.toString() ?? ""}
           defaultItems={vehicle_conditions}
           onSelectionChange={(e) => {
             if (e) {
@@ -136,9 +136,14 @@ function VehicleBackground() {
           label="Year of Registration"
           defaultItems={yearOfRegistration}
           inputValue={adFormData.reg_year}
-          onInputChange={(e) =>
-            dispatch(updateField({ field: "reg_year", value: e }))
-          }
+          selectedKey={adFormData.reg_year?.toString() ?? ""}
+          onSelectionChange={(e) => {
+            if (e) {
+              dispatch(updateField({ field: "reg_year", value: e as string }));
+            } else {
+              dispatch(updateField({ field: "reg_year", value: "" }));
+            }
+          }}
           className={`w-full text-black sm:max-w-96 `}
           placeholder="e.g  2024, 2023, 2022"
           name="reg_year"
