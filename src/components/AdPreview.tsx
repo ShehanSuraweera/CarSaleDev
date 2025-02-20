@@ -6,8 +6,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/react";
-import React, { useEffect, useState, useTransition } from "react";
-import { AdData } from "../types";
+import React, { useState, useTransition } from "react";
 import Ad from "./Ad";
 import { useDispatch, useSelector } from "react-redux";
 import { persistor, RootState } from "../redux/store";
@@ -15,6 +14,8 @@ import toast from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
 import { createAd, editAd } from "../lib/api";
 import { useUser } from "../UserContext";
+import { resetForm } from "../redux/features/ad/adFormSlice";
+import LoadingOverlay from "./LoadingOverlay";
 
 const AdPreview = ({
   isOpen,
@@ -30,6 +31,7 @@ const AdPreview = ({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useDispatch();
 
   const formData = () => {
     const formData = new FormData();
@@ -51,7 +53,10 @@ const AdPreview = ({
         key === "district" ||
         key === "transmission_type" ||
         key === "body_type" ||
-        key === "vehicle_type"
+        key === "vehicle_type" ||
+        key === "fuel_type" ||
+        key === "vehicle_condition" ||
+        key === "user_id"
       ) {
       } else {
         formData.append(key, value.toString());
@@ -65,6 +70,14 @@ const AdPreview = ({
       adFormData?.transmission_type.id.toString()
     );
     formData.append("body_type_id", adFormData?.body_type?.id?.toString());
+    formData.append("fuel_type_id", adFormData?.fuel_type?.id?.toString());
+    formData.append(
+      "vehicle_condition_id",
+      adFormData?.vehicle_condition.id?.toString()
+    );
+    if (user?.id) {
+      formData.append("user_id", user.id);
+    }
 
     return formData;
   };
@@ -82,8 +95,10 @@ const AdPreview = ({
             "Your ad has been uploaded successfully. We'll notify you when updates are available.",
             { duration: 5000 }
           );
-          setIsLoading(false);
-          persistor.purge();
+
+          dispatch(resetForm()); // ✅ Clear Redux form data first
+          setTimeout(() => persistor.purge(), 100); // ✅ Delay purge slightly for safety
+
           router.push("/profile");
         } else {
           toast.error(result);
@@ -110,16 +125,16 @@ const AdPreview = ({
             "Your ad has been edited successfully. We'll notify you when updates are available.",
             { duration: 5000 }
           );
-          setIsLoading(false);
-          persistor.purge();
+          dispatch(resetForm()); // ✅ Clear Redux form data first
+          setTimeout(() => persistor.purge(), 100); // ✅ Delay purge slightly for safety
+
           router.push("/profile");
         } else {
           toast.error(result);
-          console.error("Failed to post ad:", result);
+          console.error("Failed to edit ad:", result);
         }
       } catch (error) {
-        console.error("Error posting ad:", error);
-        toast.error("An error occurred while posting the ad.");
+        toast.error("An error occurred while editing the ad.");
       } finally {
         setIsLoading(false);
       }
@@ -147,6 +162,7 @@ const AdPreview = ({
                 Your Ad Preview
               </ModalHeader>
               <ModalBody className="w-full px-20 py-4">
+                {isLoading && <LoadingOverlay />}
                 <Ad adData={adFormData} />
               </ModalBody>
               <ModalFooter className="flex justify-end w-full">

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
-import { updateField } from "../redux/features/ad/adFormSlice";
+import { setError, updateField } from "../redux/features/ad/adFormSlice";
 import { getYear } from "date-fns";
 import {
   getBodyTypes,
@@ -53,7 +53,7 @@ const VehicleAbout = () => {
     const fetchBodyTypes = async () => {
       try {
         const data = await getBodyTypes({
-          vehicle_type_id: adFormData.vehicle_type.id.toString(),
+          vehicle_type_id: adFormData.vehicle_type?.id.toString(),
         });
         setBodyTypes(data);
       } catch (error) {
@@ -63,16 +63,16 @@ const VehicleAbout = () => {
       }
     };
     fetchBodyTypes();
-  }, [adFormData.vehicle_type.id]);
+  }, [adFormData.vehicle_type?.id]);
 
   // Fetch makes based on vehicle type
   useEffect(() => {
-    if (!adFormData.vehicle_type.id) return;
+    if (!adFormData.vehicle_type?.id) return;
     setIsLoading(true);
     const fetchMakes = async () => {
       try {
         const res = await getMakeByVehicleType(
-          Number(adFormData.vehicle_type.id)
+          Number(adFormData.vehicle_type?.id)
         );
         setMakes(res);
       } catch (error) {
@@ -82,11 +82,11 @@ const VehicleAbout = () => {
       }
     };
     fetchMakes();
-  }, [adFormData.vehicle_type.id]);
+  }, [adFormData.vehicle_type?.id]);
 
   // Fetch models based on make
   useEffect(() => {
-    if (!adFormData.make?.id) {
+    if (!adFormData.make?.id || !adFormData.vehicle_type?.id) {
       setModels([]); // Clear models if no make selected
       return;
     }
@@ -109,7 +109,7 @@ const VehicleAbout = () => {
 
   return (
     <>
-      {adFormData.vehicle_type.id && (
+      {adFormData.vehicle_type?.id && (
         <div className="sm:w-[90%] shadow-md p-8">
           <h1 className="text-lg font-medium">
             {`Let's start finding by your vehicle's make`}
@@ -122,7 +122,7 @@ const VehicleAbout = () => {
               labelPlacement="outside"
               label="Make"
               defaultItems={makes}
-              selectedKey={adFormData.make?.id?.toString() || ""}
+              selectedKey={adFormData.make?.id?.toString()}
               onSelectionChange={(key) => {
                 if (key) {
                   dispatch(
@@ -138,6 +138,9 @@ const VehicleAbout = () => {
                   dispatch(
                     updateField({ field: "make", value: { id: 0, name: "" } })
                   ); // Provide a default value
+                  dispatch(
+                    setError({ field: "make", message: "Make is required." })
+                  );
                 }
                 dispatch(
                   updateField({ field: "model", value: { id: 0, name: "" } })
@@ -153,12 +156,12 @@ const VehicleAbout = () => {
 
             {/* Model */}
             <Autocomplete
-              isDisabled={!adFormData.make?.id}
               isLoading={isLoading}
+              isDisabled={!adFormData.make?.id}
               isRequired
               label="Model"
               defaultItems={models}
-              selectedKey={adFormData.model?.id?.toString() || undefined}
+              selectedKey={adFormData.model?.id?.toString()}
               onSelectionChange={(key) => {
                 if (key) {
                   dispatch(
@@ -174,6 +177,9 @@ const VehicleAbout = () => {
                   dispatch(
                     updateField({ field: "model", value: { id: 0, name: "" } })
                   ); // Provide a default value
+                  dispatch(
+                    setError({ field: "model", message: "Model is required." })
+                  );
                 }
               }}
               labelPlacement="outside"
@@ -210,8 +216,20 @@ const VehicleAbout = () => {
               onSelectionChange={(key) => {
                 if (key) {
                   dispatch(updateField({ field: "build_year", value: key }));
+                  dispatch(
+                    updateField({
+                      field: "reg_year",
+                      value: "",
+                    })
+                  );
                 } else {
                   dispatch(updateField({ field: "build_year", value: "" }));
+                  dispatch(
+                    setError({
+                      field: "build_year",
+                      message: "Build Year is required.",
+                    })
+                  );
                 }
               }}
               className="w-full text-black sm:max-w-96"
@@ -228,9 +246,7 @@ const VehicleAbout = () => {
               labelPlacement="outside"
               label="Transmission"
               defaultItems={transmissionTypes}
-              selectedKey={
-                adFormData?.transmission_type?.id?.toString() ?? undefined
-              }
+              selectedKey={adFormData?.transmission_type?.id?.toString()}
               onSelectionChange={(key) => {
                 if (key) {
                   dispatch(
@@ -238,8 +254,27 @@ const VehicleAbout = () => {
                       field: "transmission_type",
                       value: {
                         id: Number(key),
-                        name: bodyTypes.find((m) => m.id == key)?.name || "",
+                        name:
+                          transmissionTypes.find((m) => m.id == key)?.name ||
+                          "",
                       },
+                    })
+                  );
+                } else {
+                  dispatch(
+                    updateField({
+                      field: "transmission_type",
+                      value: {
+                        id: 0,
+                        name: "",
+                      },
+                    })
+                  );
+
+                  dispatch(
+                    setError({
+                      field: "transmission_type",
+                      message: "Transmission Type is required.",
                     })
                   );
                 }
@@ -258,7 +293,7 @@ const VehicleAbout = () => {
               labelPlacement="outside"
               label="Body Type"
               defaultItems={bodyTypes}
-              selectedKey={adFormData?.body_type?.id?.toString() ?? undefined}
+              selectedKey={adFormData?.body_type?.id?.toString()}
               onSelectionChange={(key) => {
                 if (key) {
                   dispatch(
@@ -271,7 +306,22 @@ const VehicleAbout = () => {
                     })
                   );
                 } else {
-                  dispatch(updateField({ field: "body_type", value: "" }));
+                  dispatch(
+                    updateField({
+                      field: "body_type",
+                      value: {
+                        id: 0,
+                        name: "",
+                      },
+                    })
+                  );
+
+                  dispatch(
+                    setError({
+                      field: "body_type",
+                      message: "Body Type is required.",
+                    })
+                  );
                 }
               }}
               className="w-full text-black sm:max-w-96"

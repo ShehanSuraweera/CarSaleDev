@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import InputImages from "@/src/components/InputImages";
 import { Spinner, Textarea, Form } from "@heroui/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,26 +14,66 @@ import AdPreviewButton from "@/src/components/AdPreviewButton";
 
 export default function Page() {
   const dispatch = useDispatch();
-  const { adFormData, errors } = useSelector(
-    (state: RootState) => state.adForm
-  );
+  const { adFormData } = useSelector((state: RootState) => state.adForm);
+
+  // Track which sections have been rendered at least once
+  const [renderedComponents, setRenderedComponents] = useState({
+    vehicleTypes: false,
+    vehicleAbout: false,
+    vehicleBackground: false,
+    priceHandle: false,
+  });
+
+  useEffect(() => {
+    if (
+      adFormData.owner_display_name &&
+      adFormData.owner_contact &&
+      adFormData.city.name
+    ) {
+      setRenderedComponents((prev) => ({ ...prev, vehicleTypes: true }));
+    }
+    if (adFormData.vehicle_type.id !== 0) {
+      setRenderedComponents((prev) => ({ ...prev, vehicleAbout: true }));
+    }
+    if (
+      adFormData.transmission_type.name &&
+      adFormData.build_year &&
+      adFormData.body_type?.name &&
+      adFormData.model.name
+    ) {
+      setRenderedComponents((prev) => ({ ...prev, vehicleBackground: true }));
+    }
+    if (adFormData.fuel_type.name && adFormData.vehicle_condition.name) {
+      setRenderedComponents((prev) => ({ ...prev, priceHandle: true }));
+    }
+  }, [adFormData]);
 
   return (
     <>
       <Form validationBehavior="native">
         <div className="flex flex-col items-center justify-center w-full gap-3 sm:px-5 sm:gap-8 sm:p-4">
           <OwnerDetails />
-          <VehicleTypes />
-          {adFormData.vehicle_type.id !== 0 && <VehicleAbout />}
 
-          {adFormData.make.name !== "" ||
-            (adFormData.vehicle_type.id !== 0 && <VehicleBackground />)}
+          {(renderedComponents.vehicleTypes ||
+            (adFormData.owner_display_name &&
+              adFormData.owner_contact &&
+              adFormData.city.name)) && <VehicleTypes />}
 
-          {adFormData.vehicle_condition !== "" && <PriceHandle />}
+          {(renderedComponents.vehicleAbout ||
+            adFormData.vehicle_type.id !== 0) && <VehicleAbout />}
 
-          {adFormData.fuel_type !== "" && (
+          {(renderedComponents.vehicleBackground ||
+            (adFormData.transmission_type.name &&
+              adFormData.build_year &&
+              adFormData.body_type?.name &&
+              adFormData.model.name)) && <VehicleBackground />}
+
+          {(renderedComponents.priceHandle ||
+            (adFormData.fuel_type.name &&
+              adFormData.vehicle_condition.name)) && (
             <>
-              <div className=" sm:w-[90%] shadow-md  w-full  p-8">
+              <PriceHandle />
+              <div className="sm:w-[90%] shadow-md w-full p-8">
                 <Textarea
                   variant="flat"
                   label="Owner Comments:"

@@ -4,6 +4,13 @@ import storage from "redux-persist/lib/storage";
 import userReducer from "./features/user/userSlice";
 import adFormReducer from "./features/ad/adFormSlice";
 
+const adFormPersistConfig = {
+  key: "adForm",
+  storage,
+  whitelist: ["adFormData"], // Persist adFormData only
+  serialize: true,
+};
+
 // ✅ Persist only user slice (avoiding global persist)
 const userPersistConfig = {
   key: "user",
@@ -14,7 +21,7 @@ const userPersistConfig = {
 // ✅ Combine reducers
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer), // Persist user slice
-  adForm: adFormReducer, // Not persisted
+  adForm: persistReducer(adFormPersistConfig, adFormReducer), // Not persisted
 });
 
 // ✅ Create store

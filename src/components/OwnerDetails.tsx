@@ -12,7 +12,7 @@ import {
 } from "@heroui/react";
 import { RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { updateField } from "../redux/features/ad/adFormSlice";
+import { setError, updateField } from "../redux/features/ad/adFormSlice";
 import {
   getAllCities,
   getAllDistricts,
@@ -22,6 +22,7 @@ import {
 import { useUser } from "../UserContext";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import { debounce } from "lodash";
 
 // Define district and city types
 interface District {
@@ -36,7 +37,9 @@ interface City {
 
 const OwnerDetails = () => {
   const dispatch = useDispatch();
-  const { adFormData } = useSelector((state: RootState) => state.adForm);
+  const { adFormData, errors } = useSelector(
+    (state: RootState) => state.adForm
+  );
 
   const [isCityDisabled, setIsCityDisabled] = useState(true);
   const [districts, setDistricts] = useState<District[]>([]);
@@ -48,6 +51,44 @@ const OwnerDetails = () => {
   const [isPending, startTransition] = useTransition();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
+
+  const [contact, setContact] = useState<string>("");
+  const [contactError, setContactError] = useState<string>("");
+
+  // Validate contact using regex
+  const validateContact = (contact: string): boolean => {
+    console.log(errors);
+    const regex = /^0\d{9}$/;
+    return regex.test(contact);
+  };
+
+  // Debounced validation function
+  const debouncedValidateContact = useCallback(
+    debounce((contact: string) => {
+      if (validateContact(contact)) {
+        setContactError(""); // Clear error if valid
+        dispatch(updateField({ field: "owner_contact", value: contact }));
+      } else {
+        dispatch(updateField({ field: "owner_contact", value: "" }));
+
+        setContactError("Invalid contact number");
+        dispatch(
+          setError({
+            field: "owner_contact",
+            message: "Invalid contact number",
+          })
+        );
+        console.log(errors);
+      }
+    }, 500), // Delay of 500ms before validation
+    []
+  );
+
+  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setContact(value);
+    debouncedValidateContact(value);
+  };
 
   useEffect(() => {
     const fetchAllCities = async () => {
@@ -71,21 +112,29 @@ const OwnerDetails = () => {
           dispatch(
             updateField({
               field: "owner_display_name",
-              value: userProfile.name || "",
+              value: adFormData.owner_display_name
+                ? adFormData.owner_display_name
+                : userProfile.name || "",
             })
           );
           dispatch(
             updateField({
               field: "owner_contact",
-              value: userProfile.phone || "",
+              value: adFormData.owner_contact
+                ? adFormData.owner_contact
+                : userProfile.phone || "",
             })
           );
           dispatch(
             updateField({
               field: "city",
               value: {
-                id: Number(userProfile?.city?.id),
-                name: userProfile?.city?.name,
+                id: adFormData.city.id
+                  ? adFormData.city.id
+                  : Number(userProfile?.city?.id),
+                name: adFormData.city.name
+                  ? adFormData.city.name
+                  : userProfile?.city?.name,
               },
             })
           );
@@ -93,8 +142,12 @@ const OwnerDetails = () => {
             updateField({
               field: "district",
               value: {
-                id: Number(userProfile?.disrict?.id),
-                name: userProfile?.district?.name,
+                id: adFormData.district.id
+                  ? adFormData.district.id
+                  : Number(userProfile?.disrict?.id),
+                name: adFormData.district.name
+                  ? adFormData.district.name
+                  : userProfile?.district?.name,
               },
             })
           );
@@ -108,7 +161,7 @@ const OwnerDetails = () => {
         }
       });
     }
-  }, [user, dispatch]);
+  }, [user]);
 
   const getDistrictName = (districtId: number | null) => {
     if (!districtId) return "";
@@ -230,14 +283,12 @@ const OwnerDetails = () => {
               label="Contact"
               labelPlacement="outside"
               className="sm:max-w-96"
+              isInvalid={contactError ? true : false}
               description="This will display as contact number of the AD"
-              value={adFormData?.owner_contact || ""}
-              onChange={(e) =>
-                dispatch(
-                  updateField({ field: "owner_contact", value: e.target.value })
-                )
-              }
+              value={adFormData?.owner_contact || contact}
+              onChange={handleContactChange}
             />
+
             <div>
               <h3>
                 Ad Location <span className="text-red-500 ">*</span>

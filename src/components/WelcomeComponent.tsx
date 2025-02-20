@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import homeImage from "@/src/assets/images/home_image_1.webp";
+import Search from "./Search";
 
 function WelcomeComponent() {
   return (
@@ -18,6 +19,10 @@ function WelcomeComponent() {
       {/* Text Overlay */}
       <div className="relative z-10 p-10 text-2xl font-semibold text-center text-white bg-black bg-opacity-50 rounded-md">
         Welcome to Sri Lanka's Number 01 Vehicle Selling Platform!
+      </div>
+
+      <div className="relative z-10 p-10 text-2xl font-semibold text-center text-white bg-black bg-opacity-50 rounded-md top-10">
+        <Search />
       </div>
     </div>
   );

@@ -36,11 +36,11 @@ const VehicleTypes = () => {
   }, []);
 
   useEffect(() => {
-    if (adFormData?.vehicle_type?.id) {
-      dispatch(updateField({ field: "make", value: "" }));
-      dispatch(updateField({ field: "model", value: "" }));
+    if (adFormData?.vehicle_type?.name === "") {
+      dispatch(updateField({ field: "make", value: { id: 0, name: "" } }));
+      dispatch(updateField({ field: "model", value: { id: 0, name: "" } }));
     }
-  }, [adFormData.vehicle_type?.id, dispatch]);
+  }, [adFormData.vehicle_type?.id]);
 
   return (
     <div className="sm:w-[90%] shadow-md w-full p-8">
@@ -71,6 +71,24 @@ const VehicleTypes = () => {
                       value: {
                         id: Number(selectedType.id), // Ensure it's a string
                         name: selectedType.name,
+                      },
+                    })
+                  );
+                  dispatch(
+                    updateField({
+                      field: "make",
+                      value: {
+                        id: 0, // Ensure it's a string
+                        name: "",
+                      },
+                    })
+                  );
+                  dispatch(
+                    updateField({
+                      field: "model",
+                      value: {
+                        id: 0, // Ensure it's a string
+                        name: "",
                       },
                     })
                   );

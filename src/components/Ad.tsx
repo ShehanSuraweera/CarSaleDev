@@ -38,7 +38,7 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
       </h1>
 
       <p className="text-gray-600 dark:text-slate-300">
-        {adData?.owner_display_name + " - " + adData?.vehicle_condition}
+        {adData?.owner_display_name + " - " + adData?.vehicle_condition.name}
       </p>
       <span className="text-sm text-gray-600 dark:text-slate-300">
         {adData?.district?.name} district - {adData?.city.name}
@@ -136,11 +136,21 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
               <strong>YOM : </strong> {adData?.build_year}
             </p>
             <p className="mb-1">
-              <strong>YOR : </strong> {adData?.reg_year}
+              <strong>Condition : </strong> {adData?.vehicle_condition?.name}
             </p>
-            <p className="mb-1">
-              <strong>Odometer : </strong> {adData?.mileage} km
-            </p>
+
+            {adData.reg_year && (
+              <p className="mb-1">
+                <strong>YOR : </strong> {adData?.reg_year}
+              </p>
+            )}
+
+            {adData.mileage && (
+              <p className="mb-1">
+                <strong>Odometer : </strong> {adData?.mileage} km
+              </p>
+            )}
+
             <p className="mb-1">
               <strong>Body type : </strong> {adData?.body_type?.name}
             </p>
@@ -151,7 +161,7 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
               <strong>Transmission : </strong> {adData?.transmission_type.name}
             </p>
             <p className="mb-1">
-              <strong>Fuel Type : </strong> {adData?.fuel_type}
+              <strong>Fuel Type : </strong> {adData?.fuel_type.name}
             </p>
             <p className="mb-1">
               <strong>Colour : </strong> {adData?.colour}

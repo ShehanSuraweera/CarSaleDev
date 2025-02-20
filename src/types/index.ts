@@ -15,7 +15,7 @@ export interface AdData {
   district: { id: number; name: string };
   engine: string;
   frame_code: string;
-  fuel_type: string;
+  fuel_type: { id: number; name: string };
   images: string[];
   is_negotiable: boolean;
   make: { id: number; name: string };
@@ -29,7 +29,7 @@ export interface AdData {
   title: string;
   transmission_type: { id: number; name: string };
   user_id: string;
-  vehicle_condition: "";
+  vehicle_condition: { id: string; name: string };
   vehicle_type: { id: number; name: string };
   views: number;
 }

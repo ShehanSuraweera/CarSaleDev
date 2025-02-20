@@ -371,3 +371,27 @@ export const getTransmissionTypes = async () => {
     );
   }
 };
+
+export const getFuelTypes = async () => {
+  try {
+    const response = await apiClient.get("/info/fuel-types");
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching fuel types:", error.message || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch fuel types"
+    );
+  }
+};
+
+export const getVehicleConditions = async () => {
+  try {
+    const response = await apiClient.get("/info/vehicle-conditions");
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching fuel types:", error.message || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch fuel types"
+    );
+  }
+};

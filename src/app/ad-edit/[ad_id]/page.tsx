@@ -18,11 +18,34 @@ export default function Page() {
   const dispatch = useDispatch();
   const { ad_id } = useParams();
 
+  // async function convertImagesToBlobUrls(imageUrls: string[]) {
+  //   const blobUrls = await Promise.all(
+  //     imageUrls.map(async (url) => {
+  //       const response = await fetch(url);
+  //       const blob = await response.blob();
+  //       return URL.createObjectURL(blob);
+  //     })
+  //   );
+  //   return blobUrls;
+  // }
+
   const fetchAdData = useCallback(async () => {
     if (!ad_id) return;
     setLoading(true);
     try {
       const vehicleAd = await fetchAd(ad_id as string);
+
+      vehicleAd.images = [];
+      // const blobUrls = await convertImagesToBlobUrls(vehicleAd.images);
+
+      // // Create a new object instead of modifying the original one
+      // const updatedVehicleAd = { ...vehicleAd, images: blobUrls };
+
+      // console.log("updatedVehicleAd", updatedVehicleAd);
+
+      // if (updatedVehicleAd) {
+      //   dispatch(setAdData(updatedVehicleAd));
+      // }
 
       if (vehicleAd) {
         dispatch(setAdData(vehicleAd));

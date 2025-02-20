@@ -11,6 +11,14 @@ interface AdFormState {
 const initialState: AdFormState = {
   adFormData: {
     user_id: "",
+    make: {
+      id: 0,
+      name: "",
+    },
+    model: {
+      id: 0,
+      name: "",
+    },
     frame_code: "",
     build_year: "",
     transmission_type: {
@@ -21,12 +29,15 @@ const initialState: AdFormState = {
       id: 0,
       name: "",
     },
-    vehicle_condition: "",
+    vehicle_condition: { id: "", name: "" },
     reg_year: "",
     mileage: "",
     engine: "",
     colour: "",
-    fuel_type: "",
+    fuel_type: {
+      id: 0,
+      name: "",
+    },
     owner_comments: "",
     owner_contact: "",
     owner_display_name: "",
@@ -46,14 +57,7 @@ const initialState: AdFormState = {
       id: 0,
       name: "",
     },
-    make: {
-      id: 0,
-      name: "",
-    },
-    model: {
-      id: 0,
-      name: "",
-    },
+
     price: 0,
     title: "",
     views: 0,

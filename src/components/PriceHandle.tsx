@@ -66,18 +66,18 @@ const PriceHandle = () => {
                 <Checkbox
                   name="is_negotiable"
                   defaultSelected={false}
-                  onChange={(e) =>
+                  onValueChange={(e) =>
                     !adFormData.is_negotiable
                       ? dispatch(
                           updateField({
                             field: "is_negotiable",
-                            value: e.target.value,
+                            value: e,
                           })
                         )
                       : dispatch(
                           updateField({
-                            field: "model",
-                            value: e.target.value,
+                            field: "is_negotiable",
+                            value: e,
                           })
                         )
                   }

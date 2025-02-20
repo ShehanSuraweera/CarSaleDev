@@ -35,7 +35,7 @@ const CarList: React.FC<{
               modle={car.model?.name}
               manufacture={car.build_year}
               mileage={car.mileage}
-              fuel={car.fuel_type}
+              fuel={car.fuel_type.name}
               price={car?.price?.toString()}
               engine={car.engine}
               transmission={car.transmission_type?.name}
