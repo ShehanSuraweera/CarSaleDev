@@ -47,6 +47,10 @@ const MediumAd = ({
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  function formatKilometers(value: number): string {
+    return value.toLocaleString("en-US") + " km";
+  }
+
   const deleteAdFunction = async () => {
     const res = await deleteAd(id);
     return res;
@@ -66,6 +70,10 @@ const MediumAd = ({
       onClose();
     }
   };
+
+  function removeParentheses(text: string): string {
+    return text.replace(/\s*\(.*?\)\s*/g, "").trim();
+  }
 
   function extractTextInsideParentheses(input: string): string | null {
     const match = input.match(/\(([^)]+)\)/);
@@ -119,7 +127,7 @@ const MediumAd = ({
                 className="w-3 sm:w-5"
                 alt="mileage"
               ></Image>
-              {mileage}
+              {mileage && formatKilometers(Number(mileage))}
             </div>
             <div className="flex items-center justify-start gap-1 text-xs md:text-sm sm:gap-2">
               <Image
@@ -143,7 +151,7 @@ const MediumAd = ({
                 alt="fueltype"
                 className="w-3 sm:w-5"
               ></Image>
-              {fuel}
+              {fuel && removeParentheses(fuel)}
             </div>
             <div className="items-center justify-start hidden gap-2 text-xs md:text-sm sm:flex">
               <Image src={enginepic} alt="engine" className="w-5"></Image>
