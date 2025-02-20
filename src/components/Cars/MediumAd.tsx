@@ -84,7 +84,7 @@ const MediumAd = ({
     <>
       <div className=" mb-7 relative   shadow-md mt-2 sm:mt-2 w-[325px] sm:w-[280px] overflow-hidden sm:h-[300px] md:w-[370px] md:h-[340px] h-[250px] lg:w-[400px] dark:bg-[#000B17]  rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  ">
         {pathname === "/profile" && (
-          <div className="absolute top-0 right-0 z-10 flex gap-2 p-2 bg-white bg-opacity-100 rounded-lg">
+          <div className="absolute top-0 right-0 z-10 flex gap-2 p-2 bg-white bg-opacity-100 rounded-lg dark:bg-black">
             <Button
               size="sm"
               color="warning"

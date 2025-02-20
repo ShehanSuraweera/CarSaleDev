@@ -166,7 +166,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full h-full p-5 bg-slate-50">
+    <div className="flex flex-col items-center w-full h-full p-5 mb-16 bg-slate-50 dark:bg-black">
       <div className="flex flex-col justify-center w-full">
         <div className="flex justify-center mb-5">
           <Button color="warning" onPress={() => router.push("/sell")}>
