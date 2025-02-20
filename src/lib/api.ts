@@ -13,6 +13,9 @@ export const fetchAds = async (searchParams: {
   district_id?: string;
   city_id?: string;
   body_type_id?: string;
+  vehicle_type_id?: string;
+  fuel_type_id?: string;
+  vehicle_condition_id: string;
 }) => {
   try {
     const queryParams = new URLSearchParams();
@@ -41,6 +44,18 @@ export const fetchAds = async (searchParams: {
       queryParams.append("district_id", searchParams.district_id.toString());
     if (searchParams.city_id)
       queryParams.append("city_id", searchParams.city_id.toString());
+    if (searchParams.vehicle_type_id)
+      queryParams.append(
+        "vehicle_type_id",
+        searchParams.vehicle_type_id.toString()
+      );
+    if (searchParams.fuel_type_id)
+      queryParams.append("fuel_type_id", searchParams.fuel_type_id.toString());
+    if (searchParams.vehicle_condition_id)
+      queryParams.append(
+        "vehicle_condition_id",
+        searchParams.vehicle_condition_id.toString()
+      );
 
     const response = await apiClient.get(
       `/uploads/ads?${queryParams.toString()}`

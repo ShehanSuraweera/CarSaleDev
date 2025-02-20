@@ -29,6 +29,7 @@ export default function Page() {
   const [cars, setCars] = useState<any[]>([]);
 
   const getCarsFromBackend = useCallback(async () => {
+    console.log(filters);
     try {
       setLoading(true);
       const fetchedCars = await fetchAds({
@@ -43,6 +44,9 @@ export default function Page() {
         transmission_type_id: filters.transmission_type.id,
         district_id: filters.district.id,
         city_id: filters.city.id,
+        vehicle_type_id: filters.vehicle_type.id,
+        vehicle_condition_id: filters.vehicle_condition.id,
+        fuel_type_id: filters.fuel_type.id,
       });
       setCars(fetchedCars);
     } catch (err: any) {
@@ -119,7 +123,7 @@ export default function Page() {
       </div>
       <div className="flex flex-wrap items-center justify-center w-full gap-2 mt-8 mb-5 sm:justify-center sm:gap-5 sm:flex-nowrap sm:flex-row">
         {Object.entries(filters).map(([key, value]) =>
-          value.id ? (
+          value.name !== "" ? (
             <Chip
               key={key}
               size="sm"

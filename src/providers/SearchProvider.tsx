@@ -15,6 +15,9 @@ interface SearchContextProps {
     buildYear: { id: string; name: string };
     district: { id: string; name: string };
     city: { id: string; name: string };
+    vehicle_type: { id: string; name: string };
+    fuel_type: { id: string; name: string };
+    vehicle_condition: { id: string; name: string };
   };
   setQuery: (query: string) => void;
   setFilters: (filters: any) => void;
@@ -35,6 +38,9 @@ export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
     buildYear: { id: "", name: "" },
     district: { id: "", name: "" },
     city: { id: "", name: "" },
+    vehicle_type: { id: "", name: "" },
+    fuel_type: { id: "", name: "" },
+    vehicle_condition: { id: "", name: "" },
   });
 
   return (

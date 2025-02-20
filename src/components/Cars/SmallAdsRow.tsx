@@ -12,6 +12,8 @@ import Marquee from "react-fast-marquee";
 import { Bars } from "react-loader-spinner";
 import { Button } from "@heroui/button";
 import { Link, Link2Off } from "lucide-react";
+import { useSearch } from "@/src/providers/SearchProvider";
+import { useRouter } from "next/navigation";
 
 interface SmallAdsRowProps {
   topic: string;
@@ -23,6 +25,8 @@ const SmallAdsRow = ({ topic, make_id, vehicle_type_id }: SmallAdsRowProps) => {
   const [cars, setCars] = useState<any[]>([]); // Holds the fetched car ads
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
+  const { filters, setFilters } = useSearch();
+  const router = useRouter();
 
   const getCarsFromBackend = useCallback(async () => {
     try {
@@ -41,7 +45,14 @@ const SmallAdsRow = ({ topic, make_id, vehicle_type_id }: SmallAdsRowProps) => {
     getCarsFromBackend();
   }, [getCarsFromBackend]);
 
-  const handleLinkClick = () => {};
+  const handleLinkClick = () => {
+    setFilters({
+      ...filters,
+      vehicle_type: { id: vehicle_type_id, name: "" },
+      make: { id: make_id, name: "" },
+    });
+    router.push("/buy");
+  };
 
   return (
     <motion.div
