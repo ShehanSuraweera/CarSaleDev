@@ -80,7 +80,7 @@ export const Navbar = () => {
                 <NextLink
                   className={`dark:text-[#FDC221] ${
                     item.href === pathName
-                      ? "  font-medium   text-[#FDC221] "
+                      ? "  font-medium   text-[#FDC221] dark:text-white"
                       : "text-white"
                   }
                     ${
@@ -167,8 +167,8 @@ export const Navbar = () => {
             {(onClose) => (
               <>
                 <DrawerHeader className="flex flex-row items-center justify-between gap-1 mt-5">
-                  <div className="flex flex-col gap-1">
-                    <Logo />
+                  <div className="flex flex-col gap-1 text-[#FDC221]">
+                    <Logo className="text-[#FDC221]" />
                     <div>Ceylon Cars</div>
                   </div>
                   <div className="flex justify-end p-2 mt-5 mr-5">
@@ -187,45 +187,7 @@ export const Navbar = () => {
                         />
                       </Link>
                     )}
-                  </div>
-                </DrawerHeader>
-                <DrawerBody>
-                  <div className="flex flex-col justify-between h-full">
-                    <div className="flex flex-col gap-2 mx-4 mt-2">
-                      {siteConfig.navMenuItems.map((item) => (
-                        <NavbarMenuItem key={item.label} className="list-none ">
-                          <Link
-                            onPressEnd={() => {
-                              handleOpen(!isOpen);
-                            }}
-                            color={"foreground"}
-                            className={` ${
-                              item.href === pathName
-                                ? "  font-medium  text-[#FDC221] "
-                                : "text-black dark:text-white"
-                            }`}
-                            href={item.href}
-                            size="lg"
-                            onPress={handleMenuItemClick}
-                          >
-                            <div className="flex flex-col items-center justify-center w-full h-12">
-                              <div> {item.label}</div>
-                              <div className="w-screen">
-                                <Divider className="w-full my-2" />
-                              </div>
-                            </div>
-                          </Link>
-                        </NavbarMenuItem>
-                      ))}
-                    </div>
-                  </div>
-                </DrawerBody>
-                <DrawerFooter>
-                  <div className=" w-[100%] flex justify-center h-full items-center gap-2 mt-1">
-                    <Button color="danger" variant="light" onPress={onClose}>
-                      Close
-                    </Button>
-                    {!loading && !user ? (
+                    {!loading && !user && (
                       <Button
                         color="primary"
                         variant="ghost"
@@ -240,9 +202,50 @@ export const Navbar = () => {
                           " Sign in"
                         )}
                       </Button>
-                    ) : (
-                      <></>
                     )}
+                  </div>
+                </DrawerHeader>
+                <DrawerBody>
+                  <div className="flex flex-col justify-between h-full">
+                    <div className="flex flex-col gap-2 mx-4 mt-2">
+                      {siteConfig.navMenuItems
+                        .filter((item) => item.label !== "Profile" || user)
+                        .map((item) => (
+                          <NavbarMenuItem
+                            key={item.label}
+                            className="list-none "
+                          >
+                            <Link
+                              onPressEnd={() => {
+                                handleOpen(!isOpen);
+                              }}
+                              color={"foreground"}
+                              className={` ${
+                                item.href === pathName
+                                  ? "  font-medium  text-[#FDC221] "
+                                  : "text-black dark:text-white"
+                              }`}
+                              href={item.href}
+                              size="lg"
+                              onPress={handleMenuItemClick}
+                            >
+                              <div className="flex flex-col items-center justify-center w-full h-12">
+                                <div> {item.label}</div>
+                                <div className="w-screen">
+                                  <Divider className="w-full my-2" />
+                                </div>
+                              </div>
+                            </Link>
+                          </NavbarMenuItem>
+                        ))}
+                    </div>
+                  </div>
+                </DrawerBody>
+                <DrawerFooter>
+                  <div className=" w-[100%] flex justify-center h-full items-center gap-2 mt-1">
+                    <Button color="danger" variant="light" onPress={onClose}>
+                      Close
+                    </Button>
                   </div>
                 </DrawerFooter>
               </>

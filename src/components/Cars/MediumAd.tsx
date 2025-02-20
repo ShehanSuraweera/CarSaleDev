@@ -99,73 +99,78 @@ const MediumAd = ({
           </div>
         )}
 
-        <Image
-          className="sm:w-[55%] w-[70%]  rounded-md object-cover  sm:h-[110px] h-[120px] mt-2 "
-          src={image || "/images/no-image.png"}
-          alt={make + modle}
-          width={500}
-          height={500}
+        <button
+          className="flex flex-col items-center w-full h-full"
           onClick={handleAd}
-        />
-        <div className=" mt-1 font-semibold md:text-lg   text-xs text-[#130F40] dark:text-[#FDC221]">
-          {make}
-        </div>
-        <div className=" font-medium md:text-lg text-xs text-[#130F40] dark:text-[#FDC221]">
-          {modle + " " + frame_code + " " + manufacture}
-        </div>
-
-        <div className=" w-[100%] h-[140px] sm:h-[150px] md:h-[160px] bg-slate-50 dark:bg-[#000E1E]  mt-1  rounded-md py-2 items-center justify-between flex flex-col">
-          <div className=" text-xs sm:text-sm md:text-base lg:text-lg text-[#2980b9]  w-full text-center font-semibold">
-            {price === "" || !price
-              ? "Negotiable"
-              : `Rs. ${formatNumber(Number(price))}`}
+        >
+          <Image
+            className="sm:w-[55%] w-[70%]  rounded-md object-cover  sm:h-[110px] h-[120px] mt-2 "
+            src={image || "/images/no-image.png"}
+            alt={make + modle}
+            width={500}
+            height={500}
+            onClick={handleAd}
+          />
+          <div className=" mt-1 font-semibold md:text-lg   text-xs text-[#130F40] dark:text-[#FDC221]">
+            {make}
           </div>
-          <div className="  mt-2 md:mt-4  flex justify-between sm:justify-around   gap-y-1 sm:gap-y-2 md:gap-y-4  sm:gap-x-12 text-[#847E7E]   items-center  flex-wrap w-[95%]">
-            <div className="flex items-center gap-1 text-xs md:text-sm float-start sm:gap-2">
-              <Image
-                src={mileagepic}
-                className="w-3 sm:w-5"
-                alt="mileage"
-              ></Image>
-              {mileage && formatKilometers(Number(mileage))}
-            </div>
-            <div className="flex items-center justify-start gap-1 text-xs md:text-sm sm:gap-2">
-              <Image
-                src={bodytypepic}
-                alt="bodytype"
-                className="w-3 sm:w-5"
-              ></Image>
-              {bodyType}
-            </div>
-            <div className="flex items-center justify-start gap-1 text-xs md:text-sm sm:gap-2">
-              <Image
-                src={transmissionpic}
-                alt="transmission"
-                className="w-3 sm:w-5 "
-              ></Image>
-              {extractTextInsideParentheses(transmission)}
-            </div>
-            <div className="flex items-center justify-start gap-1 text-xs md:text-sm sm:gap-2">
-              <Image
-                src={fuelpic}
-                alt="fueltype"
-                className="w-3 sm:w-5"
-              ></Image>
-              {fuel && removeParentheses(fuel)}
-            </div>
-            <div className="items-center justify-start hidden gap-2 text-xs md:text-sm sm:flex">
-              <Image src={enginepic} alt="engine" className="w-5"></Image>
-              {engine}
-            </div>
+          <div className=" font-medium md:text-lg text-xs text-[#130F40] dark:text-[#FDC221]">
+            {modle + " " + frame_code + " " + manufacture}
+          </div>
 
-            <div className="flex items-center  justify-between w-[100%] text-[#130F40] mt-2  md:text-sm text-xs  dark:text-slate-500 ">
-              <div>{location}</div>
-              <div>
-                <TimeAgo createdAt={created_at || ""} />
+          <div className=" w-[100%] h-[140px] sm:h-[150px] md:h-[160px] bg-slate-50 dark:bg-[#000E1E]  mt-1  rounded-md py-2 items-center justify-between flex flex-col">
+            <div className=" text-xs sm:text-sm md:text-base lg:text-lg text-[#2980b9]  w-full text-center font-semibold">
+              {price === "" || !price
+                ? "Negotiable"
+                : `Rs. ${formatNumber(Number(price))}`}
+            </div>
+            <div className="  mt-2 md:mt-4  flex justify-between sm:justify-around   gap-y-1 sm:gap-y-2 md:gap-y-4  sm:gap-x-12 text-[#847E7E]   items-center  flex-wrap w-[95%]">
+              <div className="flex items-center gap-1 text-xs md:text-sm float-start sm:gap-2">
+                <Image
+                  src={mileagepic}
+                  className="w-3 sm:w-5"
+                  alt="mileage"
+                ></Image>
+                {mileage && formatKilometers(Number(mileage))}
+              </div>
+              <div className="flex items-center justify-start gap-1 text-xs md:text-sm sm:gap-2">
+                <Image
+                  src={bodytypepic}
+                  alt="bodytype"
+                  className="w-3 sm:w-5"
+                ></Image>
+                {bodyType}
+              </div>
+              <div className="flex items-center justify-start gap-1 text-xs md:text-sm sm:gap-2">
+                <Image
+                  src={transmissionpic}
+                  alt="transmission"
+                  className="w-3 sm:w-5 "
+                ></Image>
+                {extractTextInsideParentheses(transmission)}
+              </div>
+              <div className="flex items-center justify-start gap-1 text-xs md:text-sm sm:gap-2">
+                <Image
+                  src={fuelpic}
+                  alt="fueltype"
+                  className="w-3 sm:w-5"
+                ></Image>
+                {fuel && removeParentheses(fuel)}
+              </div>
+              <div className="items-center justify-start hidden gap-2 text-xs md:text-sm sm:flex">
+                <Image src={enginepic} alt="engine" className="w-5"></Image>
+                {engine}
+              </div>
+
+              <div className="flex items-center  justify-between w-[100%] text-[#130F40] mt-2  md:text-sm text-xs  dark:text-slate-500 ">
+                <div>{location}</div>
+                <div>
+                  <TimeAgo createdAt={created_at || ""} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </button>
       </div>
 
       {pathname === "/profile" && (

@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useUser } from "@/src/UserContext";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+import LoadingOverlay from "@/src/components/LoadingOverlay";
 
 function UserConfirm() {
   const searchParams = useSearchParams();
@@ -58,8 +59,7 @@ export default function Page() {
     <Suspense
       fallback={
         <div className="flex flex-col items-center justify-center min-h-screen">
-          <span className="text-lg">Loading...</span>
-          <Loader2 className="animate-spin" />
+          <LoadingOverlay />
         </div>
       }
     >

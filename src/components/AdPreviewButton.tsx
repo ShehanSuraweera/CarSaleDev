@@ -38,7 +38,6 @@ const AdPreviewButton = () => {
   };
 
   useEffect(() => {
-    console.log(validateForm());
     if (validateForm()) {
       setIsDisable(false);
     } else {

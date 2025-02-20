@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import InputImages from "@/src/components/InputImages";
-import { Spinner, Textarea, Form } from "@heroui/react";
+import { Textarea, Form } from "@heroui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/src/redux/store";
 import { updateField } from "@/src/redux/features/ad/adFormSlice";

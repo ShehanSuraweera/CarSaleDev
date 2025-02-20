@@ -29,7 +29,6 @@ export default function Page() {
   const [cars, setCars] = useState<any[]>([]);
 
   const getCarsFromBackend = useCallback(async () => {
-    console.log(filters);
     try {
       setLoading(true);
       const fetchedCars = await fetchAds({

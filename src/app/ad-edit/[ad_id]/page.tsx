@@ -12,6 +12,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
 import AdPreviewButton from "@/src/components/AdPreviewButton";
+import LoadingOverlay from "@/src/components/LoadingOverlay";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -64,20 +65,16 @@ export default function Page() {
     dispatch(updateField({ field, value }));
   };
 
-  return (
+  return loading ? (
+    <LoadingOverlay />
+  ) : (
     <div className="container w-full mx-0 my-3 rounded-lg sm:my-2 md:px-12 sm:p-6 xl:px-20">
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <>
-          <OwnerDetails />
-          <VehicleAbout />
-          <VehicleBackground />
-          <PriceHandle />
-          <InputImages />
-          <AdPreviewButton />
-        </>
-      )}
+      <OwnerDetails />
+      <VehicleAbout />
+      <VehicleBackground />
+      <PriceHandle />
+      <InputImages />
+      <AdPreviewButton />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import LoadingOverlay from "@/src/components/LoadingOverlay";
 
 const Page = () => {
   const router = useRouter();
@@ -17,8 +18,7 @@ const Page = () => {
 
   return (
     <div>
-      Loading...
-      <Loader2 className=" animate-spin"></Loader2>
+      <LoadingOverlay />
     </div>
   );
 };

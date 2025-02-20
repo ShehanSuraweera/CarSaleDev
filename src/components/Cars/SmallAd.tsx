@@ -22,7 +22,10 @@ const SmallAd = ({ make, price, image, model, ad_id }: SmallAdProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full  h-[200px] sm:h-[220px] md:h-[310px] gap-4 px-0 pt-4 mx-1 mb-4  rounded-md shadow-md  hover:cursor-pointer">
+    <button
+      className="flex flex-col items-center justify-center w-full  h-[200px] sm:h-[220px] md:h-[310px] gap-4 px-0 pt-4 mx-1 mb-4  rounded-md shadow-md  hover:cursor-pointer"
+      onClick={handleAd}
+    >
       <Image
         className=" w-[80%] block sm:w-[90%]  sm:h-[100px] md:h-[140px]  h-[80px]  rounded-md p-0 object-cover "
         width={500}
@@ -46,7 +49,7 @@ const SmallAd = ({ make, price, image, model, ad_id }: SmallAdProps) => {
             : `Rs. ${formatNumber(Number(price))}`}
         </h3>
       </div>
-    </div>
+    </button>
   );
 };
 

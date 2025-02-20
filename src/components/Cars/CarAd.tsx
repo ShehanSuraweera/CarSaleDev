@@ -18,7 +18,6 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
   const handleAd = useCallback(async () => {
     setLoading(true);
     const vehicleAd = await fetchAd(ad_id);
-    console.log("vehicle ad data", vehicleAd);
     setAdData(vehicleAd || null);
     setLoading(false);
   }, [ad_id]); // Make sure to include `ad_id` in the dependency array

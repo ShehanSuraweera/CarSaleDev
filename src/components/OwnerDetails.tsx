@@ -23,6 +23,7 @@ import { useUser } from "../UserContext";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { debounce } from "lodash";
+import LoadingOverlay from "./LoadingOverlay";
 
 // Define district and city types
 interface District {
@@ -57,7 +58,6 @@ const OwnerDetails = () => {
 
   // Validate contact using regex
   const validateContact = (contact: string): boolean => {
-    console.log(errors);
     const regex = /^0\d{9}$/;
     return regex.test(contact);
   };
@@ -78,9 +78,8 @@ const OwnerDetails = () => {
             message: "Invalid contact number",
           })
         );
-        console.log(errors);
       }
-    }, 500), // Delay of 500ms before validation
+    }), // Delay of 500ms before validation
     []
   );
 
@@ -251,9 +250,7 @@ const OwnerDetails = () => {
   return (
     <>
       {isPending ? (
-        <div className="flex items-center justify-center">
-          <Loader2 className="animate-spin" />
-        </div>
+        <LoadingOverlay />
       ) : (
         <div className="sm:w-[90%] shadow-md w-full p-8">
           <h2>Owner Details</h2>

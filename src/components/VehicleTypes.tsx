@@ -5,6 +5,7 @@ import { RootState } from "../redux/store";
 import { updateField } from "../redux/features/ad/adFormSlice";
 import { getVehicleTypes } from "../lib/api";
 import { Loader2 } from "lucide-react";
+import LoadingOverlay from "./LoadingOverlay";
 
 const VehicleTypes = () => {
   const [vehicleTypes, setVehicleTypes] = useState<
@@ -45,7 +46,7 @@ const VehicleTypes = () => {
   return (
     <div className="sm:w-[90%] shadow-md w-full p-8">
       {isLoading ? (
-        <Loader2 className="animate-spin" />
+        <LoadingOverlay />
       ) : (
         <>
           <h1 className="mb-4 text-lg font-medium">
