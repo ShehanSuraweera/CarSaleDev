@@ -60,7 +60,7 @@ const MediumAd = ({
       const result = await deleteAdFunction();
       if (result === "ad_deleted") {
         toast.success("Successfully deleted");
-        router.refresh(); // Refresh the page to reflect the changes
+        window.location.reload();
       } else {
         toast.error("Failed to delete ad");
       }

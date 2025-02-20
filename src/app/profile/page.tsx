@@ -166,13 +166,13 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full h-full p-5 mb-16 bg-slate-50 dark:bg-black">
-      <div className="flex flex-col justify-center w-full">
-        <div className="flex justify-center mb-5">
+    <div className="flex flex-col items-center justify-between w-full h-full p-5 mb-16 bg-slate-50 dark:bg-black">
+      <div className="flex flex-col items-center justify-center w-full">
+        {/* <div className="flex justify-center mb-5">
           <Button color="warning" onPress={() => router.push("/sell")}>
             Post Ad
           </Button>
-        </div>
+        </div> */}
         <Tabs
           size="lg"
           selectedKey={selected}
