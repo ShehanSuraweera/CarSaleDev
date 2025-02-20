@@ -74,7 +74,7 @@ export const Navbar = () => {
           </NextLink>
         </NavbarBrand>
         <NavbarContent className="basis-1/5 sm:basis-full" justify="center">
-          <ul className="items-center justify-center hidden gap-4 ml-2 md:flex">
+          <div className="items-center justify-center hidden gap-4 ml-2 md:flex">
             {siteConfig.navItems.map((item) => (
               <NavbarItem key={item.label}>
                 <NextLink
@@ -98,7 +98,7 @@ export const Navbar = () => {
             <Button color="warning" onPress={handleSellButton} size="sm">
               POST FREE
             </Button>
-          </ul>
+          </div>
         </NavbarContent>
 
         <NavbarContent className="flex basis-1/5 sm:basis-full" justify="end">
