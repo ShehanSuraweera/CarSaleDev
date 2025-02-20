@@ -1,5 +1,14 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { persistStore, persistReducer } from "redux-persist";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import userReducer from "./features/user/userSlice";
 import adFormReducer from "./features/ad/adFormSlice";
@@ -31,7 +40,15 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST"], // Ignore persist actions
+        ignoredActions: [
+          "persist/PERSIST",
+          FLUSH,
+          REHYDRATE,
+          PAUSE,
+          PERSIST,
+          PURGE,
+          REGISTER,
+        ], // Ignore persist actions
         ignoredPaths: ["user.session"], // Ignore session since it's non-serializable
       },
     }),
