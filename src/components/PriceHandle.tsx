@@ -21,12 +21,17 @@ const PriceHandle = () => {
 
   const handlePriceChange = (e: { target: { value: any } }) => {
     const value = e.target.value;
-    dispatch(updateField({ field: "price", value: value }));
 
-    const numericValue = Number(value);
-    if (!isNaN(numericValue)) {
-      setFormattedPrice("Rs. " + formatNumber(numericValue));
+    if (value) {
+      dispatch(updateField({ field: "price", value: value }));
+      const numericValue = Number(value);
+      if (!isNaN(numericValue)) {
+        setFormattedPrice("Rs. " + formatNumber(numericValue));
+      } else {
+        setFormattedPrice("");
+      }
     } else {
+      dispatch(updateField({ field: "price", value: "" }));
       setFormattedPrice("");
     }
   };
@@ -89,7 +94,7 @@ const PriceHandle = () => {
               }
             />
             <div className=" sm:w-[50%] mt-4 sm:mt-0 text-sm flex flex-col gap-2">
-              {formattedPrice && <p>You entered price : </p>}
+              {formattedPrice !== "" && <p>You entered price : </p>}
               <p className="text-lg font-semibold">{formattedPrice}</p>
             </div>
           </div>

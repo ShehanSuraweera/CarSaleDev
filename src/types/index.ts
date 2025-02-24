@@ -24,7 +24,7 @@ export interface AdData {
   owner_comments: string;
   owner_contact: string;
   owner_display_name: string;
-  price: number;
+  price: string;
   reg_year: string;
   title: string;
   transmission_type: { id: number; name: string };

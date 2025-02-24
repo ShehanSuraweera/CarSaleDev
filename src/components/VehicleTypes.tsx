@@ -1,4 +1,4 @@
-import { Radio, RadioGroup } from "@heroui/react";
+import { Radio, RadioGroup, Skeleton, skeleton } from "@heroui/react";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
@@ -14,6 +14,7 @@ const VehicleTypes = () => {
   const dispatch = useDispatch();
   const { adFormData } = useSelector((state: RootState) => state.adForm);
   const [isLoading, setIsLoading] = useState(false);
+  const skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   useEffect(() => {
     setIsLoading(true);
@@ -45,9 +46,21 @@ const VehicleTypes = () => {
 
   return (
     <div className="sm:w-[90%] shadow-md w-full p-8">
-      {isLoading ? (
-        <LoadingOverlay />
-      ) : (
+      {isLoading && (
+        <>
+          <Skeleton className="h-6 mb-4 text-lg font-medium rounded-lg sm:max-w-96"></Skeleton>
+          <div className="flex flex-col gap-3">
+            {skeletons.map((skeleton) => (
+              <Skeleton
+                key={skeleton}
+                className="w-full h-6 rounded-lg sm:max-w-44"
+              />
+            ))}
+          </div>
+        </>
+      )}
+
+      {!isLoading && (
         <>
           <h1 className="mb-4 text-lg font-medium">
             Let's start finding your vehicle's type

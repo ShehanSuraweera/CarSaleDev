@@ -58,7 +58,7 @@ const initialState: AdFormState = {
       name: "",
     },
 
-    price: 0,
+    price: "",
     title: "",
     views: 0,
   },

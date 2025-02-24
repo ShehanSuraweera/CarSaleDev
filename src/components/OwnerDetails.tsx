@@ -9,6 +9,7 @@ import {
   ModalContent,
   ModalBody,
   ModalFooter,
+  Skeleton,
 } from "@heroui/react";
 import { RootState } from "../redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,10 +21,8 @@ import {
   getUserProfileData,
 } from "../lib/api";
 import { useUser } from "../UserContext";
-import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { debounce } from "lodash";
-import LoadingOverlay from "./LoadingOverlay";
 
 // Define district and city types
 interface District {
@@ -249,9 +248,37 @@ const OwnerDetails = () => {
 
   return (
     <>
-      {isPending ? (
-        <LoadingOverlay />
-      ) : (
+      {isPending && (
+        <div className="w-full sm:w-[90%] shadow-md p-8 rounded-lg">
+          <Skeleton className="w-1/3 h-8 mb-2 rounded-lg" />
+          <div className="flex flex-col items-start gap-8 mt-4 rounded-lg">
+            <div className="flex flex-col w-full gap-10">
+              {" "}
+              <div className="flex flex-col gap-2">
+                <Skeleton className="w-24 h-6 rounded-lg" />
+                <Skeleton className="w-full h-10 rounded-lg sm:max-w-96" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Skeleton className="w-24 h-6 rounded-lg" />
+                <Skeleton className="w-full h-10 rounded-lg sm:max-w-96" />
+              </div>
+            </div>
+
+            {/* <div className="flex items-center gap-5">
+              <Skeleton className="w-1/2 h-6 rounded-lg" />
+              <Skeleton className="w-20 h-8 rounded-lg" />
+            </div> */}
+            <div className="flex flex-col gap-4 ">
+              <Skeleton className="w-full sm:max-w-96" />
+            </div>
+            <div className="flex w-full gap-8">
+              <Skeleton className="w-full h-10 rounded-lg sm:max-w-40" />
+              <Skeleton className="w-24 h-10 rounded-lg" />
+            </div>
+          </div>
+        </div>
+      )}
+      {!isPending && (
         <div className="sm:w-[90%] shadow-md w-full p-8">
           <h2>Owner Details</h2>
           <div className="flex flex-col items-start gap-8 mt-4">

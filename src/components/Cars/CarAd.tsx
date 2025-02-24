@@ -6,6 +6,7 @@ import { fetchAd } from "@/src/lib/api";
 import { Bars } from "react-loader-spinner";
 import { AdData } from "@/src/types";
 import Ad from "../Ad";
+import AdSkeleton from "../AdSkeleton";
 
 interface CarAdProps {
   ad_id: string;
@@ -29,7 +30,7 @@ const CarAd: React.FC<CarAdProps> = ({ ad_id }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center w-full h-screen ">
-        <Bars color="#fbc531" height={50} width={50} />
+        <AdSkeleton />
       </div>
     );
   }

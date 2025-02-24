@@ -115,7 +115,7 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
               </div>
             </div>
             <div className="flex flex-col w-1/2 p-2 mb-2 text-lg font-semibold text-center shadow-md bg-slate-500 rounded-xl">
-              {adData?.price === 0 || !adData?.price
+              {adData?.price === "" || !adData?.price
                 ? "Negotiable"
                 : `Rs. ${formatNumber(Number(adData?.price))}`}
               <div className="text-xs font-light ">
