@@ -66,7 +66,7 @@ export default function Page() {
   };
 
   return loading ? (
-    <LoadingOverlay />
+    <></>
   ) : (
     <div className="container w-full mx-0 my-3 rounded-lg sm:my-2 md:px-12 sm:p-6 xl:px-20">
       <OwnerDetails />

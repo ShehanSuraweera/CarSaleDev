@@ -155,7 +155,7 @@ const SmallAdsRow = ({
           <div className="swiper-button-prev !rounded-full !w-10 !h-10 !items-center !justify-center !shadow-lg hover:!bg-gray-100 transition-colors !hidden"></div>
 
           {/* Custom Pagination */}
-          <div className="swiper-pagination !relative !mt-6 !flex !justify-center !gap-2" />
+          <div className="swiper-pagination !relative !mt-6 !flex !justify-center !gap-2  " />
         </Swiper>
       </div>
     </motion.div>
