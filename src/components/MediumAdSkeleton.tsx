@@ -9,7 +9,7 @@ const MediumAdSkeleton = () => {
       <Skeleton className="w-1/2 h-4 mt-1 rounded-md" />
       <div className="w-[100%] h-[140px] sm:h-[150px] md:h-[160px] bg-slate-50 dark:bg-[#000E1E] mt-1 rounded-md py-2 items-center justify-between flex flex-col">
         <Skeleton className="w-1/2 h-4 rounded-md" />
-        <div className="  mt-2 md:mt-4  flex justify-between sm:justify-around   gap-y-1 sm:gap-y-2 md:gap-y-4  sm:gap-x-12 text-[#847E7E]   items-center  flex-wrap w-[95%]">
+        <div className="  mt-2 md:mt-4  flex justify-between sm:justify-around gap-x-2   gap-y-1 sm:gap-y-2 md:gap-y-4  sm:gap-x-12 text-[#847E7E]   items-center  flex-wrap w-[95%]">
           <Skeleton className="w-1/4 h-4 rounded-md" />
           <Skeleton className="w-1/4 h-4 rounded-md" />
           <Skeleton className="w-1/4 h-4 rounded-md" />

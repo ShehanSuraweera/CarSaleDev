@@ -86,7 +86,7 @@ export default function Page() {
     } else {
       getCarsFromBackend(); // Fetch initial data when page is reset to 1
     }
-  }, [page]);
+  }, [page, filters, query]);
 
   // Load more data
   const loadMore = () => {
