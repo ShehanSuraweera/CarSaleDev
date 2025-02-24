@@ -219,10 +219,10 @@ export default function Page() {
       {!loading && cars.length === 0 && (
         <div className="flex flex-col items-center justify-center w-full h-full mt-10">
           <SearchIcon width={150} height={150} />
-          <div className="text-xl font-semibold">
-            <p>Ooops! No cars found</p>
+          <div className="text-xl font-semibold text-center">
+            <p className="text-center">Ooops! No cars found</p>
           </div>
-          <div>
+          <div className="text-center">
             <p>Try adjusting your search to find what you are looking for</p>
           </div>
         </div>
