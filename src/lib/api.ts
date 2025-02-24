@@ -16,6 +16,8 @@ export const fetchAds = async (searchParams: {
   vehicle_type_id?: string;
   fuel_type_id?: string;
   vehicle_condition_id: string;
+  page: number;
+  limit: number;
 }) => {
   try {
     const queryParams = new URLSearchParams();
@@ -56,6 +58,11 @@ export const fetchAds = async (searchParams: {
         "vehicle_condition_id",
         searchParams.vehicle_condition_id.toString()
       );
+
+    if (searchParams.page)
+      queryParams.append("page", searchParams.page.toString());
+    if (searchParams.limit)
+      queryParams.append("limit", searchParams.limit.toString());
 
     const response = await apiClient.get(
       `/uploads/ads?${queryParams.toString()}`

@@ -11,6 +11,7 @@ import { SearchProvider } from "../providers/SearchProvider";
 import Footer from "../components/Footer";
 import { Provider } from "react-redux";
 import StoreProvider from "../providers/StoreProvider";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 export const metadata: Metadata = {
   title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
   description:
@@ -84,11 +85,13 @@ export default function RootLayout({
               <Providers
                 themeProps={{ attribute: "class", defaultTheme: "light" }}
               >
-                <div className="relative flex flex-col h-full min-h-screen">
+                <div className="flex flex-col min-h-screen ">
                   <Navbar />
                   <main className="container flex-grow px-6 mx-auto sm:pt-8 max-w-7xl">
                     {children}
+                    <ScrollToTopButton />
                   </main>
+
                   <Footer />
                 </div>
               </Providers>
