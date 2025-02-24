@@ -57,7 +57,7 @@ const AdPreviewButton = () => {
     <>
       <AdPreview isOpen={isOpen} onOpenChange={onOpenChange} />
       {!validateForm() && (
-        <div className="flex justify-center text-sm text-center">
+        <div className="flex justify-center mt-5 text-sm text-center">
           <span className="text-red-500">
             Please fill all required fields *{" "}
           </span>
