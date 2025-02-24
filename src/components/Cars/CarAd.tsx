@@ -3,7 +3,6 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { fetchAd } from "@/src/lib/api";
-import { Bars } from "react-loader-spinner";
 import { AdData } from "@/src/types";
 import Ad from "../Ad";
 import AdSkeleton from "../AdSkeleton";
