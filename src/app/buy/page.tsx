@@ -78,7 +78,7 @@ export default function Page() {
         radius="md"
         className="block sm:hidden"
       >
-        <DrawerContent className="block bg-white sm:hidden">
+        <DrawerContent className="block bg-white sm:hidden dark:bg-[#01172F]">
           {(onClose) => (
             <>
               <DrawerHeader className="flex justify-center">
