@@ -6,15 +6,18 @@ import { fetchTrendingAds, getAllMakes } from "@/src/lib/api";
 import { motion } from "framer-motion";
 import SmallAdSkeleton from "../SmallAdSkeleton";
 import { Button } from "@heroui/button";
-import { Link } from "lucide-react";
+import { ArrowLeftCircle, Link, MoveLeftIcon } from "lucide-react";
 import { useSearch } from "@/src/providers/SearchProvider";
 import { useRouter } from "next/navigation";
 
 // Swiper Imports
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/autoplay";
+
 import LoadingOverlay from "../LoadingOverlay";
 
 interface SmallAdsRowProps {
@@ -98,7 +101,13 @@ const SmallAdsRow = ({
 
         {/* Swiper (with manual drag and auto swipe) */}
         <Swiper
-          modules={[Autoplay, Navigation]}
+          style={
+            {
+              "--swiper-navigation-color": "#ffffff",
+              "--swiper-naigation-display": "none",
+            } as React.CSSProperties
+          }
+          modules={[Autoplay, Navigation, Pagination]}
           spaceBetween={10}
           slidesPerView={2}
           breakpoints={{
@@ -106,7 +115,20 @@ const SmallAdsRow = ({
             1024: { slidesPerView: 4 },
           }}
           autoplay={{ delay: 2000, disableOnInteraction: false }}
-          navigation={true}
+          navigation={{
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          }}
+          pagination={{
+            el: ".swiper-pagination",
+            clickable: true,
+            renderBullet: (index, className) => {
+              if (index < 3) {
+                return `<span class="${className}"></span>`;
+              }
+              return "";
+            },
+          }}
           grabCursor={true}
         >
           {loading
@@ -128,6 +150,12 @@ const SmallAdsRow = ({
                   />
                 </SwiperSlide>
               ))}
+          {/* Custom Navigation Buttons */}
+          <div className="swiper-button-next !rounded-full !w-10 !h-10  !items-center !justify-center !shadow-lg hover:!bg-gray-100 transition-colors !hidden"></div>
+          <div className="swiper-button-prev !rounded-full !w-10 !h-10 !items-center !justify-center !shadow-lg hover:!bg-gray-100 transition-colors !hidden"></div>
+
+          {/* Custom Pagination */}
+          <div className="swiper-pagination !relative !mt-6 !flex !justify-center !gap-2" />
         </Swiper>
       </div>
     </motion.div>
