@@ -24,6 +24,7 @@ import { motion } from "framer-motion";
 import MediumAd from "@/src/components/Cars/MediumAd";
 import clsx from "clsx";
 import { useScroll } from "react-use";
+import { throttle } from "lodash";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -118,19 +119,17 @@ export default function Page() {
   // }, [y, lastScrollY]);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = throttle(() => {
       const currentScrollY = window.scrollY;
 
       if (currentScrollY > lastScrollY && currentScrollY > 50) {
-        // Scrolling down and past 50px
         setIsVisible(false);
       } else if (currentScrollY < lastScrollY) {
-        // Scrolling up
         setIsVisible(true);
       }
 
       setLastScrollY(currentScrollY);
-    };
+    }, 100);
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
