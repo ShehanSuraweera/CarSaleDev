@@ -1,8 +1,13 @@
 import React from "react";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
-import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import { siteConfig } from "@/src/config/site";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  TwitterIcon,
+} from "./icons";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -56,27 +61,27 @@ const Footer = () => {
             <div className="flex space-x-4">
               <Link
                 href="https://facebook.com"
-                className="text-slate-300 hover:text-[#FDC221] transition-colors"
+                className="text-slate-300 hover:text-[#FDC221] transition-colors hover:bg-[#FDC221]"
               >
-                <FaFacebook size={24} />
+                <FacebookIcon />
               </Link>
               <Link
                 href="https://twitter.com"
-                className="text-slate-300 hover:text-[#FDC221] transition-colors"
+                className="text-slate-300 hover:text-[#FDC221] transition-colors hover:bg-[#FDC221]"
               >
-                <FaTwitter size={24} />
+                <TwitterIcon />
               </Link>
               <Link
                 href="https://instagram.com"
-                className="text-slate-300 hover:text-[#FDC221] transition-colors"
+                className="text-slate-300 hover:text-[#FDC221] transition-colors hover:bg-[#FDC221]"
               >
-                <FaInstagram size={24} />
+                <InstagramIcon />
               </Link>
               <Link
                 href="https://linkedin.com"
-                className="text-slate-300 hover:text-[#FDC221] transition-colors"
+                className="text-slate-300 hover:text-[#FDC221] hover:bg-[#FDC221] transition-colors"
               >
-                <FaLinkedin size={24} />
+                <LinkedInIcon />
               </Link>
             </div>
           </div>
