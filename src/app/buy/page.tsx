@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import hideSearch from "@/src/assets/icons/hide-arrow.png";
 import { SearchIcon } from "@/src/components/icons";
 import { useSearch } from "@/src/providers/SearchProvider";
@@ -22,6 +22,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import MediumAdSkeleton from "@/src/components/MediumAdSkeleton";
 import { motion } from "framer-motion";
 import MediumAd from "@/src/components/Cars/MediumAd";
+import clsx from "clsx";
+import { useScroll } from "react-use";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -100,6 +102,40 @@ export default function Page() {
     }));
   };
 
+  const scrollRef = useRef(null);
+  const { y } = useScroll(scrollRef); // Get scroll position
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+
+  // useEffect(() => {
+  //   console.log(y);
+  //   if (y > lastScrollY && y > 50) {
+  //     setIsVisible(false); // Hide on scroll down
+  //   } else {
+  //     setIsVisible(true); // Show on scroll up
+  //   }
+  //   setLastScrollY(y);
+  // }, [y, lastScrollY]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        // Scrolling down and past 50px
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        // Scrolling up
+        setIsVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
   return (
     <div>
       {/* Mobile Filter Drawer */}
@@ -136,7 +172,15 @@ export default function Page() {
       </Drawer>
 
       {/* Search & Filter */}
-      <div className="flex items-center justify-center w-full gap-2 mt-2 mb-4">
+
+      <div
+        ref={scrollRef}
+        className={clsx(
+          `sticky top-10  z-50 flex items-center justify-center w-full gap-2 p-2 bg-white dark:bg-[#01172F] transition-transform duration-300 ${
+            isVisible ? "flex" : "hidden"
+          }`
+        )}
+      >
         <Button
           color="primary"
           variant="flat"
