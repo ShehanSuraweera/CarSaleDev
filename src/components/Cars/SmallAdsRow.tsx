@@ -2,44 +2,53 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import SmallAd from "./SmallAd";
-import { fetchTrendingAds } from "@/src/lib/api";
+import { fetchTrendingAds, getAllMakes } from "@/src/lib/api";
 import { motion } from "framer-motion";
-
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import Marquee from "react-fast-marquee";
-import { Bars } from "react-loader-spinner";
+import SmallAdSkeleton from "../SmallAdSkeleton";
 import { Button } from "@heroui/button";
-import { Link, Link2Off } from "lucide-react";
+import { Link } from "lucide-react";
 import { useSearch } from "@/src/providers/SearchProvider";
 import { useRouter } from "next/navigation";
-import SmallAdSkeleton from "../SmallAdSkeleton";
+
+// Swiper Imports
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import LoadingOverlay from "../LoadingOverlay";
 
 interface SmallAdsRowProps {
   topic: string;
   make_id: string;
   vehicle_type_id: string;
+
+  make_name: string;
 }
 
-const SmallAdsRow = ({ topic, make_id, vehicle_type_id }: SmallAdsRowProps) => {
-  const [cars, setCars] = useState<any[]>([]); // Holds the fetched car ads
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
-  const [error, setError] = useState<string | null>(null); // Error state
+const SmallAdsRow = ({
+  topic,
+  make_id,
+  vehicle_type_id,
+  make_name,
+}: SmallAdsRowProps) => {
+  const [cars, setCars] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const { filters, setFilters } = useSearch();
+  const [isTransit, setIsTransit] = useState(false);
   const router = useRouter();
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8];
 
   const getCarsFromBackend = useCallback(async () => {
     try {
-      setLoading(true); // Start loading
-      const fetchedCars = await fetchTrendingAds(make_id, vehicle_type_id); // Fetch the data
-      setCars(fetchedCars); // Update state with the fetched cars
+      setLoading(true);
+      const fetchedCars = await fetchTrendingAds(make_id, vehicle_type_id);
+      setCars(fetchedCars);
     } catch (err: any) {
       console.error("Error fetching ads:", err);
       setError(err.message || "Failed to load ads");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   }, [make_id, vehicle_type_id]);
 
@@ -48,12 +57,20 @@ const SmallAdsRow = ({ topic, make_id, vehicle_type_id }: SmallAdsRowProps) => {
   }, [getCarsFromBackend]);
 
   const handleLinkClick = () => {
+    setIsTransit(true);
     setFilters({
       ...filters,
-      vehicle_type: { id: vehicle_type_id, name: "" },
-      make: { id: make_id, name: "" },
+      vehicle_type: {
+        id: vehicle_type_id,
+        name: "",
+      },
+      make: {
+        id: make_id,
+        name: make_name,
+      },
     });
     router.push("/buy");
+    setIsTransit(false);
   };
 
   return (
@@ -62,53 +79,56 @@ const SmallAdsRow = ({ topic, make_id, vehicle_type_id }: SmallAdsRowProps) => {
       animate={{ x: 0, opacity: 1 }}
       transition={{ ease: "easeOut", duration: 2 }}
     >
+      {isTransit && <LoadingOverlay />}
       <div className="pt-4 sm:pt-12">
-        {loading && (
-          <Marquee gradient={false} speed={20}>
-            {skeletons.map((skeleton) => (
-              <div
-                key={skeleton}
-                className="!flex justify-center items-center w-40 h-70 md:w-52 md:h-80 lg:w-60 lg:h-96"
-              >
-                <SmallAdSkeleton />
-              </div>
-            ))}
-          </Marquee>
+        {/* Title with button */}
+        {cars.length > 0 && (
+          <h1 className="mb-4 text-lg font-bold text-center sm:mb-2">
+            <Button
+              variant="light"
+              color="primary"
+              className="text-lg font-bold"
+              onPress={handleLinkClick}
+            >
+              {topic}
+              <Link />
+            </Button>
+          </h1>
         )}
-        <div>
-          {cars.length > 0 && (
-            <h1 className="mb-4 text-lg font-bold text-center sm:mb-2">
-              <Button
-                variant="light"
-                color="primary"
-                className="text-lg font-bold"
-                onPress={handleLinkClick}
-              >
-                {topic}
-                <Link />
-              </Button>
-            </h1>
-          )}
-        </div>
 
-        <div>
-          <Marquee gradient={false} speed={20}>
-            {cars.map((car) => (
-              <div
-                key={car.ad_id}
-                className="!flex justify-center items-center w-40 h-70 md:w-52 md:h-80 lg:w-60 lg:h-96"
-              >
-                <SmallAd
-                  make={car.models.makes.name}
-                  model={car.models.name}
-                  price={car.price}
-                  image={car.ad_images[0]?.image_url || "/images/no-image.png"}
-                  ad_id={car.ad_id}
-                />
-              </div>
-            ))}
-          </Marquee>
-        </div>
+        {/* Swiper (with manual drag and auto swipe) */}
+        <Swiper
+          modules={[Autoplay, Navigation]}
+          spaceBetween={10}
+          slidesPerView={2}
+          breakpoints={{
+            640: { slidesPerView: 3 },
+            1024: { slidesPerView: 4 },
+          }}
+          autoplay={{ delay: 2000, disableOnInteraction: false }}
+          navigation={true}
+          grabCursor={true}
+        >
+          {loading
+            ? skeletons.map((skeleton) => (
+                <SwiperSlide key={skeleton} className="flex justify-center">
+                  <SmallAdSkeleton />
+                </SwiperSlide>
+              ))
+            : cars.map((car) => (
+                <SwiperSlide key={car.ad_id} className="flex justify-center">
+                  <SmallAd
+                    make={car.models.makes.name}
+                    model={car.models.name}
+                    price={car.price}
+                    image={
+                      car.ad_images[0]?.image_url || "/images/no-image.png"
+                    }
+                    ad_id={car.ad_id}
+                  />
+                </SwiperSlide>
+              ))}
+        </Swiper>
       </div>
     </motion.div>
   );
