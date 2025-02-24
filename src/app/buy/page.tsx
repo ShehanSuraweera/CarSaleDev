@@ -176,8 +176,8 @@ export default function Page() {
       <div
         ref={scrollRef}
         className={clsx(
-          `sticky top-10  z-50 flex items-center justify-center w-full gap-2 p-2 bg-white dark:bg-[#01172F] transition-transform duration-300 ${
-            isVisible ? "flex" : "hidden"
+          `sticky top-12  z-50 flex items-center justify-center w-full gap-2 p-4 bg-white dark:bg-black    ${
+            isVisible ? "" : "hidden"
           }`
         )}
       >
