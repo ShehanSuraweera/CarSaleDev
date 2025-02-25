@@ -24,6 +24,7 @@ interface SmallAdsRowProps {
   topic: string;
   make_id: string;
   vehicle_type_id: string;
+  vehicle_type_name: string;
 
   make_name: string;
 }
@@ -33,6 +34,7 @@ const SmallAdsRow = ({
   make_id,
   vehicle_type_id,
   make_name,
+  vehicle_type_name,
 }: SmallAdsRowProps) => {
   const [cars, setCars] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -65,7 +67,7 @@ const SmallAdsRow = ({
       ...filters,
       vehicle_type: {
         id: vehicle_type_id,
-        name: "",
+        name: vehicle_type_name,
       },
       make: {
         id: make_id,

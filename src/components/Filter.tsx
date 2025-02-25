@@ -11,7 +11,9 @@ import {
   getAllDistricts,
   getAllMakes,
   getBodyTypes,
+  getFuelTypes,
   getTransmissionTypes,
+  getVehicleTypes,
 } from "../lib/api";
 
 const Filter = () => {
@@ -22,6 +24,12 @@ const Filter = () => {
   const [makes, setMakes] = useState<{ id: string; name: string }[]>([]);
   const [models, setModels] = useState<{ id: string; name: string }[]>([]);
   const [bodyTypes, setBodyTypes] = useState<{ id: string; name: string }[]>(
+    []
+  );
+  const [vehicleTypes, setVehicleTypes] = useState<
+    { id: string; name: string }[]
+  >([]);
+  const [fuelTypes, setFuelTypes] = useState<{ id: string; name: string }[]>(
     []
   );
   const [transmissionTypes, setTransmissionTypes] = useState<
@@ -56,7 +64,9 @@ const Filter = () => {
     setIsLoading(true);
     const fetchBodyTypes = async () => {
       try {
-        const data = await getBodyTypes({});
+        const data = await getBodyTypes({
+          vehicle_type_id: filters.vehicle_type.id || "",
+        });
         setBodyTypes(data);
       } catch (error) {
         console.error("Error fetching districts:", error);
@@ -65,6 +75,36 @@ const Filter = () => {
       }
     };
     fetchBodyTypes();
+  }, [filters.vehicle_type.id]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchVehicleTypes = async () => {
+      try {
+        const data = await getVehicleTypes();
+        setVehicleTypes(data);
+      } catch (error) {
+        console.error("Error fetching districts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchVehicleTypes();
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchFuelTypes = async () => {
+      try {
+        const data = await getFuelTypes();
+        setFuelTypes(data);
+      } catch (error) {
+        console.error("Error fetching districts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchFuelTypes();
   }, []);
 
   useEffect(() => {
@@ -125,9 +165,9 @@ const Filter = () => {
 
   return (
     <>
-      <div className="flex justify-center font-sans text-sm sm:mb-8 sm:m-1 ">
-        <div className=" bg-white dark:bg-[#01172F] w-[100%]  lg:w-[90%] xl:w-[85%] h-auto px-8 xl:px-10 sm:px-4 pt-1 pb-4 sm:py-8 rounded-br-lg rounded-tl-lg shadow-lg  ">
-          <div className="flex flex-wrap justify-center w-full gap-4 mx-0 mt-5 sm:gap-6 ">
+      <div className="flex justify-center font-sans text-xs sm:text-sm sm:mb-8 sm:m-1 ">
+        <div className=" bg-white dark:bg-[#01172F] w-[100%]  lg:w-[90%] xl:w-[85%] h-auto px-10 xl:px-10 sm:px-4 pt-1 pb-4 sm:py-8 rounded-br-lg rounded-tl-lg shadow-lg  ">
+          <div className="flex flex-wrap justify-center w-full gap-6 mx-0 mt-5 sm:gap-6 ">
             <Autocomplete
               labelPlacement="outside"
               label="Make"
@@ -135,15 +175,15 @@ const Filter = () => {
               placeholder="All makes"
               defaultItems={makes}
               selectedKey={filters.make.id}
-              onSelectionChange={(e) =>
+              onSelectionChange={(e) => {
                 setFilters({
                   ...filters,
                   make: {
                     id: e,
                     name: makes.find((m) => m.id == e)?.name || "",
                   },
-                })
-              }
+                });
+              }}
               isLoading={isLoading}
             >
               {(make: { id: string; name: string }) => (
@@ -152,7 +192,7 @@ const Filter = () => {
             </Autocomplete>
             <Autocomplete
               labelPlacement="outside"
-              label="models"
+              label="Models"
               className="w-full sm:max-w-44"
               placeholder="All Models"
               defaultItems={models}
@@ -172,6 +212,28 @@ const Filter = () => {
                 <AutocompleteItem key={models.id}>
                   {models.name}
                 </AutocompleteItem>
+              )}
+            </Autocomplete>
+            <Autocomplete
+              labelPlacement="outside"
+              label="Vehicle Type"
+              className="w-full sm:max-w-44"
+              placeholder="All types"
+              selectedKey={filters.vehicle_type.id}
+              defaultItems={vehicleTypes}
+              onSelectionChange={(e) =>
+                setFilters({
+                  ...filters,
+                  vehicle_type: {
+                    id: e,
+                    name: vehicleTypes.find((m) => m.id == e)?.name || "",
+                  },
+                })
+              }
+              isLoading={isLoading}
+            >
+              {(body: { id: string; name: string }) => (
+                <AutocompleteItem key={body.id}>{body.name}</AutocompleteItem>
               )}
             </Autocomplete>
             <Autocomplete
@@ -218,8 +280,30 @@ const Filter = () => {
                 <SelectItem key={item.id}>{item.name}</SelectItem>
               )}
             </Autocomplete>
+            <Autocomplete
+              labelPlacement="outside"
+              label="Fuel Type"
+              className="w-full sm:max-w-44"
+              placeholder="All types"
+              selectedKey={filters.fuel_type.id}
+              defaultItems={fuelTypes}
+              onSelectionChange={(e) =>
+                setFilters({
+                  ...filters,
+                  fuel_type: {
+                    id: e,
+                    name: fuelTypes.find((m) => m.id == e)?.name || "",
+                  },
+                })
+              }
+              isLoading={isLoading}
+            >
+              {(body: { id: string; name: string }) => (
+                <AutocompleteItem key={body.id}>{body.name}</AutocompleteItem>
+              )}
+            </Autocomplete>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-2 gap-x-8 sm:mt-8 sm:gap-12">
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-5 gap-x-8 sm:mt-8 sm:gap-12">
             <Autocomplete
               variant="underlined"
               label="District"

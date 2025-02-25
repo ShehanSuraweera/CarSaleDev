@@ -42,31 +42,30 @@ const Search = () => {
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-center w-full gap-2">
-        <Input
-          ref={inputRef}
-          size="md"
-          color="primary"
-          className="px-0 rounded-full w-[100%] sm:w-[100%] "
-          placeholder="search your dream car"
-          type="text"
-          onKeyDown={handleKeyPress}
-          endContent={
-            <Button
-              variant="light"
-              color="primary"
-              className="w-5 px-0 text-black rounded-medium min-w-8 "
-              onPress={handleSearchButton}
-              size="md"
-            >
-              <SearchIcon className="w-5 pointer-events-none " />
-            </Button>
-          }
-          value={query}
-          onChange={(e) => handleOnChange(e)}
-        />
-      </div>
+    <div className="flex items-center justify-center w-[80%] gap-2 px-5 sm:py-2 py-1 text-black shadow-md rounded-2xl bg-slate-300 dark:bg-slate-800 dark:text-white">
+      <Input
+        ref={inputRef}
+        size="md"
+        variant="underlined"
+        color="primary"
+        className="px-0 rounded-full w-[100%] sm:w-[100%] "
+        placeholder="search your dream ..."
+        type="text"
+        onKeyDown={handleKeyPress}
+        endContent={
+          <Button
+            variant="light"
+            color="primary"
+            className="w-5 px-0 text-black rounded-medium min-w-8 "
+            onPress={handleSearchButton}
+            size="md"
+          >
+            <SearchIcon className="w-5 pointer-events-none " />
+          </Button>
+        }
+        value={query}
+        onChange={(e) => handleOnChange(e)}
+      />
     </div>
   );
 };

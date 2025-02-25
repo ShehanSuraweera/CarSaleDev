@@ -29,17 +29,20 @@ export default function Home() {
           make_id="1"
           vehicle_type_id="1"
           make_name="Toyota"
+          vehicle_type_name="Car"
         />
         <SmallAdsRow
           topic="Trending Honda Cars"
           make_id="3"
           make_name="Honda"
           vehicle_type_id="1"
+          vehicle_type_name="Car"
         />
         <SmallAdsRow
           topic="Trending Suzuki Cars"
           make_id="2"
           make_name="Suzuki"
+          vehicle_type_name="Car"
           vehicle_type_id="1"
         />
       </motion.div>

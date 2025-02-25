@@ -17,7 +17,7 @@ import { SearchIcon } from "@/src/components/icons";
 import { useSearch } from "@/src/providers/SearchProvider";
 import Search from "@/src/components/Search";
 import Filter from "@/src/components/Filter";
-import { ArrowDownWideNarrow } from "lucide-react";
+import { ArrowDownWideNarrow, ArrowLeft } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import MediumAdSkeleton from "@/src/components/MediumAdSkeleton";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
@@ -145,11 +145,7 @@ export default function Page() {
               <DrawerFooter>
                 <div className="flex justify-center w-full">
                   <Button color="danger" variant="light" onPress={onClose}>
-                    <Image
-                      src={hideSearch}
-                      className="w-6 h-6"
-                      alt="Hide Search"
-                    />
+                    <ArrowLeft />
                   </Button>
                 </div>
               </DrawerFooter>
@@ -172,12 +168,16 @@ export default function Page() {
         <Button
           color="primary"
           variant="flat"
-          className="sm:hidden"
+          className="p-4 sm:hidden"
           onPress={onOpen}
-          size="sm"
+          size="md"
         >
-          <ArrowDownWideNarrow />
-          Filters
+          <div className="flex items-center justify-center">
+            <div>
+              <ArrowDownWideNarrow />
+            </div>
+            <span> Filters</span>
+          </div>
         </Button>
         <Search />
       </motion.div>
