@@ -7,17 +7,39 @@ import WelcomeComponent from "../components/WelcomeComponent";
 import { motion } from "framer-motion";
 import OneTapComponent from "../components/OneTapComponent";
 import { useCallback, useState } from "react";
+import { Button } from "@heroui/button";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const { user, loading } = useUser();
+  const router = useRouter();
 
   interface Make {
     id: string;
     name: string;
   }
 
+  const handleSellButton = () => {
+    router.push("/sell");
+    if (!user && !loading) {
+      toast.error("Please login to post an ad");
+    }
+  };
+
   return (
     <section className="">
+      <div className="flex justify-center sm:hidden">
+        <Button
+          color="warning"
+          onPress={handleSellButton}
+          size="md"
+          className="font-medium"
+        >
+          POST FREE
+        </Button>
+      </div>
+
       <WelcomeComponent />
       <motion.div
         initial={{ x: 20, opacity: 0 }}

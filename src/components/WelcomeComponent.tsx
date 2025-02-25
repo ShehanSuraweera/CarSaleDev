@@ -12,7 +12,7 @@ function WelcomeComponent() {
           src={homeImage} // Change to the correct path or external URL
           alt="Car Dealership"
           layout="fill"
-          className="object-cover rounded-md opacity-100"
+          className="object-cover rounded-md opacity-80"
         />
       </div>
 
