@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import hideSearch from "@/src/assets/icons/hide-arrow.png";
 import { SearchIcon } from "@/src/components/icons";
 import { useSearch } from "@/src/providers/SearchProvider";
@@ -20,10 +20,9 @@ import Filter from "@/src/components/Filter";
 import { ArrowDownWideNarrow } from "lucide-react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import MediumAdSkeleton from "@/src/components/MediumAdSkeleton";
-import { motion } from "framer-motion";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import MediumAd from "@/src/components/Cars/MediumAd";
-import clsx from "clsx";
-import { throttle } from "lodash";
+import { useStartTyping } from "react-use";
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -102,39 +101,28 @@ export default function Page() {
     }));
   };
 
-  const lastScrollRef = useRef(0);
-  const isVisibleRef = useRef(true); // Store visibility state in a ref
-  const [isVisible, setIsVisible] = useState(true);
+  const [hidden, setHidden] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
-    const handleScroll = throttle(() => {
-      const currentScrollY = window.scrollY;
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = Number(scrollY.getPrevious());
 
-      if (currentScrollY > lastScrollRef.current && currentScrollY > 50) {
-        if (isVisibleRef.current) {
-          // Only update if state is different
-          console.log("Hide");
-          setIsVisible(false);
-          isVisibleRef.current = false;
-        }
-      } else if (currentScrollY < lastScrollRef.current) {
-        if (!isVisibleRef.current) {
-          // Only update if state is different
-          console.log("Show");
-          setIsVisible(true);
-          isVisibleRef.current = true;
-        }
+    if (latest > previous && latest > 150) {
+      if (typing) {
+        setHidden(false);
+      } else {
+        setHidden(true);
       }
+    } else {
+      setHidden(false);
+    }
+  });
 
-      lastScrollRef.current = currentScrollY;
-    }, 100);
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      handleScroll.cancel();
-    };
-  }, []);
+  useStartTyping(() => {
+    console.log("Typing started");
+    setTyping(true);
+  });
 
   return (
     <div>
@@ -173,12 +161,14 @@ export default function Page() {
 
       {/* Search & Filter */}
 
-      <div
-        className={clsx(
-          `sticky top-12  z-50 flex items-center justify-center w-full gap-2 p-4 bg-white dark:bg-black    ${
-            isVisible ? "" : "hidden"
-          }`
-        )}
+      <motion.div
+        variants={{
+          hidden: { opacity: 0, y: "-100%" },
+          visible: { opacity: 1, y: 0 },
+        }}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
+        animate={hidden ? "hidden" : "visible"}
+        className={`sticky top-12  z-50 flex items-center justify-center w-full gap-2 p-4 bg-white dark:bg-black `}
       >
         <Button
           color="primary"
@@ -191,7 +181,7 @@ export default function Page() {
           Filters
         </Button>
         <Search />
-      </div>
+      </motion.div>
 
       <div className="justify-center hidden w-full sm:block">
         <Filter />
