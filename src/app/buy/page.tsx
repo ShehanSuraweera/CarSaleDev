@@ -23,7 +23,6 @@ import MediumAdSkeleton from "@/src/components/MediumAdSkeleton";
 import { motion } from "framer-motion";
 import MediumAd from "@/src/components/Cars/MediumAd";
 import clsx from "clsx";
-import { useScroll } from "react-use";
 import { throttle } from "lodash";
 
 export default function Page() {
@@ -104,36 +103,30 @@ export default function Page() {
   };
 
   const scrollRef = useRef(null);
-  const { y } = useScroll(scrollRef); // Get scroll position
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollRef = useRef(0); // Use ref instead of state
   const [isVisible, setIsVisible] = useState(true);
-
-  // useEffect(() => {
-  //   console.log(y);
-  //   if (y > lastScrollY && y > 50) {
-  //     setIsVisible(false); // Hide on scroll down
-  //   } else {
-  //     setIsVisible(true); // Show on scroll up
-  //   }
-  //   setLastScrollY(y);
-  // }, [y, lastScrollY]);
 
   useEffect(() => {
     const handleScroll = throttle(() => {
       const currentScrollY = window.scrollY;
 
-      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+      if (currentScrollY > lastScrollRef.current && currentScrollY > 50) {
+        console.log("Hide");
         setIsVisible(false);
-      } else if (currentScrollY < lastScrollY) {
+      } else if (currentScrollY < lastScrollRef.current) {
+        console.log("Show");
         setIsVisible(true);
       }
 
-      setLastScrollY(currentScrollY);
+      lastScrollRef.current = currentScrollY; // Update ref instead of state
     }, 100);
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      handleScroll.cancel(); // Ensure throttle is properly cleaned up
+    };
+  }, []);
 
   return (
     <div>
