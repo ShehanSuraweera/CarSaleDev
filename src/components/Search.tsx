@@ -18,6 +18,7 @@ const Search = () => {
   };
 
   useStartTyping(() => {
+    if (pathname !== "/buy") router.push("/buy");
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -33,6 +34,7 @@ const Search = () => {
     e.preventDefault();
     const str = e.target.value.toString().trim();
     setQuery(str);
+    if (pathname !== "/buy") router.push("/buy");
   };
 
   return (
