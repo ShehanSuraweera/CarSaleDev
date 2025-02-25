@@ -34,7 +34,11 @@ const Search = () => {
     e.preventDefault();
     const str = e.target.value.toString().trim();
     setQuery(str);
-    if (pathname !== "/buy") router.push("/buy");
+    if (pathname !== "/buy") {
+      setTimeout(() => {
+        router.push("/buy");
+      }, 2000);
+    }
   };
 
   return (
