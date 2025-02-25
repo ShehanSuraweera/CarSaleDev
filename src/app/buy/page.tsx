@@ -72,7 +72,6 @@ export default function Page() {
   // Fetch ads when filters or query change
   // Fetch ads when filters or query change
   useEffect(() => {
-    console.log("Filters changed");
     setPage(1); // Reset pagination
     setCars([]); // Clear previous results
     setHasMore(true); // Reset scrolling state
@@ -223,6 +222,7 @@ export default function Page() {
         dataLength={cars.length}
         next={loadMore}
         hasMore={hasMore}
+        scrollThreshold={0.5}
         loader={
           <div className="flex flex-wrap items-center justify-center w-full sm:gap-x-6 gap-x-2">
             {Skeletons.map((skeleton) => (
