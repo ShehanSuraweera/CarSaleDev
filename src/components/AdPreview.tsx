@@ -162,7 +162,7 @@ const AdPreview = ({
               <ModalHeader className="flex flex-col gap-1">
                 Your Ad Preview
               </ModalHeader>
-              <ModalBody className="w-full px-20 py-4">
+              <ModalBody className="w-full py-4 sm:px-20">
                 {isLoading && <LoadingOverlay />}
                 <Ad adData={adFormData} />
               </ModalBody>
