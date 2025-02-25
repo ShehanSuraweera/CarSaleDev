@@ -102,8 +102,8 @@ export default function Page() {
     }));
   };
 
-  const scrollRef = useRef(null);
-  const lastScrollRef = useRef(0); // Use ref instead of state
+  const lastScrollRef = useRef(0);
+  const isVisibleRef = useRef(true); // Store visibility state in a ref
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -111,20 +111,28 @@ export default function Page() {
       const currentScrollY = window.scrollY;
 
       if (currentScrollY > lastScrollRef.current && currentScrollY > 50) {
-        console.log("Hide");
-        setIsVisible(false);
+        if (isVisibleRef.current) {
+          // Only update if state is different
+          console.log("Hide");
+          setIsVisible(false);
+          isVisibleRef.current = false;
+        }
       } else if (currentScrollY < lastScrollRef.current) {
-        console.log("Show");
-        setIsVisible(true);
+        if (!isVisibleRef.current) {
+          // Only update if state is different
+          console.log("Show");
+          setIsVisible(true);
+          isVisibleRef.current = true;
+        }
       }
 
-      lastScrollRef.current = currentScrollY; // Update ref instead of state
+      lastScrollRef.current = currentScrollY;
     }, 100);
 
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      handleScroll.cancel(); // Ensure throttle is properly cleaned up
+      handleScroll.cancel();
     };
   }, []);
 
@@ -166,7 +174,6 @@ export default function Page() {
       {/* Search & Filter */}
 
       <div
-        ref={scrollRef}
         className={clsx(
           `sticky top-12  z-50 flex items-center justify-center w-full gap-2 p-4 bg-white dark:bg-black    ${
             isVisible ? "" : "hidden"
