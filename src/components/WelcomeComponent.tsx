@@ -21,7 +21,7 @@ function WelcomeComponent() {
         Welcome to Sri Lanka's Number 01 Vehicle Selling Platform!
       </div>
 
-      <div className="relative z-10 flex items-center justify-center p-10 text-2xl font-semibold text-center text-white bg-black bg-opacity-50 rounded-md top-10">
+      <div className="relative z-10 flex items-center justify-center p-4 text-2xl font-semibold text-center text-white bg-black bg-opacity-50 rounded-md sm:p-10 top-10">
         <Search />
       </div>
     </div>
