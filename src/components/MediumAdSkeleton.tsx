@@ -3,7 +3,7 @@ import React from "react";
 
 const MediumAdSkeleton = () => {
   return (
-    <div className="mb-7 relative shadow-md mt-2 sm:mt-2 w-[325px] sm:w-[280px] overflow-hidden sm:h-[300px] md:w-[370px] md:h-[340px] h-[250px] lg:w-[400px] dark:bg-[#000B17] rounded-lg flex flex-col justify-center items-center">
+    <div className="mb-7 relative shadow-md mt-2 sm:mt-2 w-[325px] sm:w-[280px] hover:shadow-2xl overflow-hidden sm:h-[300px] md:w-[370px] md:h-[340px] h-[250px] lg:w-[400px] dark:bg-[#000B17] rounded-lg flex flex-col justify-center items-center">
       <Skeleton className="sm:w-[55%] w-[70%] rounded-md sm:h-[110px] h-[120px] mt-2" />
       <Skeleton className="w-3/4 h-4 mt-1 rounded-md" />
       <Skeleton className="w-1/2 h-4 mt-1 rounded-md" />
