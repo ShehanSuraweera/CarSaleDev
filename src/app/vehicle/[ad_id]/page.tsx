@@ -50,7 +50,8 @@ export default function Page({ params }: CarAdProps) {
           topic="Related searches"
           make_id={adData?.make.id.toString() || ""}
           make_name={adData?.make.name.toString() || ""}
-          vehicle_type_id={adData?.vehicle_type.id.toString() || ""}
+          vehicle_type_id={adData?.vehicle_type?.id?.toString() || ""}
+          vehicle_type_name={adData?.vehicle_type?.name?.toString() || ""}
         />
       )}
     </div>
