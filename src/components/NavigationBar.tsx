@@ -14,6 +14,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { siteConfig } from "@/src/config/site";
 import { ThemeSwitch } from "@/src/components/theme-switch";
 import { Logo } from "@/src/components/icons";
+import WANDI_LK_LOGO from "@/public/images/WANDI_LK_LOGO.svg";
 
 import {
   Divider,
@@ -31,6 +32,7 @@ import {
 import { useUser } from "../UserContext";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 export const NavigationBar = () => {
   //const [user, setUser] = useState<User | null>(null);
@@ -66,9 +68,13 @@ export const NavigationBar = () => {
       className=" bg-[#01172F] text-[#FDC221]"
     >
       <NavbarBrand as="li" className="gap-3 max-w-fit">
-        <NextLink className="flex items-center justify-start gap-1 " href="/">
-          <Logo />
-          <p className="font-bold text-inherit">CeylonCars</p>
+        <NextLink
+          className="flex items-center justify-start gap-1 w-36 "
+          href="/"
+        >
+          {/* <Logo /> */}
+          <Image src={WANDI_LK_LOGO} alt="Wandi.lk" className="w-full " />
+          {/* <p className="font-bold text-inherit">CeylonCars</p> */}
         </NextLink>
       </NavbarBrand>
       <NavbarContent className="basis-1/5 sm:basis-full" justify="center">

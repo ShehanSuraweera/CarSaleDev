@@ -8,6 +8,8 @@ import {
   TwitterIcon,
 } from "./icons";
 import Link from "next/link";
+import WANDI_LK_LOGO from "@/public/images/WANDI_LK_LOGO.svg";
+import Image from "next/image";
 
 const Footer = () => {
   return (
@@ -16,7 +18,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* About Section */}
           <div className="col-span-1">
-            <h3 className="mb-4 text-lg font-bold">CeylonCars</h3>
+            <Image src={WANDI_LK_LOGO} alt="Wandi.lk" className="w-full " />
+            {/* <h3 className="mb-4 text-lg font-bold">CeylonCars</h3> */}
             <p className="text-sm text-slate-300">
               Your trusted partner in buying and selling cars in Sri Lanka. We
               provide the best deals and a seamless experience for all your

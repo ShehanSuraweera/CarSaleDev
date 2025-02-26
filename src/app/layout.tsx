@@ -12,28 +12,30 @@ import StoreProvider from "../providers/StoreProvider";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { NavigationBar } from "../components/NavigationBar";
 export const metadata: Metadata = {
-  title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
+  title: {
+    default: "Wandi.lk - Sri Lanka’s No.1 Vehicle Selling Platform",
+    template: "%s | Wandi.lk",
+  },
+
   description:
     "Buy and sell vehicles in Sri Lanka easily. Find the best deals on cars, SUVs, and motorbikes.",
   keywords:
     "buy cars Sri Lanka, sell vehicles, second-hand cars, new cars, car marketplace",
-  authors: [
-    { name: "Ceylon Cars Team", url: "https://car-sale-dev.vercel.app" },
-  ],
+  authors: [{ name: "Wandi.lk Team", url: "https://car-sale-dev.vercel.app" }],
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicon.svg",
   },
   // 🔹 Open Graph for Facebook, WhatsApp, Instagram, TikTok
   openGraph: {
-    title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
+    title: "Wandi.lk - Sri Lanka’s No.1 Vehicle Selling Platform",
     description:
       "Find the best deals on new and used cars in Sri Lanka. List your vehicle for free and connect with buyers easily.",
     url: "https://car-sale-dev.vercel.app",
-    siteName: "Ceylon Cars",
+    siteName: "Wandi.lk",
     type: "website",
     images: [
       {
-        url: "https://car-sale-dev.vercel.app/og-image.jpg", // Replace with actual OG image URL
+        url: "https://car-sale-dev.vercel.app/WANDI_LK_COVER.png", // Replace with actual OG image URL
         width: 1200,
         height: 630,
         alt: "Ceylon Cars - Sri Lanka's No.1 Vehicle Marketplace",
@@ -43,10 +45,10 @@ export const metadata: Metadata = {
   // 🔹 Twitter Card for Twitter sharing
   twitter: {
     card: "summary_large_image",
-    title: "Ceylon Cars - Sri Lanka’s No.1 Vehicle Selling Platform",
+    title: "Wandi.lk - Sri Lanka’s No.1 Vehicle Selling Platform",
     description:
-      "Buy and sell vehicles easily with Ceylon Cars. Find the best deals on cars, SUVs, and motorbikes in Sri Lanka.",
-    images: ["https://car-sale-dev.vercel.app/og-image.jpg"], // Replace with actual image URL
+      "Buy and sell vehicles easily with Wandi.lk. Find the best deals on cars, SUVs, and motorbikes in Sri Lanka.",
+    images: ["https://car-sale-dev.vercel.app/WANDI_LK_COVER.png"], // Replace with actual image URL
   },
 
   // 🔹 Additional meta tags for best sharing experience

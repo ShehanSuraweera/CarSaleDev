@@ -23,6 +23,11 @@ import MediumAdSkeleton from "@/src/components/MediumAdSkeleton";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import MediumAd from "@/src/components/Cars/MediumAd";
 import { useStartTyping } from "react-use";
+// import { Metadata } from "next";
+
+// export const metadata: Metadata = {
+//   title: "Buy",
+// };
 
 export default function Page() {
   const [loading, setLoading] = useState<boolean>(false);
