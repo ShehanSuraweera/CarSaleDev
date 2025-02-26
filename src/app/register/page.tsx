@@ -48,10 +48,10 @@ const Page: React.FC = () => {
     <>
       <div className="hidden w-full p-2 my-10 rounded-md shadow-md sm:block sm:p-10">
         <div className="text-center sm:text-2xl font-semibold text-[#130F40]">
-          Welcome to CeylonCars – Sri Lanka’s #1 Vehicle Selling Platform!
+          Welcome to Wandi.lk – Sri Lanka’s #1 Vehicle Selling Platform!
         </div>
         <div className="text-center sm:text-lg mt-5 font-normal text-[#423b86]">
-          Thank you for joining CeylonCars, the most trusted and secure
+          Thank you for joining Wandi.lk, the most trusted and secure
           marketplace for buying and selling vehicles in Sri Lanka. Whether
           you're looking for your dream ride or selling your car at the best
           price, we've got you covered. Enjoy a seamless experience with

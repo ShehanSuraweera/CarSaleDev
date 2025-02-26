@@ -7,7 +7,6 @@ import { UserContextProvider } from "@/src/UserContext";
 import { Toaster } from "react-hot-toast";
 import { SearchProvider } from "../providers/SearchProvider";
 import Footer from "../components/Footer";
-import { Provider } from "react-redux";
 import StoreProvider from "../providers/StoreProvider";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { NavigationBar } from "../components/NavigationBar";
@@ -38,7 +37,7 @@ export const metadata: Metadata = {
         url: "https://car-sale-dev.vercel.app/WANDI_LK_COVER.png", // Replace with actual OG image URL
         width: 1200,
         height: 630,
-        alt: "Ceylon Cars - Sri Lanka's No.1 Vehicle Marketplace",
+        alt: "Wandi.lk - Sri Lanka's No.1 Vehicle Marketplace",
       },
     ],
   },

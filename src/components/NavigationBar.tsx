@@ -74,7 +74,6 @@ export const NavigationBar = () => {
         >
           {/* <Logo /> */}
           <Image src={WANDI_LK_LOGO} alt="Wandi.lk" className="w-full " />
-          {/* <p className="font-bold text-inherit">CeylonCars</p> */}
         </NextLink>
       </NavbarBrand>
       <NavbarContent className="basis-1/5 sm:basis-full" justify="center">
@@ -172,10 +171,13 @@ export const NavigationBar = () => {
             <>
               <DrawerHeader className="flex flex-row items-center justify-between gap-1 mt-5">
                 <div className="flex flex-col gap-1 text-[#FDC221]">
-                  <Logo className="text-[#FDC221]" />
-                  <div>Ceylon Cars</div>
+                  <Image
+                    src={WANDI_LK_LOGO}
+                    alt="Wandi.lk"
+                    className="w-full "
+                  />
                 </div>
-                <div className="flex justify-end p-2 mt-5 mr-5">
+                <div className="flex justify-end p-2 mt-0 mr-5">
                   {!loading && user && (
                     <Link href="/profile" className="flex hover:cursor-pointer">
                       <Avatar

@@ -54,7 +54,7 @@ const Page: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-around mt-4 mb-64 grow">
       <div className="text-center ">
-        <div className="mb-5 text-2xl "> Welcome Back to CeylonCars!</div>
+        <div className="mb-5 text-2xl "> Welcome Back to Wandi.lk!</div>
         <div className="text-lg text-gray-500">
           Your gateway to Sri Lanka’s #1 vehicle marketplace. Buy, sell, and
           explore the best deals with trust and security. Login now and start

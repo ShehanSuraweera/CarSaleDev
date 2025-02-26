@@ -19,7 +19,7 @@ const Footer = () => {
           {/* About Section */}
           <div className="col-span-1">
             <Image src={WANDI_LK_LOGO} alt="Wandi.lk" className="w-full " />
-            {/* <h3 className="mb-4 text-lg font-bold">CeylonCars</h3> */}
+
             <p className="text-sm text-slate-300">
               Your trusted partner in buying and selling cars in Sri Lanka. We
               provide the best deals and a seamless experience for all your
@@ -48,9 +48,7 @@ const Footer = () => {
           <div className="col-span-1">
             <h3 className="mb-4 text-lg font-bold">Contact Us</h3>
             <ul className="space-y-2">
-              <li className="text-sm text-slate-300">
-                Email: info@ceyloncars.com
-              </li>
+              <li className="text-sm text-slate-300">Email: info@Wandi.lk</li>
               <li className="text-sm text-slate-300">Phone: +94 77 123 4567</li>
               <li className="text-sm text-slate-300">
                 Address: 123 Colombo, Sri Lanka
@@ -93,7 +91,7 @@ const Footer = () => {
         {/* Copyright Section */}
         <div className="pt-8 mt-8 text-center border-t border-slate-700">
           <p className="text-sm text-slate-300">
-            &copy; {new Date().getFullYear()} CeylonCars. All rights reserved.
+            &copy; {new Date().getFullYear()} Wandi.lk. All rights reserved.
             Developed by Shehan Suraweera.
           </p>
         </div>

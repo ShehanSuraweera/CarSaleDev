@@ -14,7 +14,7 @@ const AboutUsPage = () => {
             <h2 className="text-2xl font-semibold">Our Mission</h2>
           </div>
           <p className="text-sm dark:text-slate-300">
-            At CeylonCars, our mission is to provide a seamless and trustworthy
+            At Wandi.lk, our mission is to provide a seamless and trustworthy
             platform for buying and selling vehicles in Sri Lanka. We aim to
             empower our customers with the best deals, transparent information,
             and exceptional service.
@@ -88,7 +88,7 @@ const AboutUsPage = () => {
             Have questions or need assistance? Reach out to us!
           </p>
           <ul className="space-y-2 text-sm dark:text-slate-300">
-            <li>📧 Email: info@ceyloncars.com</li>
+            <li>📧 Email: info@Wandi.lk</li>
             <li>📞 Phone: +94 77 123 4567</li>
             <li>📍 Address: 123 Colombo, Sri Lanka</li>
           </ul>
