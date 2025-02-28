@@ -209,7 +209,7 @@ export const NavigationBar = () => {
                 </div>
               </DrawerHeader>
               <DrawerBody>
-                <div className="flex flex-col justify-between h-full">
+                <div className="flex flex-col justify-between h-full overflow-hidden">
                   <div className="flex flex-col gap-2 mx-4 mt-2">
                     {siteConfig.navMenuItems
                       .filter((item) => item.label !== "Profile" || user)
