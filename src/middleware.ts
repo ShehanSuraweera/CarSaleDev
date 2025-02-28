@@ -10,7 +10,12 @@ export async function middleware(request: NextRequest) {
 
   const path = new URL(request.url).pathname;
 
-  const protectedRoutes = ["/profile", "/sell"];
+  const protectedRoutes = [
+    "/profile",
+    "/sell",
+    "/profile/myads",
+    "/profile/favourite-ads",
+  ];
   const authRoutes = ["/login"];
 
   const isProtectedRoute = protectedRoutes.includes(path);

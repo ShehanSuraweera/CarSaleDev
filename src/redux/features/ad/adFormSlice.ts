@@ -61,6 +61,8 @@ const initialState: AdFormState = {
     price: "",
     title: "",
     views: 0,
+    is_approved: false,
+    is_deleted: false,
   },
   errors: {},
 };

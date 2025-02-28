@@ -32,6 +32,8 @@ export interface AdData {
   vehicle_condition: { id: string; name: string };
   vehicle_type: { id: number; name: string };
   views: number;
+  is_approved: boolean;
+  is_deleted: boolean;
 }
 
 export interface MediumAdProps {
@@ -54,8 +56,12 @@ export interface MediumAdProps {
 export interface UserProfileData {
   name: string;
   email: string;
+  first_name: string;
+  last_name: string;
   phone: string;
   avatar_url: string;
+  user_type: string;
   city: { name: string; id: number };
   district: { id: number; name: string };
+  province: { id: number; name: string };
 }
