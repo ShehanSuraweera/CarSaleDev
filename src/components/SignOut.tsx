@@ -24,10 +24,11 @@ function SignOut() {
       try {
         // Clear user state in Redux
 
+        const { errorMessage } = await signOutAction();
         const { error } = await supabaseBrowserClient.auth.signOut();
 
-        if (error) {
-          throw new Error(error.message);
+        if (error || errorMessage) {
+          toast.error(errorMessage || (error && error.message));
         }
         dispatch(clearUser());
 
