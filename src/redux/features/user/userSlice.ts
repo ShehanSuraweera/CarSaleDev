@@ -51,7 +51,7 @@ export const loginWithEmailPassword = createAsyncThunk(
   "user/login",
   async (
     { email, password }: { email: string; password: string },
-    { dispatch, rejectWithValue }
+    { dispatch }
   ) => {
     try {
       const { data, error } =
@@ -69,7 +69,7 @@ export const loginWithEmailPassword = createAsyncThunk(
 
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message);
+      return (error as Error).message;
     }
   }
 );
@@ -77,7 +77,7 @@ export const loginWithEmailPassword = createAsyncThunk(
 // Async thunk to handle Google login
 export const loginWithGoogle = createAsyncThunk(
   "user/loginWithGoogle",
-  async (token: string, { dispatch, rejectWithValue }) => {
+  async (token: string, { dispatch }) => {
     try {
       const { data, error } =
         await supabaseBrowserClient.auth.signInWithIdToken({
@@ -94,7 +94,7 @@ export const loginWithGoogle = createAsyncThunk(
 
       return data;
     } catch (error) {
-      return rejectWithValue((error as Error).message);
+      return (error as Error).message;
     }
   }
 );
@@ -158,8 +158,10 @@ const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(loginWithEmailPassword.fulfilled, (state, action) => {
-        state.session = action.payload.session;
-        state.user = action.payload.user;
+        if (typeof action.payload !== "string") {
+          state.session = action.payload.session;
+          state.user = action.payload.user;
+        }
         state.loading = false;
       })
       .addCase(loginWithEmailPassword.rejected, (state, action) => {
@@ -172,8 +174,10 @@ const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(loginWithGoogle.fulfilled, (state, action) => {
-        state.session = action.payload.session;
-        state.user = action.payload.user;
+        if (typeof action.payload !== "string") {
+          state.session = action.payload.session;
+          state.user = action.payload.user;
+        }
         state.loading = false;
       })
       .addCase(loginWithGoogle.rejected, (state, action) => {

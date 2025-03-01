@@ -40,7 +40,7 @@ const Page: React.FC = () => {
         loginWithEmailPassword({ email, password })
       ).unwrap();
 
-      if (result.user) {
+      if (typeof result !== "string" && result.user) {
         toast.success("Successfully logged in");
         router.push("/"); // Redirect to home page after successful login
       }
@@ -56,7 +56,7 @@ const Page: React.FC = () => {
         loginWithGoogle(response.credential)
       ).unwrap();
 
-      if (result.user) {
+      if (typeof result !== "string" && result.user) {
         toast.success("Successfully logged in with Google");
         router.push("/"); // Redirect to home page after successful login
       }
