@@ -13,7 +13,6 @@ import { persistor, RootState } from "../redux/store";
 import toast from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
 import { createAd, editAd } from "../lib/api";
-import { useUser } from "../UserContext";
 import { resetForm } from "../redux/features/ad/adFormSlice";
 import LoadingOverlay from "./LoadingOverlay";
 
@@ -26,7 +25,11 @@ const AdPreview = ({
 }) => {
   const { adFormData } = useSelector((state: RootState) => state.adForm);
   const image_urls = adFormData?.images || [];
-  const { user } = useUser();
+
+  const { loading, error, user } = useSelector(
+    (state: RootState) => state.user
+  );
+
   const [isPending, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();

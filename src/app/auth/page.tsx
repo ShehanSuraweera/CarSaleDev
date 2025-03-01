@@ -2,10 +2,10 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { useUser } from "@/src/UserContext";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import LoadingOverlay from "@/src/components/LoadingOverlay";
+import { createBrowserClient } from "@supabase/ssr";
 
 function UserConfirm() {
   const searchParams = useSearchParams();
@@ -13,7 +13,12 @@ function UserConfirm() {
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
   const [status, setStatus] = useState("Confirming...");
-  const { supabaseBrowserClient } = useUser();
+
+  // Create Supabase client
+  const supabaseBrowserClient = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   useEffect(() => {
     const confirmUser = async () => {
@@ -23,7 +28,7 @@ function UserConfirm() {
       }
 
       try {
-        const supabase = supabaseBrowserClient(); // Call the function to get the client
+        const supabase = supabaseBrowserClient; // Use the client instance directly
         const { error } = await supabase.auth.verifyOtp({
           type: "signup",
           token_hash: token_hash,

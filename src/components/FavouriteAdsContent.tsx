@@ -24,7 +24,6 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { AdData } from "../types";
-import { useUser } from "../UserContext";
 import { deleteAd, fetchUserAds } from "../lib/api";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -38,6 +37,8 @@ import {
   SearchIcon,
 } from "./icons";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -82,7 +83,7 @@ const FavouriteAdsContent = () => {
     column: "age",
     direction: "ascending",
   });
-  const { user } = useUser();
+  const { user, loading } = useSelector((state: RootState) => state.user);
   const [ads, setAds] = useState<AdData[]>([]);
   const [isadsLoading, setIsAdsLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();

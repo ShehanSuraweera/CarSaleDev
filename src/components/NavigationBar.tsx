@@ -29,14 +29,18 @@ import {
   Avatar,
 } from "@heroui/react";
 
-import { useUser } from "../UserContext";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
 
 export const NavigationBar = () => {
   //const [user, setUser] = useState<User | null>(null);
-  const { user, loading } = useUser();
+  //const { user, loading } = useUser();
+  const dispatch = useDispatch<AppDispatch>();
+  const { user, loading } = useSelector((state: RootState) => state.user);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathName = usePathname();
@@ -55,9 +59,11 @@ export const NavigationBar = () => {
   };
 
   const handleSellButton = () => {
-    router.push("/sell");
     if (!user && !loading) {
       toast.error("Please login to post an ad");
+      router.push("/login");
+    } else {
+      router.push("/sell");
     }
   };
 

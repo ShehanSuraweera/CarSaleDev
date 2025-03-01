@@ -1,17 +1,31 @@
 "use client";
 
+import { createBrowserClient } from "@supabase/ssr";
 import { CredentialResponse } from "google-one-tap";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
-import { useUser } from "../UserContext";
+// import { useUser } from "../UserContext";
 import toast from "react-hot-toast";
+import {
+  setUser,
+  setSession,
+  fetchUserProfile,
+} from "@/src/redux/features/user/userSlice";
+import { useDispatch } from "react-redux";
 
 // Declare google as a global variable
 declare const google: any;
 
+const supabaseBrowserClient = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
 const OneTapComponent = () => {
-  const { supabaseBrowserClient } = useUser();
+  // const { supabaseBrowserClient } = useUser();
+
   const router = useRouter();
+  const dispatch = useDispatch();
 
   // generate nonce to use for google id token sign-in
   const generateNonce = async (): Promise<string[]> => {
@@ -56,12 +70,21 @@ const OneTapComponent = () => {
             });
 
           if (error) throw error;
+          const session = data.session;
+          const user = session?.user;
 
-          toast.success("Successfully logged in with Google One Tap");
-          // redirect to protected page
-          router.push("/");
+          if (user) {
+            dispatch(setUser(user)); // Store user in Redux
+            dispatch(setSession(session)); // Store session in Redux
+            dispatch(fetchUserProfile(user.id) as any); // Fetch user profile
+
+            toast.success("Successfully logged in with Google One Tap");
+            // redirect to protected page
+            router.push("/");
+          }
         } catch (error) {
           console.error("Error logging in with Google One Tap", error);
+          toast.error("Failed to log in with Google One Tap");
         }
       },
       nonce: hashedNonce,

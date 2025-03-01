@@ -1,7 +1,7 @@
 "use client";
 
 import SmallAdsRow from "@/src/components/Cars/SmallAdsRow";
-import { useUser } from "../UserContext";
+// import { useUser } from "../UserContext";
 
 import WelcomeComponent from "../components/WelcomeComponent";
 import { motion } from "framer-motion";
@@ -10,10 +10,17 @@ import { useCallback, useState } from "react";
 import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 export default function Home() {
-  const { user, loading } = useUser();
+  // const { user, loading } = useUser();
   const router = useRouter();
+
+  const { user, loading, error } = useSelector(
+    (state: RootState) => state.user
+  );
 
   interface Make {
     id: string;

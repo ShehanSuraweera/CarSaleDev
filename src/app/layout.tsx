@@ -3,13 +3,15 @@ import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { Providers } from "@/src/providers/providers";
 import { fontSans } from "@/src/config/fonts";
-import { UserContextProvider } from "@/src/UserContext";
+// import { UserContextProvider } from "@/src/UserContext";
 import { Toaster } from "react-hot-toast";
 import { SearchProvider } from "../providers/SearchProvider";
 import Footer from "../components/Footer";
 import StoreProvider from "../providers/StoreProvider";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { NavigationBar } from "../components/NavigationBar";
+import { useAuthListener } from "../redux/hooks/useAuthListener";
+import ClientAuthProvider from "../providers/ClientAuthProvider";
 export const metadata: Metadata = {
   title: {
     default: "Wandi.lk - Sri Lanka’s No.1 Vehicle Selling Platform",
@@ -80,7 +82,7 @@ export default function RootLayout({
         )}
       >
         <StoreProvider>
-          <UserContextProvider>
+          <ClientAuthProvider>
             <SearchProvider>
               <Providers
                 themeProps={{ attribute: "class", defaultTheme: "light" }}
@@ -104,7 +106,7 @@ export default function RootLayout({
                 }}
               />
             </SearchProvider>
-          </UserContextProvider>
+          </ClientAuthProvider>
         </StoreProvider>
       </body>
     </html>

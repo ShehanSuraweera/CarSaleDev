@@ -5,51 +5,67 @@ import Link from "next/link";
 import React, { useState, useTransition } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { loginAction, signInWithGoogle } from "@/src/actions/users";
+import {
+  loginWithEmailPassword,
+  loginWithGoogle,
+} from "@/src/redux/features/user/userSlice";
 import toast from "react-hot-toast";
-import { useUser } from "@/src/UserContext";
+// import { useUser } from "@/src/UserContext";
 import { Divider, Form } from "@heroui/react";
 import OneTapComponent from "@/src/components/OneTapComponent";
 import googleIcon from "@/src/assets/icons/google-icon.svg";
 import { GoogleIcon } from "@/src/components/icons";
+import { createBrowserClient } from "@supabase/ssr";
+import { useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/src/redux/store";
+import { useDispatch } from "react-redux";
 
 const Page: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
-  const { supabaseBrowserClient } = useUser();
+  // const { supabaseBrowserClient } = useUser();
 
   const [isPending, startTransition] = useTransition();
 
-  const handleClickLoginButton = (event: React.FormEvent<HTMLFormElement>) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error } = useSelector((state: RootState) => state.user);
+
+  const handleClickLoginButton = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    startTransition(async () => {
-      const { errorMessage } = await loginAction(formData);
-      const { error } = await supabaseBrowserClient.auth.signInWithPassword({
-        email,
-        password,
-      });
+    try {
+      const result = await dispatch(
+        loginWithEmailPassword({ email, password })
+      ).unwrap();
 
-      if (errorMessage || error) {
-        toast.error(errorMessage || error.message);
-      } else {
+      if (result.user) {
         toast.success("Successfully logged in");
-        router.push("/");
+        router.push("/"); // Redirect to home page after successful login
       }
-    });
-  };
-
-  async function handleSignInWithGoogle(response: any) {
-    const { data, error } = await supabaseBrowserClient.auth.signInWithOAuth({
-      provider: "google",
-      token: response.credential,
-    });
-
-    if (error) {
-      toast.error(error.message);
-      redirect("/login");
+    } catch (error) {
+      const errorMessage =
+        (error as { message: string }).message || "Login failed";
+      toast.error(errorMessage); // Show error message
     }
-  }
+  };
+  const handleSignInWithGoogle = async (response: any) => {
+    try {
+      const result = await dispatch(
+        loginWithGoogle(response.credential)
+      ).unwrap();
+
+      if (result.user) {
+        toast.success("Successfully logged in with Google");
+        router.push("/"); // Redirect to home page after successful login
+      }
+    } catch (error) {
+      const errorMessage =
+        (error as { message: string }).message || "Google login failed";
+      toast.error(errorMessage); // Show error message
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-around mt-4 mb-64 grow">

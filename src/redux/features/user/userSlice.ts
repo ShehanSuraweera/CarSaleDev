@@ -1,65 +1,105 @@
-// src/redux/features/user/userSlice.ts
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { User, Session } from "@supabase/supabase-js";
-import { createBrowserClient } from "@supabase/ssr";
-import {
-  getUserProfileData,
-  updateUserProfile as apiUpdateUserProfile,
-} from "@/src/lib/api";
+// features/user/userSlice.ts
+import { getUserProfileData } from "@/src/lib/api";
 import { UserProfileData } from "@/src/types";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createBrowserClient } from "@supabase/ssr";
+import { User, Session } from "@supabase/supabase-js";
 
-// Supabase client
-const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
+// Define the initial state
 interface UserState {
   user: User | null;
   session: Session | null;
   profile: UserProfileData | null;
   loading: boolean;
+  error: string | null;
 }
 
 const initialState: UserState = {
   user: null,
   session: null,
   profile: null,
-  loading: true,
+  loading: false,
+  error: null,
 };
 
-// **Fetch user profile**
+// Create Supabase client
+const supabaseBrowserClient = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+// Async thunk to fetch user session
+export const fetchUserSession = createAsyncThunk(
+  "user/fetchSession",
+  async () => {
+    const { data } = await supabaseBrowserClient.auth.getSession();
+    return data.session;
+  }
+);
+
+// Async thunk to fetch user profile
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchProfile",
-  async (userId: string, { rejectWithValue }) => {
-    try {
-      const profileData: UserProfileData = await getUserProfileData(userId);
-      return profileData;
-    } catch (error: any) {
-      return rejectWithValue(error.message || "Failed to fetch user profile");
-    }
+  async (userId: string) => {
+    const profileData = await getUserProfileData(userId);
+    return profileData;
   }
 );
 
-// **Update user profile**
-export const updateUserProfile = createAsyncThunk(
-  "user/updateProfile",
-  async (formData: FormData, { rejectWithValue }) => {
+// Async thunk to handle login with email and password
+export const loginWithEmailPassword = createAsyncThunk(
+  "user/login",
+  async (
+    { email, password }: { email: string; password: string },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
-      const response = await apiUpdateUserProfile(formData);
-      if (response === "Profile updated") {
-        return await getUserProfileData(formData.get("user_id") as string);
-      } else {
-        return rejectWithValue("Failed to update profile");
+      const { data, error } =
+        await supabaseBrowserClient.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+      if (error) throw new Error(error.message);
+
+      // Fetch profile after successful login
+      if (data.user) {
+        dispatch(fetchUserProfile(data.user.id));
       }
-    } catch (error: any) {
-      return rejectWithValue(
-        error.message || "An error occurred while updating the profile"
-      );
+
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
     }
   }
 );
 
+// Async thunk to handle Google login
+export const loginWithGoogle = createAsyncThunk(
+  "user/loginWithGoogle",
+  async (token: string, { dispatch, rejectWithValue }) => {
+    try {
+      const { data, error } =
+        await supabaseBrowserClient.auth.signInWithIdToken({
+          provider: "google",
+          token,
+        });
+
+      if (error) throw new Error(error.message);
+
+      // Fetch profile after successful login
+      if (data.user) {
+        dispatch(fetchUserProfile(data.user.id));
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
+// Create the user slice
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -70,20 +110,80 @@ const userSlice = createSlice({
     setSession: (state, action: PayloadAction<Session | null>) => {
       state.session = action.payload;
     },
+    setProfile: (state, action: PayloadAction<UserProfileData | null>) => {
+      state.profile = action.payload;
+    },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
+    },
+    clearUser: (state) => {
+      state.user = null;
+      state.session = null;
+      state.profile = null;
     },
   },
   extraReducers: (builder) => {
     builder
+      // Handle fetchUserSession
+      .addCase(fetchUserSession.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUserSession.fulfilled, (state, action) => {
+        state.session = action.payload;
+        state.user = action.payload?.user ?? null;
+        state.loading = false;
+      })
+      .addCase(fetchUserSession.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to fetch session";
+        state.loading = false;
+      })
+
+      // Handle fetchUserProfile
+      .addCase(fetchUserProfile.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(fetchUserProfile.fulfilled, (state, action) => {
         state.profile = action.payload;
+        state.loading = false;
       })
-      .addCase(updateUserProfile.fulfilled, (state, action) => {
-        state.profile = action.payload;
+      .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to fetch profile";
+        state.loading = false;
+      })
+
+      // Handle loginWithEmailPassword
+      .addCase(loginWithEmailPassword.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(loginWithEmailPassword.fulfilled, (state, action) => {
+        state.session = action.payload.session;
+        state.user = action.payload.user;
+        state.loading = false;
+      })
+      .addCase(loginWithEmailPassword.rejected, (state, action) => {
+        state.error = action.error.message || "Login failed";
+        state.loading = false;
+      })
+
+      // Handle loginWithGoogle
+      .addCase(loginWithGoogle.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+        state.session = action.payload.session;
+        state.user = action.payload.user;
+        state.loading = false;
+      })
+      .addCase(loginWithGoogle.rejected, (state, action) => {
+        state.error = action.error.message || "Google login failed";
+        state.loading = false;
       });
   },
 });
 
-export const { setUser, setSession, setLoading } = userSlice.actions;
+// Export actions
+export const { setUser, setSession, setProfile, setLoading, clearUser } =
+  userSlice.actions;
+
+// Export reducer
 export default userSlice.reducer;

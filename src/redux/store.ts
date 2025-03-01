@@ -12,6 +12,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import userReducer from "./features/user/userSlice";
 import adFormReducer from "./features/ad/adFormSlice";
+import logger from "redux-logger";
 
 const adFormPersistConfig = {
   key: "adForm",
@@ -24,7 +25,7 @@ const adFormPersistConfig = {
 const userPersistConfig = {
   key: "user",
   storage,
-  whitelist: ["user", "profile"], // Persist user & profile only
+  whitelist: ["profile"], // Persist user & profile only
 };
 
 // ✅ Combine reducers
@@ -51,6 +52,7 @@ export const store = configureStore({
         ], // Ignore persist actions
         ignoredPaths: ["user.session"], // Ignore session since it's non-serializable
       },
+      logger,
     }),
 });
 

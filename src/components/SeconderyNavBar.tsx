@@ -3,11 +3,14 @@ import { Button } from "@heroui/button";
 import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { useUser } from "../UserContext";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 const SeconderyNavBar = () => {
-  const { user, loading } = useUser();
+  const { loading, error, user } = useSelector(
+    (state: RootState) => state.user
+  );
 
   const handleSellButton = () => {
     router.push("/sell");

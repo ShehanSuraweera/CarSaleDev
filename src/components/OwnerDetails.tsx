@@ -20,7 +20,7 @@ import {
   getCitiesByDistrict,
   getUserProfileData,
 } from "../lib/api";
-import { useUser } from "../UserContext";
+
 import toast from "react-hot-toast";
 import { debounce } from "lodash";
 
@@ -41,13 +41,17 @@ const OwnerDetails = () => {
     (state: RootState) => state.adForm
   );
 
+  const { loading, error, user } = useSelector(
+    (state: RootState) => state.user
+  );
+
   const [isCityDisabled, setIsCityDisabled] = useState(true);
   const [districts, setDistricts] = useState<District[]>([]);
   const [allCities, setAllCities] = useState<City[]>([]);
   const [citiesByDistrict, setCitiesByDistrict] = useState<City[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const { user } = useUser();
+
   const [isPending, startTransition] = useTransition();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isLoading, setIsLoading] = useState(false);
