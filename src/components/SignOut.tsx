@@ -9,6 +9,11 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { clearUser } from "../redux/features/user/userSlice";
 
+const supabaseBrowserClient = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
 function SignOut() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -18,6 +23,12 @@ function SignOut() {
     startTransition(async () => {
       try {
         // Clear user state in Redux
+
+        const { error } = await supabaseBrowserClient.auth.signOut();
+
+        if (error) {
+          throw new Error(error.message);
+        }
         dispatch(clearUser());
 
         // Show success message

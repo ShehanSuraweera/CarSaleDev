@@ -120,6 +120,8 @@ const userSlice = createSlice({
       state.user = null;
       state.session = null;
       state.profile = null;
+      state.loading = false;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
