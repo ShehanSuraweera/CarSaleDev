@@ -11,7 +11,9 @@ export default function ProfileLayout({
     <>
       <div className="flex flex-col min-h-screen md:flex-row">
         <Sidebar />
-        <div className="flex-1 overflow-x-auto sm:p-4">{children}</div>
+        <div className="flex flex-col w-full overflow-x-auto sm:p-4">
+          {children}
+        </div>
       </div>
     </>
   );
