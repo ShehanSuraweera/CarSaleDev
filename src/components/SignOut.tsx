@@ -9,9 +9,6 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { clearUser } from "../redux/features/user/userSlice";
-import { createSupabaseClient } from "../auth/client";
-
-const supabaseBrowserClient = createSupabaseClient();
 
 function SignOut() {
   const router = useRouter();
@@ -24,10 +21,9 @@ function SignOut() {
         // Clear user state in Redux
 
         const { errorMessage } = await signOutAction();
-        const { error } = await (await supabaseBrowserClient).auth.signOut();
 
-        if (error || errorMessage) {
-          toast.error(errorMessage || (error && error.message));
+        if (errorMessage) {
+          toast.error(errorMessage);
         }
         dispatch(clearUser());
 

@@ -35,6 +35,7 @@ import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
+import SignOut from "./SignOut";
 
 export const NavigationBar = () => {
   //const [user, setUser] = useState<User | null>(null);
@@ -245,6 +246,7 @@ export const NavigationBar = () => {
                         </NavbarMenuItem>
                       ))}
                   </div>
+                  {!loading && user && <SignOut />}
                 </div>
               </DrawerBody>
               <DrawerFooter>

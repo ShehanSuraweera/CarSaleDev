@@ -41,8 +41,6 @@ export const loginAction = async (formData: FormData) => {
 
 export const signOutAction = async () => {
   try {
-    await protectRoute();
-
     const { auth } = await createSupabaseClient();
 
     const { error } = await auth.signOut();
