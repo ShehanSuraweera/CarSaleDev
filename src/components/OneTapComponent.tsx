@@ -1,6 +1,5 @@
 "use client";
 
-import { createBrowserClient } from "@supabase/ssr";
 import { CredentialResponse } from "google-one-tap";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
@@ -12,14 +11,12 @@ import {
   fetchUserProfile,
 } from "@/src/redux/features/user/userSlice";
 import { useDispatch } from "react-redux";
+import { createSupabaseClient } from "../auth/client";
 
 // Declare google as a global variable
 declare const google: any;
 
-const supabaseBrowserClient = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const supabaseBrowserClient = createSupabaseClient();
 
 const OneTapComponent = () => {
   // const { supabaseBrowserClient } = useUser();

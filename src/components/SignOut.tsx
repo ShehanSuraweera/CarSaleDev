@@ -1,18 +1,17 @@
+"use client";
 import { Button } from "@heroui/button";
 import { Loader2, UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useTransition } from "react";
 import { signOutAction } from "../actions/users";
 import toast from "react-hot-toast";
-import { createBrowserClient } from "@supabase/ssr";
+
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { clearUser } from "../redux/features/user/userSlice";
+import { createSupabaseClient } from "../auth/client";
 
-const supabaseBrowserClient = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const supabaseBrowserClient = createSupabaseClient();
 
 function SignOut() {
   const router = useRouter();
@@ -25,7 +24,7 @@ function SignOut() {
         // Clear user state in Redux
 
         const { errorMessage } = await signOutAction();
-        const { error } = await supabaseBrowserClient.auth.signOut();
+        const { error } = await (await supabaseBrowserClient).auth.signOut();
 
         if (error || errorMessage) {
           toast.error(errorMessage || (error && error.message));

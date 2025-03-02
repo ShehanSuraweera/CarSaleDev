@@ -1,8 +1,8 @@
 // features/user/userSlice.ts
+import { createSupabaseClient } from "@/src/auth/client";
 import { getUserProfileData } from "@/src/lib/api";
 import { UserProfileData } from "@/src/types";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { createBrowserClient } from "@supabase/ssr";
 import { User, Session } from "@supabase/supabase-js";
 
 // Define the initial state
@@ -23,10 +23,7 @@ const initialState: UserState = {
 };
 
 // Create Supabase client
-const supabaseBrowserClient = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const supabaseBrowserClient = createSupabaseClient();
 
 // Async thunk to fetch user session
 export const fetchUserSession = createAsyncThunk(

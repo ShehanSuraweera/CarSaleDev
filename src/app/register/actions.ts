@@ -1,4 +1,5 @@
-import { createSupabaseClient } from "@/src/utils/supabase/server";
+"use server";
+import { createSupabaseClient } from "@/src/auth/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { useTransition } from "react";

@@ -2,12 +2,9 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setUser, setSession } from "../features/user/userSlice";
-import { createBrowserClient } from "@supabase/ssr";
+import { createSupabaseClient } from "@/src/auth/client";
 
-const supabaseBrowserClient = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const supabaseBrowserClient = createSupabaseClient();
 
 export const useAuthListener = () => {
   const dispatch = useDispatch();

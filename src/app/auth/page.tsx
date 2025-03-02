@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import LoadingOverlay from "@/src/components/LoadingOverlay";
-import { createBrowserClient } from "@supabase/ssr";
+import { createSupabaseClient } from "@/src/auth/client";
 
 function UserConfirm() {
   const searchParams = useSearchParams();
@@ -15,10 +15,7 @@ function UserConfirm() {
   const [status, setStatus] = useState("Confirming...");
 
   // Create Supabase client
-  const supabaseBrowserClient = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  const supabaseBrowserClient = createSupabaseClient();
 
   useEffect(() => {
     const confirmUser = async () => {

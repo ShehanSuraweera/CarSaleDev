@@ -15,7 +15,6 @@ import { Divider, Form } from "@heroui/react";
 import OneTapComponent from "@/src/components/OneTapComponent";
 import googleIcon from "@/src/assets/icons/google-icon.svg";
 import { GoogleIcon } from "@/src/components/icons";
-import { createBrowserClient } from "@supabase/ssr";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/redux/store";
 import { useDispatch } from "react-redux";
