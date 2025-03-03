@@ -108,7 +108,7 @@ const Page: React.FC = () => {
             disabled={isPending}
           />
           <Button
-            isLoading={isPending}
+            isLoading={loading}
             color="primary"
             type="submit"
             variant="flat"
@@ -118,7 +118,7 @@ const Page: React.FC = () => {
           </Button>
         </Form>
 
-        {/* <div className="flex justify-center mt-5">
+        <div className="flex justify-center mt-5">
           <div
             id="g_id_onload"
             data-client_id="770587025850-0va4rd9geg78uont8mjjsqrorbv3pn72.apps.googleusercontent.com"
@@ -138,7 +138,7 @@ const Page: React.FC = () => {
             data-size="large"
             data-logo_alignment="left"
           ></div>
-        </div> */}
+        </div>
 
         <div className="flex justify-center mt-2">
           <span className="text-gray-500 ">
@@ -152,14 +152,14 @@ const Page: React.FC = () => {
           </span>
         </div>
         <Divider className="mt-5" />
-        <Button
+        {/* <Button
           color="primary"
           onPress={handleSignInWithGoogle}
           className="w-full py-6 mt-8 rounded-xl"
           startContent={<GoogleIcon />}
         >
           Sign in with Google
-        </Button>
+        </Button> */}
       </div>
       <OneTapComponent />
     </div>

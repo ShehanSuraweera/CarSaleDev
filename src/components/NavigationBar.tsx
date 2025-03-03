@@ -143,7 +143,7 @@ export const NavigationBar = () => {
               {loading ? (
                 <Loader2 className="w-5 h-5 text-[#F5A524] animate-spin" />
               ) : (
-                "Sign in"
+                "Login"
               )}
             </Button>
           )}
@@ -209,7 +209,7 @@ export const NavigationBar = () => {
                       {loading ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
                       ) : (
-                        " Sign in"
+                        " Login"
                       )}
                     </Button>
                   )}
