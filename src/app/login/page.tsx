@@ -124,7 +124,7 @@ const Page: React.FC = () => {
         <div className="flex justify-center mt-5">
           <div
             id="g_id_onload"
-            data-client_id="770587025850-0va4rd9geg78uont8mjjsqrorbv3pn72.apps.googleusercontent.com"
+            data-client_id={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
             data-context="signup"
             data-ux_mode="popup"
             data-callback={handleSignInWithGoogle}
