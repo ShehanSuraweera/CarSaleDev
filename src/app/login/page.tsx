@@ -71,9 +71,11 @@ const Page: React.FC = () => {
 
   const handleGoogleLoginButton = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { error, data } = await supabase.auth.signInWithOAuth({
         provider: "google",
       });
+
+      console.log(data);
 
       console.log(error);
     } catch (error) {}
@@ -131,7 +133,7 @@ const Page: React.FC = () => {
           </Button>
         </Form>
 
-        <div className="flex justify-center mt-5">
+        {/* <div className="flex justify-center mt-5">
           <div
             id="g_id_onload"
             data-client_id={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
@@ -152,7 +154,7 @@ const Page: React.FC = () => {
             data-size="large"
             data-logo_alignment="left"
           ></div>
-        </div>
+        </div> */}
 
         <div className="flex justify-center mt-2">
           <span className="text-gray-500 ">
