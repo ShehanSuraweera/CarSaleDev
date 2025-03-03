@@ -22,6 +22,8 @@ import {
   Spinner,
   Tooltip,
   useDisclosure,
+  Skeleton,
+  Avatar,
 } from "@heroui/react";
 import { AdData } from "../types";
 import { deleteAd, fetchUserAds } from "../lib/api";
@@ -90,6 +92,28 @@ const MyadsContent = () => {
   const [adIdToDelete, setAdIdToDelete] = useState<string>();
   const [tableRefresh, setTableRefresh] = useState(false);
   const router = useRouter();
+
+  const TableRowSkeleton = () => {
+    return (
+      <TableRow>
+        {columns.map((column) => (
+          <TableCell key={column.uid}>
+            <Skeleton className="w-full h-6 rounded-lg" />
+          </TableCell>
+        ))}
+      </TableRow>
+    );
+  };
+
+  const TableBodySkeleton = () => {
+    return (
+      <TableBody>
+        {[...Array(rowsPerPage)].map((_, index) => (
+          <TableRowSkeleton key={index} />
+        ))}
+      </TableBody>
+    );
+  };
 
   function parseTimestamp(timestamp: string): { date: string; time: string } {
     const date = new Date(timestamp);
@@ -198,15 +222,29 @@ const MyadsContent = () => {
       switch (columnKey) {
         case "ad_title":
           return (
-            <Link href={`/vehicle/${ad.ad_id}`}>
-              <User
-                avatarProps={{ radius: "sm", src: ad.images[0] }}
-                description={ad.price}
-                name={ad.title}
-              >
-                {ad.title}
-              </User>
-            </Link>
+            <button
+              onClick={() => {
+                router.push(`/vehicle/${ad.ad_id}`);
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <Avatar
+                  //avatarProps={{ radius: "sm", src: ad.images[0] }}
+                  //description={ad.price}
+
+                  src={ad.images[0]}
+                  radius="sm"
+                  size="md"
+                />
+
+                <div className="flex flex-col items-start justify-center">
+                  <p className="capitalize text-bold text-small">{ad.title}</p>
+                  <p className="capitalize text-bold text-tiny text-default-400">
+                    {ad.price}
+                  </p>
+                </div>
+              </div>
+            </button>
           );
         case "created_at":
           return (
@@ -244,21 +282,29 @@ const MyadsContent = () => {
         case "actions":
           return (
             <div className="relative flex items-center gap-2">
-              <Tooltip content="Details">
-                <Link
-                  className="text-lg cursor-pointer text-default-400 active:opacity-50"
-                  href={`/vehicle/${ad.ad_id}`}
+              {/* <Tooltip content="Details">
+                <Button
+                  variant="light"
+                  color="primary"
+                  className="text-lg cursor-pointer active:opacity-50 min-w-2 min-h-2"
+                  onPress={() => {
+                    router.push(`/vehicle/${ad.ad_id}`);
+                  }}
                 >
                   <EyeIcon />
-                </Link>
-              </Tooltip>
+                </Button>
+              </Tooltip> */}
               <Tooltip content="Edit ad">
-                <Link
-                  className="text-lg cursor-pointer text-default-400 active:opacity-50"
-                  href={`/ad-edit/${ad.ad_id}`}
+                <Button
+                  variant="light"
+                  color="warning"
+                  className="text-lg cursor-pointer active:opacity-50 min-w-2 min-h-2"
+                  onPress={() => {
+                    router.push(`/ad-edit/${ad.ad_id}`);
+                  }}
                 >
                   <EditIcon />
-                </Link>
+                </Button>
               </Tooltip>
               <Tooltip color="danger" content="Delete ad">
                 <Button

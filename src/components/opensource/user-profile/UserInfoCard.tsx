@@ -1,29 +1,64 @@
 "use client";
+import { updateUserProfile } from "@/src/lib/api";
+import { fetchUserProfile } from "@/src/redux/features/user/userSlice";
+import { RootState } from "@/src/redux/store";
 import { Button } from "@heroui/button";
 import { Input, Modal, ModalContent, useDisclosure } from "@heroui/react";
-import React from "react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 interface UserInfoCardProps {
-  first_name: string;
-  last_name: string;
+  name: string;
   email: string;
   phone: string;
   user_type: string;
 }
 
 export default function UserInfoCard({
-  first_name,
-  last_name,
+  name,
   email,
   phone,
   user_type,
 }: UserInfoCardProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
 
-    onOpenChange();
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+  const [user_name, setUserName] = useState(name);
+  const [user_email, setUserEmail] = useState(email);
+  const [user_phone, setUserPhone] = useState(phone);
+
+  // Validate contact using regex
+  const validateContact = (contact: string): boolean => {
+    const regex = /^0\d{9}$/;
+    return regex.test(contact);
+  };
+
+  const handleSave = async () => {
+    if (!validateContact(user_phone))
+      return toast.error("Invalid phone number");
+    setIsLoading(true);
+    const formData = new FormData();
+    if (user) {
+      formData.append("user_id", user.id);
+      formData.append("name", user_name?.toString());
+      formData.append("email", user_email?.toString());
+      formData.append("phone", user_phone?.toString());
+
+      const response = await updateUserProfile(formData);
+      if (response === "Profile updated") {
+        toast.success("Profile updated successfully.");
+        dispatch(fetchUserProfile(user.id) as any);
+        onOpenChange();
+      } else {
+        toast.error("Failed to update profile.");
+      }
+    }
+
+    setIsLoading(false);
   };
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -36,19 +71,10 @@ export default function UserInfoCard({
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                First Name
+                Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {first_name}
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Last Name
-              </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {last_name}
+                {name}
               </p>
             </div>
 
@@ -83,7 +109,6 @@ export default function UserInfoCard({
 
         <Button
           onPress={onOpen}
-          isDisabled={true}
           className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
         >
           <svg
@@ -123,13 +148,13 @@ export default function UserInfoCard({
                   </p>
                 </div>
                 <form className="flex flex-col">
-                  <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+                  <div className="custom-scrollbar  h-[450px] overflow-y-auto px-2 pb-3">
                     <div>
-                      <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
+                      {/* <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                         Social Links
-                      </h5>
+                      </h5> */}
 
-                      <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                      {/* <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                         <div>
                           <label>Facebook</label>
                           <Input
@@ -161,40 +186,60 @@ export default function UserInfoCard({
                             defaultValue="https://instagram.com/PimjoHQ"
                           />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                     <div className="mt-7">
                       <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                         Personal Information
                       </h5>
 
-                      <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                      <div className="grid grid-cols-1 text-sm gap-x-6 gap-y-5 lg:grid-cols-2">
                         <div className="col-span-2 lg:col-span-1">
-                          <label>First Name</label>
-                          <Input type="text" defaultValue="Musharof" />
-                        </div>
-
-                        <div className="col-span-2 lg:col-span-1">
-                          <label>Last Name</label>
-                          <Input type="text" defaultValue="Chowdhury" />
-                        </div>
-
-                        <div className="col-span-2 lg:col-span-1">
-                          <label>Email Address</label>
                           <Input
                             type="text"
-                            defaultValue="randomuser@pimjo.com"
+                            defaultValue={name}
+                            label="Name"
+                            onChange={(e) => setUserName(e.target.value)}
+                            labelPlacement="outside"
+                          />
+                        </div>
+
+                        {/* <div className="col-span-2 lg:col-span-1">
+                          <label>Last Name</label>
+                          <Input type="text" defaultValue="Chowdhury" />
+                        </div> */}
+
+                        <div className="col-span-2 lg:col-span-1">
+                          {/* <label>Email Address</label> */}
+                          <Input
+                            type="text"
+                            defaultValue={email}
+                            disabled={true}
+                            label="Email Address"
+                            labelPlacement="outside"
+                            onChange={(e) => setUserEmail(e.target.value)}
                           />
                         </div>
 
                         <div className="col-span-2 lg:col-span-1">
-                          <label>Phone</label>
-                          <Input type="text" defaultValue="+09 363 398 46" />
+                          <Input
+                            type="text"
+                            defaultValue={phone}
+                            label="Phone"
+                            labelPlacement="outside"
+                            // startContent="+94"
+                            onChange={(e) => setUserPhone(e.target.value)}
+                          />
                         </div>
 
                         <div className="col-span-2">
-                          <label>Bio</label>
-                          <Input type="text" defaultValue="Team Manager" />
+                          <Input
+                            type="text"
+                            defaultValue={user_type}
+                            label="User Type"
+                            labelPlacement="outside"
+                            disabled={true}
+                          />
                         </div>
                       </div>
                     </div>
@@ -203,7 +248,12 @@ export default function UserInfoCard({
                     <Button size="sm" variant="flat" onPress={onClose}>
                       Close
                     </Button>
-                    <Button color="primary" size="sm" onPress={handleSave}>
+                    <Button
+                      color="primary"
+                      size="sm"
+                      onPress={handleSave}
+                      isLoading={isLoading}
+                    >
                       Save Changes
                     </Button>
                   </div>

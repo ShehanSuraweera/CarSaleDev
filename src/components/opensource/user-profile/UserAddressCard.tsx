@@ -1,5 +1,11 @@
 "use client";
-import { getAllDistricts, getCitiesByDistrict } from "@/src/lib/api";
+import {
+  getAllDistricts,
+  getCitiesByDistrict,
+  updateUserProfile,
+} from "@/src/lib/api";
+import { fetchUserProfile } from "@/src/redux/features/user/userSlice";
+import { RootState } from "@/src/redux/store";
 import { Button } from "@heroui/button";
 import {
   Autocomplete,
@@ -11,16 +17,18 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 interface UserAddressCardProps {
   country: string;
-  province: string;
+
   district: string;
   city: string;
 }
 
 export default function UserAddressCard({
-  province,
   district,
   city,
   country,
@@ -33,6 +41,9 @@ export default function UserAddressCard({
   const [selectedDistrict, setSelectedDistrict] = useState<number | null>(null);
   const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch(); // Add dispatch
 
   useEffect(() => {
     setIsLoading(true);
@@ -66,10 +77,23 @@ export default function UserAddressCard({
     }
   }, [selectedDistrict]);
 
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    onOpenChange();
+  const handleSave = async () => {
+    setIsLoading(true);
+    const formData = new FormData();
+    if (user && selectedCityId) {
+      formData.append("user_id", user.id);
+      formData.append("city_id", selectedCityId?.toString());
+      const response = await updateUserProfile(formData);
+      if (response === "Profile updated") {
+        toast.success("Profile updated successfully.");
+        dispatch(fetchUserProfile(user.id) as any);
+        onOpenChange();
+      } else {
+        toast.error("Failed to update profile.");
+      }
+    }
+
+    setIsLoading(false);
   };
   return (
     <>
@@ -87,15 +111,6 @@ export default function UserAddressCard({
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
                   {country}
-                </p>
-              </div>
-
-              <div>
-                <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                  Province
-                </p>
-                <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  {province}
                 </p>
               </div>
 
@@ -121,7 +136,6 @@ export default function UserAddressCard({
 
           <Button
             onPress={onOpen}
-            isDisabled={true}
             className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
           >
             <svg
@@ -202,6 +216,7 @@ export default function UserAddressCard({
                       onPress={handleSave}
                       color="primary"
                       isDisabled={selectedCityId ? false : true}
+                      isLoading={isLoading}
                     >
                       Save Changes
                     </Button>

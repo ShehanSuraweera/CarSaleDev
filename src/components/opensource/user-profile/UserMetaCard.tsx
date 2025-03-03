@@ -3,6 +3,8 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar, Button, Input, Modal, useDisclosure } from "@heroui/react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/src/redux/store";
 
 interface UserMetaCardProps {
   name: string;
@@ -18,6 +20,7 @@ export default function UserMetaCard({
   avatar_url,
 }: UserMetaCardProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { loading, error } = useSelector((state: RootState) => state.user);
 
   const handleSave = () => {
     // Handle save logic here
