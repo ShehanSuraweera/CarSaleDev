@@ -193,9 +193,7 @@ function VehicleBackground() {
           name="colour"
         >
           {colours?.map((item) => (
-            <SelectItem key={item} value={item}>
-              {item}
-            </SelectItem>
+            <SelectItem key={item}>{item}</SelectItem>
           ))}
         </Autocomplete>
         <Autocomplete
@@ -237,9 +235,7 @@ function VehicleBackground() {
           name="fuel_type"
         >
           {fuelTypes?.map((item) => (
-            <SelectItem key={item.id} value={item.id}>
-              {item.name}
-            </SelectItem>
+            <SelectItem key={item.id}>{item.name}</SelectItem>
           ))}
         </Autocomplete>
       </div>
