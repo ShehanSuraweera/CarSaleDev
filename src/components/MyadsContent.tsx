@@ -24,6 +24,10 @@ import {
   useDisclosure,
   Skeleton,
   Avatar,
+  Card,
+  CardBody,
+  Slider,
+  CardFooter,
 } from "@heroui/react";
 import { AdData } from "../types";
 import { deleteAd, fetchUserAds } from "../lib/api";
@@ -41,6 +45,10 @@ import {
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { TimerIcon, ViewIcon } from "lucide-react";
+import TimeAgo from "./TimeAgo";
+import Image from "next/image";
+import SignOut from "./SignOut";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -113,6 +121,10 @@ const MyadsContent = () => {
         ))}
       </TableBody>
     );
+  };
+
+  const formatNumber = (num: number): string => {
+    return new Intl.NumberFormat("en-US").format(num);
   };
 
   function parseTimestamp(timestamp: string): { date: string; time: string } {
@@ -222,8 +234,10 @@ const MyadsContent = () => {
       switch (columnKey) {
         case "ad_title":
           return (
-            <button
-              onClick={() => {
+            <Button
+              variant="light"
+              className="p-0"
+              onPress={() => {
                 router.push(`/vehicle/${ad.ad_id}`);
               }}
             >
@@ -244,7 +258,7 @@ const MyadsContent = () => {
                   </p>
                 </div>
               </div>
-            </button>
+            </Button>
           );
         case "created_at":
           return (
@@ -505,6 +519,7 @@ const MyadsContent = () => {
   return (
     <>
       <Table
+        className="hidden lg:block"
         isHeaderSticky
         aria-label="Example table with custom cells, pagination and sorting"
         bottomContent={bottomContent}
@@ -560,6 +575,97 @@ const MyadsContent = () => {
         cancelText="No, Keep It"
         backdrop="blur"
       />
+
+      <div className="flex flex-wrap items-center justify-center w-full mt-5 sm:gap-x-6 gap-x-2 lg:hidden">
+        {" "}
+        {!isadsLoading &&
+          ads.length !== 0 &&
+          ads.map((ad) => (
+            <div
+              key={ad.ad_id}
+              className=" mb-7 relative   shadow-md mt-2 hover:shadow-2xl sm:mt-2 w-[325px] sm:w-[280px] overflow-hidden sm:h-[300px] md:w-[370px] md:h-[340px] h-[250px] lg:w-[400px] dark:bg-[#000B17]  rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  "
+            >
+              <Button
+                variant="light"
+                className="flex flex-col items-center w-full h-full p-0"
+                onPress={() => {
+                  router.push(`/vehicle/${ad.ad_id}`);
+                }}
+              >
+                <Image
+                  className="sm:w-[55%] w-[70%]  rounded-md object-cover  sm:h-[110px] h-[120px] mt-2 "
+                  src={ad.images[0] || "/images/no-image.png"}
+                  alt={`${ad.make.name} ${ad.model.name}`}
+                  width={500}
+                  height={500}
+                />
+                <div className=" mt-1 font-semibold md:text-lg   text-xs text-[#130F40] dark:text-[#FDC221]">
+                  {ad.title}
+                </div>
+
+                <div className=" w-[100%] h-[100px] sm:h-[100px] md:h-[100px] bg-slate-50 dark:bg-[#000E1E]  mt-1  rounded-md py-2 items-center justify-between flex flex-col">
+                  <div className=" text-xs sm:text-sm md:text-base lg:text-lg text-[#2980b9]  w-full text-center font-semibold">
+                    {ad.price === "" || !ad.price
+                      ? "Negotiable"
+                      : `Rs. ${formatNumber(Number(ad.price))}`}
+                  </div>
+                  <div className="  mt-2   flex justify-between sm:justify-around   gap-y-1   text-[#847E7E]   items-center  flex-wrap w-[95%]">
+                    {ad.is_approved ? (
+                      <div className="flex items-center justify-start gap-1 px-3 py-1 text-xs text-green-700 bg-green-300 rounded-full md:text-sm">
+                        <div className="items-center justify-start gap-2 text-xs md:text-sm sm:flex">
+                          Active
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-start gap-1 px-3 py-1 text-xs text-yellow-700 bg-yellow-300 rounded-full md:text-sm ">
+                        <div className="items-center justify-start gap-2 text-xs md:text-sm sm:flex">
+                          Pending
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-start gap-1 px-3 py-1 text-xs bg-blue-200 rounded-full dark:bg-opacity-65 dark:text-white md:text-sm">
+                      <div className="items-center justify-start gap-2 text-xs md:text-sm sm:flex">
+                        <TimeAgo createdAt={ad.created_at || ""} />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-start gap-1 text-xs md:text-sm sm:gap-2">
+                      <Tooltip content="Edit ad">
+                        <Button
+                          variant="light"
+                          color="warning"
+                          className="text-lg cursor-pointer active:opacity-50 min-w-2 min-h-2"
+                          onPress={() => {
+                            router.push(`/ad-edit/${ad.ad_id}`);
+                          }}
+                        >
+                          <EditIcon />
+                        </Button>
+                      </Tooltip>
+                    </div>
+
+                    <div className="flex items-center justify-start gap-1 text-xs md:text-sm sm:gap-2">
+                      <Tooltip color="danger" content="Delete ad">
+                        <Button
+                          variant="light"
+                          color="danger"
+                          className="text-lg cursor-pointer text-danger active:opacity-50 min-w-2 min-h-2"
+                          onPress={() => {
+                            setAdIdToDelete(ad.ad_id);
+                            onOpen();
+                          }}
+                        >
+                          <DeleteIcon />
+                        </Button>
+                      </Tooltip>
+                    </div>
+                  </div>
+                </div>
+              </Button>
+            </div>
+          ))}
+      </div>
     </>
   );
 };

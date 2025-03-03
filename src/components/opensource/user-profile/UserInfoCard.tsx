@@ -3,7 +3,13 @@ import { updateUserProfile } from "@/src/lib/api";
 import { fetchUserProfile } from "@/src/redux/features/user/userSlice";
 import { RootState } from "@/src/redux/store";
 import { Button } from "@heroui/button";
-import { Input, Modal, ModalContent, useDisclosure } from "@heroui/react";
+import {
+  Alert,
+  Input,
+  Modal,
+  ModalContent,
+  useDisclosure,
+} from "@heroui/react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -62,9 +68,14 @@ export default function UserInfoCard({
   };
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+      {name === "" && (
+        <div className="mb-4">
+          <Alert color="warning" title={`Please Complete Profile`} isClosable />
+        </div>
+      )}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+          <h4 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
             Personal Information
           </h4>
 

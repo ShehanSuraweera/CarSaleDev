@@ -10,6 +10,7 @@ import UserInfoCard from "./opensource/user-profile/UserInfoCard";
 import UserMetaCardSkeleton from "./opensource/user-profile/UserMetaCardSkeleton";
 import UserInfoCardSkeleton from "./opensource/user-profile/UserInfoCardSkeleton";
 import UserAddressCardSkeleton from "./opensource/user-profile/UserAddressCardSkeleton";
+import SignOut from "./SignOut";
 
 function ProfileContent() {
   const dispatch = useDispatch();
@@ -52,6 +53,9 @@ function ProfileContent() {
         country="Sri Lanka"
         district={profile?.district?.name || ""}
       />
+      <div className="flex items-center justify-center mt-5 xl:hidden">
+        <SignOut />
+      </div>
     </div>
   );
 }

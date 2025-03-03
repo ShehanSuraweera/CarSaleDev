@@ -79,11 +79,11 @@ export default function Sidebar() {
 
   return (
     <div>
-      <div className="hidden md:flex">{navContent}</div>
+      <div className="hidden xl:flex">{navContent}</div>
 
-      <div className="flex items-center justify-center md:hidden">
+      {/* <div className="flex items-center justify-center md:hidden">
         {mobileNavContent}
-      </div>
+      </div> */}
     </div>
   );
 }
