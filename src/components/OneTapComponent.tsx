@@ -88,10 +88,16 @@ const OneTapComponent = () => {
       // with chrome's removal of third-party cookiesm, we need to use FedCM instead (https://developers.google.com/identity/gsi/web/guides/fedcm-migration)
       use_fedcm_for_prompt: true,
     });
-    google.accounts.id.prompt(); // Display the One Tap UI
+    google.accounts.id.prompt((notification: any) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        console.log("One Tap UI was not displayed:", notification);
+        localStorage.setItem("google_one_tap_skipped", "true");
+      }
+    }); // Display the One Tap UI
   }, [supabaseBrowserClient.auth, router]);
 
   useEffect(() => {
+    localStorage.removeItem("google_one_tap_skipped");
     // Only trigger once when the script is loaded
     const scriptLoaded = () => {
       initializeGoogleOneTap();
