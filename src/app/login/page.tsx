@@ -2,7 +2,7 @@
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import Link from "next/link";
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { loginAction, signInWithGoogle } from "@/src/actions/users";
 import {
@@ -31,6 +31,12 @@ const Page: React.FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const handleClickLoginButton = async (
     event: React.FormEvent<HTMLFormElement>

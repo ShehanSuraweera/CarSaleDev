@@ -13,6 +13,7 @@ export const useAuthListener = () => {
   useEffect(() => {
     const { data: authListener } = supabaseBrowserClient.auth.onAuthStateChange(
       (_event, session) => {
+        console.log("authListener", _event, session);
         dispatch(setSession(session));
         dispatch(setUser(session?.user ?? null));
 
