@@ -69,6 +69,16 @@ const Page: React.FC = () => {
     }
   }
 
+  const handleGoogleLoginButton = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+
+      console.log(error);
+    } catch (error) {}
+  };
+
   return (
     <div className="flex flex-col items-center justify-around mt-4 mb-64 grow">
       <div className="text-center ">
@@ -126,6 +136,7 @@ const Page: React.FC = () => {
             id="g_id_onload"
             data-client_id={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
             data-context="signup"
+            data-nonce=""
             data-ux_mode="popup"
             data-callback={handleSignInWithGoogle}
             data-itp_support="true"
@@ -155,14 +166,14 @@ const Page: React.FC = () => {
           </span>
         </div>
         <Divider className="mt-5" />
-        {/* <Button
+        <Button
           color="primary"
-          onPress={handleSignInWithGoogle}
+          onPress={handleGoogleLoginButton}
           className="w-full py-6 mt-8 rounded-xl"
           startContent={<GoogleIcon />}
         >
           Sign in with Google
-        </Button> */}
+        </Button>
       </div>
       <OneTapComponent />
     </div>
