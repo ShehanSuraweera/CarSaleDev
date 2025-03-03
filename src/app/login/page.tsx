@@ -76,9 +76,6 @@ const Page: React.FC = () => {
       });
 
       if (error) throw error;
-
-      toast.success("Successfully logged in with Google");
-      await router.push("/"); // Ensure navigation happens properly
     } catch (error) {
       console.error("Google login error:", error);
       toast.error("Failed to log in with Google. Please try again.");

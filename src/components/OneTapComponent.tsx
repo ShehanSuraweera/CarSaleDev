@@ -90,7 +90,6 @@ const OneTapComponent = () => {
     });
     google.accounts.id.prompt((notification: any) => {
       if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        console.log("One Tap UI was not displayed:", notification);
         localStorage.setItem("google_one_tap_skipped", "true");
       }
     }); // Display the One Tap UI

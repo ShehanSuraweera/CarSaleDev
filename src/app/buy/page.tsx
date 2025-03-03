@@ -124,7 +124,6 @@ export default function Page() {
   });
 
   useStartTyping(() => {
-    console.log("Typing started");
     setTyping(true);
   });
 
