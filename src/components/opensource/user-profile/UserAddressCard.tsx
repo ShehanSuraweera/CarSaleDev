@@ -189,7 +189,7 @@ export default function UserAddressCard({
                         isLoading={isLoading}
                       >
                         {cities.map((city) => (
-                          <AutocompleteItem key={city.id} value={city.id}>
+                          <AutocompleteItem key={city.id}>
                             {city.name}
                           </AutocompleteItem>
                         ))}

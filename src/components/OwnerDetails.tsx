@@ -370,7 +370,7 @@ const OwnerDetails = () => {
                         description="This will display as Location"
                       >
                         {(city) => (
-                          <AutocompleteItem key={city.id} value={city.id}>
+                          <AutocompleteItem key={city.id}>
                             {city.name}
                           </AutocompleteItem>
                         )}

@@ -126,9 +126,7 @@ function VehicleBackground() {
           }}
         >
           {(item) => (
-            <AutocompleteItem key={item.id} value={item.id}>
-              {item.name}
-            </AutocompleteItem>
+            <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>
           )}
         </Autocomplete>
         <Autocomplete
