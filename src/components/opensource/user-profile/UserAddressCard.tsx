@@ -171,10 +171,7 @@ export default function UserAddressCard({
                         }
                       >
                         {districts.map((district) => (
-                          <AutocompleteItem
-                            key={district.id}
-                            value={district.id}
-                          >
+                          <AutocompleteItem key={district.id}>
                             {district.name}
                           </AutocompleteItem>
                         ))}

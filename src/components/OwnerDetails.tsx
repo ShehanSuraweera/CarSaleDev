@@ -352,10 +352,7 @@ const OwnerDetails = () => {
                         placeholder="e.g Colombo, Kandy, Galle"
                       >
                         {(district) => (
-                          <AutocompleteItem
-                            key={district.id}
-                            value={district.id}
-                          >
+                          <AutocompleteItem key={district.id}>
                             {district.name}
                           </AutocompleteItem>
                         )}
