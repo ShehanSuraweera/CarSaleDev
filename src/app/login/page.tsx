@@ -71,14 +71,18 @@ const Page: React.FC = () => {
 
   const handleGoogleLoginButton = async () => {
     try {
-      const { error, data } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
       });
 
-      console.log(data);
+      if (error) throw error;
 
-      console.log(error);
-    } catch (error) {}
+      toast.success("Successfully logged in with Google");
+      await router.push("/"); // Ensure navigation happens properly
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("Failed to log in with Google. Please try again.");
+    }
   };
 
   return (
