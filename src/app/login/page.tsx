@@ -18,12 +18,14 @@ import { GoogleIcon } from "@/src/components/icons";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/src/redux/store";
 import { useDispatch } from "react-redux";
+import { createSupabaseClient } from "@/src/auth/client";
 
 const Page: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
   // const { supabaseBrowserClient } = useUser();
+  const supabase = createSupabaseClient();
 
   const [isPending, startTransition] = useTransition();
 
@@ -49,7 +51,8 @@ const Page: React.FC = () => {
       toast.error(errorMessage); // Show error message
     }
   };
-  const handleSignInWithGoogle = async (response: any) => {
+
+  async function handleSignInWithGoogle(response: any) {
     try {
       const result = await dispatch(
         loginWithGoogle(response.credential)
@@ -64,7 +67,7 @@ const Page: React.FC = () => {
         (error as { message: string }).message || "Google login failed";
       toast.error(errorMessage); // Show error message
     }
-  };
+  }
 
   return (
     <div className="flex flex-col items-center justify-around mt-4 mb-64 grow">
@@ -124,7 +127,7 @@ const Page: React.FC = () => {
             data-client_id="770587025850-0va4rd9geg78uont8mjjsqrorbv3pn72.apps.googleusercontent.com"
             data-context="signup"
             data-ux_mode="popup"
-            data-login_uri="https://eauvrmfsnhwjwnnacyzx.supabase.co/auth/v1/callback"
+            data-callback={handleSignInWithGoogle}
             data-itp_support="true"
             data-use_fedcm_for_prompt="true"
           ></div>
