@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import enginepic from "../../assets/icons/engine.svg";
 import mileagepic from "../../assets/icons/mileage.svg";
@@ -13,6 +13,8 @@ import { MediumAdProps } from "@/src/types";
 import ConfirmationModal from "../ConfirmationModal";
 import { deleteAd } from "@/src/lib/api";
 import toast from "react-hot-toast";
+import { HeartFilledIcon, HeartIcon } from "../icons";
+import LikeButton from "../LikeButton";
 
 const MediumAd = ({
   frame_code,
@@ -46,6 +48,7 @@ const MediumAd = ({
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isLiked, setIsLiked] = useState(false);
 
   function formatKilometers(value: number): string {
     return value.toLocaleString("en-US") + " km";
@@ -98,6 +101,10 @@ const MediumAd = ({
             </Button>
           </div>
         )}
+
+        <div className="absolute top-0 right-0 z-10 flex gap-2 p-2 rounded-lg dark:bg-black">
+          <LikeButton adId={id} />
+        </div>
 
         <button
           className="flex flex-col items-center w-full h-full"

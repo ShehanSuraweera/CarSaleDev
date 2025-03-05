@@ -12,6 +12,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import userReducer from "./features/user/userSlice";
 import adFormReducer from "./features/ad/adFormSlice";
+import likedAdsReducer from "./features/ad/likedAdSlice";
 import logger from "redux-logger";
 
 const adFormPersistConfig = {
@@ -32,6 +33,7 @@ const userPersistConfig = {
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer), // Persist user slice
   adForm: persistReducer(adFormPersistConfig, adFormReducer), // Not persisted
+  likedAds: likedAdsReducer,
 });
 
 // ✅ Create store

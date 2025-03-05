@@ -418,3 +418,54 @@ export const getVehicleConditions = async () => {
     );
   }
 };
+
+export const likeAd = async (adId: string, userId: string) => {
+  try {
+    const response = await apiClient.post(`/user/like-ad`, { adId, userId });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error liking ad:", error.message || error);
+    throw new Error(error.response?.data?.message || "Failed to like ad");
+  }
+};
+
+export const unlikeAd = async (adId: string, userId: string) => {
+  try {
+    const response = await apiClient.delete(`/user/unlike-ad`, {
+      data: {
+        userId: userId,
+        adId: adId,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error unliking ad:", error.message || error);
+    throw new Error(error.response?.data?.message || "Failed to unlike ad");
+  }
+};
+
+export const getLikedAds = async () => {
+  try {
+    const response = await apiClient.get("/ads/liked");
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching liked ads:", error.message || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch liked ads"
+    );
+  }
+};
+
+export const getUserLikedAdIds = async (user_id: string) => {
+  try {
+    const response = await apiClient.post("/user/liked-ads", {
+      user_id: user_id,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching liked ads:", error.message || error);
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch liked ads"
+    );
+  }
+};
