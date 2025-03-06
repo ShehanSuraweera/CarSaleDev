@@ -43,7 +43,7 @@ export const signOutAction = async () => {
   try {
     const { auth } = await createSupabaseClient();
 
-    const { error } = await auth.signOut({ scope: "global" });
+    const { error } = await auth.signOut({ scope: "local" });
 
     if (error) throw error;
 
