@@ -1,7 +1,6 @@
 import React from "react";
 import Image, { StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
-import { Skeleton } from "@heroui/react";
 import LikeButton from "../LikeButton";
 
 interface SmallAdProps {
@@ -23,7 +22,7 @@ const SmallAd = ({ make, price, image, model, ad_id }: SmallAdProps) => {
   };
 
   return (
-    <button
+    <div
       className="flex flex-col hover:shadow-2xl items-center justify-center w-full  h-[200px] sm:h-[220px] md:h-[310px] gap-4 px-0 pt-4 mx-1 mb-4  rounded-md shadow-md  hover:cursor-pointer"
       onClick={handleAd}
     >
@@ -53,7 +52,7 @@ const SmallAd = ({ make, price, image, model, ad_id }: SmallAdProps) => {
             : `Rs. ${formatNumber(Number(price))}`}
         </h3>
       </div>
-    </button>
+    </div>
   );
 };
 

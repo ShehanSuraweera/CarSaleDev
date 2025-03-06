@@ -48,7 +48,7 @@ export const loginWithEmailPassword = createAsyncThunk(
   "user/login",
   async (
     { email, password }: { email: string; password: string },
-    { dispatch }
+    { dispatch, rejectWithValue }
   ) => {
     try {
       const { data, error } =
@@ -57,7 +57,9 @@ export const loginWithEmailPassword = createAsyncThunk(
           password,
         });
 
-      if (error) throw new Error(error.message);
+      if (error) {
+        return rejectWithValue(error.message); // Send error to Redux state
+      }
 
       // Fetch profile after successful login
       if (data.user) {
@@ -66,7 +68,7 @@ export const loginWithEmailPassword = createAsyncThunk(
 
       return data;
     } catch (error) {
-      return (error as Error).message;
+      return rejectWithValue((error as Error).message);
     }
   }
 );
@@ -74,7 +76,7 @@ export const loginWithEmailPassword = createAsyncThunk(
 // Async thunk to handle Google login
 export const loginWithGoogle = createAsyncThunk(
   "user/loginWithGoogle",
-  async (token: string, { dispatch }) => {
+  async (token: string, { dispatch, rejectWithValue }) => {
     try {
       const { data, error } =
         await supabaseBrowserClient.auth.signInWithIdToken({
@@ -82,7 +84,9 @@ export const loginWithGoogle = createAsyncThunk(
           token,
         });
 
-      if (error) throw new Error(error.message);
+      if (error) {
+        return rejectWithValue(error.message); // Send error to Redux state
+      }
 
       // Fetch profile after successful login
       if (data.user) {
@@ -91,7 +95,7 @@ export const loginWithGoogle = createAsyncThunk(
 
       return data;
     } catch (error) {
-      return (error as Error).message;
+      return rejectWithValue((error as Error).message);
     }
   }
 );
@@ -162,7 +166,8 @@ const userSlice = createSlice({
         state.loading = false;
       })
       .addCase(loginWithEmailPassword.rejected, (state, action) => {
-        state.error = action.error.message || "Login failed";
+        state.error =
+          (action.payload as string) || "Login failed. Please try again.";
         state.loading = false;
       })
 

@@ -32,12 +32,6 @@ const Page: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.user);
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
-  }, [error]);
-
   const handleClickLoginButton = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -47,14 +41,11 @@ const Page: React.FC = () => {
         loginWithEmailPassword({ email, password })
       ).unwrap();
 
-      if (typeof result !== "string" && result.user) {
-        toast.success("Successfully logged in");
-        router.push("/"); // Redirect to home page after successful login
+      if (result.user) {
+        router.push("/");
       }
     } catch (error) {
-      const errorMessage =
-        (error as { message: string }).message || "Login failed";
-      toast.error(errorMessage); // Show error message
+      toast.error(error as string); // Display Redux error message
     }
   };
 

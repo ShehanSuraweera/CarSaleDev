@@ -234,12 +234,15 @@ const MyadsContent = () => {
       switch (columnKey) {
         case "ad_title":
           return (
-            <Button
-              variant="light"
-              className="p-0"
-              onPress={() => {
-                router.push(`/vehicle/${ad.ad_id}`);
-              }}
+            <Link
+              href={`/vehicle/${ad.ad_id}`}
+              passHref
+              // onClick={() => {
+              //   router.replace(`user/ad/${ad.ad_id}`);
+              // }}
+              // onKeyDown={(e) =>
+              //   e.key === "Enter" && router.push(`user/ad/${ad.ad_id}`)
+              // } // Allow Enter key for accessibility
             >
               <div className="flex items-center gap-3">
                 <Avatar
@@ -254,11 +257,13 @@ const MyadsContent = () => {
                 <div className="flex flex-col items-start justify-center">
                   <p className="capitalize text-bold text-small">{ad.title}</p>
                   <p className="capitalize text-bold text-tiny text-default-400">
-                    {ad.price}
+                    {ad.price === "" || !ad.price
+                      ? "Negotiable"
+                      : `Rs. ${formatNumber(Number(ad.price))}`}
                   </p>
                 </div>
               </div>
-            </Button>
+            </Link>
           );
         case "created_at":
           return (
@@ -585,10 +590,9 @@ const MyadsContent = () => {
               key={ad.ad_id}
               className=" mb-7 relative   shadow-md mt-2 hover:shadow-2xl sm:mt-2 w-[325px] sm:w-[280px] overflow-hidden sm:h-[300px] md:w-[370px] md:h-[340px] h-[250px] lg:w-[400px] dark:bg-[#000B17]  rounded-lg   flex flex-col justify-center items-center hover:cursor-pointer  "
             >
-              <Button
-                variant="light"
+              <div
                 className="flex flex-col items-center w-full h-full p-0"
-                onPress={() => {
+                onClick={() => {
                   router.push(`/vehicle/${ad.ad_id}`);
                 }}
               >
@@ -662,7 +666,7 @@ const MyadsContent = () => {
                     </div>
                   </div>
                 </div>
-              </Button>
+              </div>
             </div>
           ))}
       </div>

@@ -10,6 +10,7 @@ export default function NavTabs() {
     { name: "Profile", href: "/profile" },
     { name: "My ads", href: "/profile/myads" },
     { name: "Favorite ads", href: "/profile/favourite-ads" },
+
     // Add more tabs here
   ];
 
