@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { clearUser } from "../redux/features/user/userSlice";
+import { resetAdIds } from "../redux/features/ad/likedAdSlice";
 
 function SignOut() {
   const router = useRouter();
@@ -26,6 +27,7 @@ function SignOut() {
           toast.error(errorMessage);
         }
         dispatch(clearUser());
+        dispatch(resetAdIds());
 
         // Show success message
         toast.success("Successfully signed out");
