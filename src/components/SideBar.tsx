@@ -15,7 +15,7 @@ import {
 
 const profileLinks = [
   {
-    name: "User Profile",
+    name: "Profile",
     id: "/profile",
     icon: <CircleUserRound />,
   },
@@ -35,13 +35,17 @@ export default function Sidebar() {
               <li
                 className={`p-2  text-[#01172F] ${
                   pathname === link.id
-                    ? "bg-opacity-10 bg-[#01172F]"
-                    : "hover:text-gray-400  hover:bg-slate-900"
+                    ? "bg-opacity-10 bg-[#01172F] dark:bg-slate-800"
+                    : "hover:text-gray-400  hover:bg-slate-900 "
                 } rounded-md `}
                 key={link.id}
               >
-                <Link href={link.id} className="flex items-center gap-4">
-                  {link.icon}
+                <Link
+                  href={link.id}
+                  className="flex items-center gap-4 text-sm font-medium text-gray-500 "
+                >
+                  <div className="text-slate-400"> {link.icon}</div>
+
                   {link.name}
                 </Link>
               </li>

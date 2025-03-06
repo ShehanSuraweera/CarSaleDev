@@ -2,6 +2,7 @@ import React from "react";
 import Image, { StaticImageData } from "next/image";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@heroui/react";
+import LikeButton from "../LikeButton";
 
 interface SmallAdProps {
   make: string;
@@ -26,6 +27,9 @@ const SmallAd = ({ make, price, image, model, ad_id }: SmallAdProps) => {
       className="flex flex-col hover:shadow-2xl items-center justify-center w-full  h-[200px] sm:h-[220px] md:h-[310px] gap-4 px-0 pt-4 mx-1 mb-4  rounded-md shadow-md  hover:cursor-pointer"
       onClick={handleAd}
     >
+      <div className="absolute top-0 right-0 z-10 flex gap-2 bg-white rounded-lg sm:p-2 dark:bg-black sm:dark:bg-transparent ">
+        <LikeButton adId={ad_id} />
+      </div>
       <Image
         className=" w-[80%] block sm:w-[90%]  sm:h-[100px] md:h-[140px]  h-[80px]  rounded-md p-0 object-cover "
         width={500}

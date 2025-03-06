@@ -15,6 +15,7 @@ import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { Swiper as SwiperClass } from "swiper";
 import { AdData } from "@/src/types";
 import TimeAgo from "./TimeAgo";
+import LikeButton from "./LikeButton";
 
 interface AdProps {
   adData: AdData;
@@ -26,7 +27,10 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
     return new Intl.NumberFormat("en-US").format(num);
   };
   return (
-    <>
+    <div className="w-full ">
+      <div className="relative flex justify-end gap-2 p-2 rounded-lg ">
+        <LikeButton adId={adData.ad_id} />
+      </div>
       <h1 className="mb-2 text-2xl font-semibold">
         {adData?.build_year +
           " " +
@@ -178,7 +182,7 @@ const Ad: React.FC<AdProps> = ({ adData }) => {
       <div className="flex justify-end mt-4 text-sm">
         <span>{adData?.views} views</span>
       </div>
-    </>
+    </div>
   );
 };
 

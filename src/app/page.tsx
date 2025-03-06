@@ -6,11 +6,9 @@ import SmallAdsRow from "@/src/components/Cars/SmallAdsRow";
 import WelcomeComponent from "../components/WelcomeComponent";
 import { motion } from "framer-motion";
 import OneTapComponent from "../components/OneTapComponent";
-import { useCallback, useState } from "react";
 import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 

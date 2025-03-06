@@ -36,7 +36,7 @@ export default function Page({ params }: CarAdProps) {
     <div className="container w-full mx-0 my-3 rounded-lg sm:my-2 md:px-12 sm:p-6 xl:px-40">
       <div className="px-2 py-2 mb-5 bg-white rounded-md shadow-md sm:py-5 dark:bg-slate-950 sm:px-10 lg:px-24">
         {loading ? (
-          <div className="flex items-center justify-center w-full h-screen">
+          <div className="flex items-center justify-center w-full h-full ">
             <AdSkeleton />
           </div>
         ) : adData ? (

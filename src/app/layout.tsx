@@ -2,7 +2,7 @@ import "@/src/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { Providers } from "@/src/providers/providers";
-import { fontSans } from "@/src/config/fonts";
+import { fontSans, poppins, roboto } from "@/src/config/fonts";
 // import { UserContextProvider } from "@/src/UserContext";
 import { Toaster } from "react-hot-toast";
 import { SearchProvider } from "../providers/SearchProvider";
@@ -10,8 +10,8 @@ import Footer from "../components/Footer";
 import StoreProvider from "../providers/StoreProvider";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { NavigationBar } from "../components/NavigationBar";
-import { useAuthListener } from "../redux/hooks/useAuthListener";
 import ClientAuthProvider from "../providers/ClientAuthProvider";
+
 export const metadata: Metadata = {
   title: {
     default: "Wandi.lk - Sri Lanka’s No.1 Vehicle Selling Platform",
@@ -79,6 +79,8 @@ export default function RootLayout({
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable
+          // roboto.variable,
+          // poppins.variable
         )}
       >
         <StoreProvider>

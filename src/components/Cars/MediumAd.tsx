@@ -102,7 +102,7 @@ const MediumAd = ({
           </div>
         )}
 
-        <div className="absolute top-0 right-0 z-10 flex gap-2 p-2 rounded-lg dark:bg-black">
+        <div className="absolute top-0 right-0 z-10 flex gap-2 p-2 rounded-lg dark:bg-black sm:dark:bg-transparent ">
           <LikeButton adId={id} />
         </div>
 
