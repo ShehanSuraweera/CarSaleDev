@@ -75,7 +75,6 @@ export default function Page() {
   }, [query, filters, page]);
 
   // Fetch ads when filters or query change
-  // Fetch ads when filters or query change
   useEffect(() => {
     setPage(1); // Reset pagination
     setCars([]); // Clear previous results

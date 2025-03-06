@@ -444,9 +444,11 @@ export const unlikeAd = async (adId: string, userId: string) => {
   }
 };
 
-export const getLikedAds = async () => {
+export const getLikedAds = async (user_id: string) => {
   try {
-    const response = await apiClient.get("/ads/liked");
+    const response = await apiClient.post("/user/liked-ads", {
+      user_id: user_id,
+    });
     return response.data;
   } catch (error: any) {
     console.error("Error fetching liked ads:", error.message || error);
@@ -458,7 +460,7 @@ export const getLikedAds = async () => {
 
 export const getUserLikedAdIds = async (user_id: string) => {
   try {
-    const response = await apiClient.post("/user/liked-ads", {
+    const response = await apiClient.post("/user/liked-ad-ids", {
       user_id: user_id,
     });
     return response.data;

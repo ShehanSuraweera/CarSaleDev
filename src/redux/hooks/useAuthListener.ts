@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { setUser, setSession } from "../features/user/userSlice";
 import { createSupabaseClient } from "@/src/auth/client";
 import toast from "react-hot-toast";
-import { fetchUserLikedAdIds } from "../features/ad/likedAdSlice";
+import { fetchUserLikedAdIds, resetAdIds } from "../features/ad/likedAdSlice";
 import { AppDispatch } from "../store";
 
 const supabaseBrowserClient = createSupabaseClient();
@@ -19,12 +19,15 @@ export const useAuthListener = () => {
         dispatch(setSession(session));
         dispatch(setUser(session?.user ?? null));
 
-        if (session) {
+        if (session?.user) {
           try {
             await dispatch(fetchUserLikedAdIds()).unwrap();
           } catch (error) {
             console.error("Error fetching liked ads:", error);
           }
+        }
+        if (_event === "SIGNED_OUT") {
+          dispatch(resetAdIds());
         }
 
         if (_event === "SIGNED_IN" && session) {

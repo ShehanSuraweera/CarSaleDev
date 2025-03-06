@@ -51,6 +51,11 @@ const likedAdsSlice = createSlice({
         state.likedAds.push(adIds);
       }
     },
+    resetAdIds: (state) => {
+      state.likedAds = [];
+      state.status = "idle";
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -69,5 +74,5 @@ const likedAdsSlice = createSlice({
   },
 });
 
-export const { toggleLike } = likedAdsSlice.actions;
+export const { toggleLike, resetAdIds } = likedAdsSlice.actions;
 export default likedAdsSlice.reducer;
